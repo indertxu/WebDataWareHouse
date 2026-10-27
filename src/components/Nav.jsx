@@ -4,6 +4,7 @@ import Logo from './Logo.jsx'
 import { Button, Icon } from './ui.jsx'
 import { useLang } from '../i18n.jsx'
 import { onAnchor } from '../scroll.js'
+import { APP_LOGIN_URL } from '../config.js'
 
 function useTheme() {
   const [theme, setTheme] = useState(() =>
@@ -98,6 +99,10 @@ export default function Nav() {
             <button className="icon-btn lang-btn" onClick={() => setLang(lang === 'es' ? 'en' : 'es')} aria-label={t.nav.langLabel} title={t.nav.langLabel}>
               <Icon name="globe" size={14} /> <span>{t.nav.lang}</span>
             </button>
+            <a className="nav-login" href={APP_LOGIN_URL}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" /><path d="M10 17l5-5-5-5" /><path d="M15 12H3" /></svg>
+              {t.nav.login}
+            </a>
             <Button variant="primary" href="#demo" onClick={onAnchor} arrow className="btn-sm nav-demo">{t.nav.demo}</Button>
             <button className="icon-btn nav-burger" onClick={() => setOpen(true)} aria-label={t.nav.menu} aria-expanded={open}>
               <Icon name="menu" size={18} />
@@ -124,7 +129,10 @@ export default function Nav() {
                 </motion.a>
               ))}
             </nav>
-            <Button href="#demo" arrow onClick={(e) => { setOpen(false); onAnchor(e) }}>{t.nav.demo}</Button>
+            <div className="sheet-actions">
+              <Button href={APP_LOGIN_URL} variant="ghost">{t.nav.login}</Button>
+              <Button href="#demo" arrow onClick={(e) => { setOpen(false); onAnchor(e) }}>{t.nav.demo}</Button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

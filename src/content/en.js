@@ -265,7 +265,7 @@ export default {
     line: 'Next Data is a Next Finance product.',
     product: 'Product',
     company: 'Next Finance',
-    links: { reporting: 'Next Reporting', privacy: 'Privacy', legal: 'Legal notice', contact: 'Contact' },
+    links: { login: 'Customer login', reporting: 'Next Reporting', privacy: 'Privacy', legal: 'Legal notice', contact: 'Contact' },
     demo: 'Demo data: Norvia Group',
   },
 }

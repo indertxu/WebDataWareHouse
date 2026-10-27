@@ -265,7 +265,7 @@ export default {
     line: 'Next Data es un producto de Next Finance.',
     product: 'Producto',
     company: 'Next Finance',
-    links: { reporting: 'Next Reporting', privacy: 'Privacidad', legal: 'Aviso legal', contact: 'Contacto' },
+    links: { login: 'Acceso clientes', reporting: 'Next Reporting', privacy: 'Privacidad', legal: 'Aviso legal', contact: 'Contacto' },
     demo: 'Datos de ejemplo: Grupo Norvia',
   },
 }
