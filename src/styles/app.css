@@ -129,11 +129,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* ---------- Logo (idéntico a Next Reporting) ---------- */
 .logo { display: inline-flex; align-items: center; gap: 10px; flex: 0 0 auto; border-radius: 12px; padding: 2px 4px; }
 .logo-words { display: flex; flex-direction: column; }
-.logo-name { display: block; font-size: 16px; font-weight: 800; letter-spacing: -0.045em; line-height: 1.05; color: var(--fg); white-space: nowrap; }
+.logo-name { display: block; font-size: 17px; font-weight: 800; letter-spacing: -0.045em; line-height: 1.05; color: var(--fg); white-space: nowrap; }
 .logo-name em { font-style: normal; font-weight: 600; color: var(--fg-2); transition: color .3s; }
-.logo-by { display: block; font-family: var(--mono); font-size: 8.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--fg-3); margin-top: 3px; transition: letter-spacing .4s var(--ease), color .3s; }
+.logo-by { display: block; font-family: var(--mono); font-size: 8px; letter-spacing: .05em; text-transform: uppercase; color: var(--fg-3); margin-top: 3px; transition: letter-spacing .4s var(--ease), color .3s; }
 .logo:hover .logo-name em, .logo:focus-visible .logo-name em { color: var(--accent); }
-.logo:hover .logo-by, .logo:focus-visible .logo-by { letter-spacing: .22em; color: var(--fg-2); }
+.logo:hover .logo-by, .logo:focus-visible .logo-by { letter-spacing: .1em; color: var(--fg-2); }
 
 .nd-cube { flex: 0 0 auto; display: block; overflow: visible; filter: drop-shadow(rgba(4,120,87,.28) 0 6px 12px); transition: filter .4s, transform .6s var(--ease); }
 .nd-cube .f { transition: transform .55s var(--bounce); }
