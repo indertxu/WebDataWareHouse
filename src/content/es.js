@@ -255,13 +255,21 @@ export default {
   cta: {
     title: 'Trae tu balance. Te enseñamos tu grupo en Next Data.',
     sub: 'En 30 minutos, con tus sociedades y tus ERPs. Sin compromiso.',
+    fields: {
+      first_name: 'Nombre', first_name_ph: 'Laura',
+      last_name: 'Apellidos', last_name_ph: 'García López',
+      company: 'Empresa', company_ph: 'Grupo Norvia',
+      company_size: 'Tamaño de la empresa', company_size_ph: 'Elige el número de empleados',
+      employees: 'empleados',
+      email: 'Email de empresa',
+    },
     placeholder: 'tu@empresa.com',
     button: 'Pide tu demo',
     or: 'o escríbenos a',
     sending: 'Enviando…',
     error: 'No se ha podido enviar. Inténtalo de nuevo en un momento.',
     sent: 'Recibido. Te escribimos en menos de 24 h.',
-    invalid: 'Escribe un correo de empresa válido.',
+    invalid: 'Revisa los campos marcados: todos son obligatorios.',
   },
   footer: {
     line: 'Next Data es un producto de Next Finance.',

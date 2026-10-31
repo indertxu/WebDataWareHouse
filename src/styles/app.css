@@ -848,3 +848,25 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .cta-form { position: relative; }
 .cta-form .btn[disabled] { opacity: .75; cursor: progress; transform: none; }
 .cta-form input:disabled { opacity: .7; }
+
+/* Formulario de demo con datos de contacto */
+.cta-band { align-items: start; }
+.cta-copy { padding-top: 6px; }
+.cta-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.cta-form .cf { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.cta-form .cf-wide { grid-column: 1 / -1; }
+.cta-form .cf > span { font: 500 12px var(--mono); color: #B4D1C6; }
+.cta-form input:not(.hp), .cta-form select {
+  width: 100%; height: 48px; padding: 0 14px; border-radius: var(--radius); font: inherit; font-size: 15px;
+  background: rgba(255,255,255,.08); border: 1px solid rgba(167,243,208,.25); color: #F0FDF7; outline: none;
+  transition: border-color .2s ease, background-color .2s ease;
+}
+.cta-form select { appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236EE7B7' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center; }
+.cta-form select.is-empty { color: #82A69A; }
+.cta-form select option { color: #062A21; background: #fff; }
+.cta-form input:focus, .cta-form select:focus { border-color: #6EE7B7; background-color: rgba(255,255,255,.12); }
+.cta-form [aria-invalid="true"] { border-color: #FBBF24 !important; }
+.cta-form .btn { height: 52px; margin-top: 4px; }
+@media (max-width: 520px) { .cta-form { grid-template-columns: 1fr; } }

@@ -107,23 +107,54 @@ export function Faq() {
   )
 }
 
+const SIZES = ['1-10', '11-50', '51-200', '201-500', '501-1000', '1000+']
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+
 export function Cta() {
   const { t, lang } = useLang()
   const c = t.cta
-  const [email, setEmail] = useState('')
+  const f = c.fields
+  const empty = { first_name: '', last_name: '', company: '', company_size: '', email: '' }
+  const [v, setV] = useState(empty)
+  const [bad, setBad] = useState({}) // campos con error
   const [trap, setTrap] = useState('') // campo oculto anti-bots
   const [state, setState] = useState('idle') // idle | invalid | sending | sent | error
+
+  const set = (k) => (e) => {
+    setV((x) => ({ ...x, [k]: e.target.value }))
+    if (bad[k]) setBad((b) => ({ ...b, [k]: false }))
+    if (state === 'invalid' || state === 'error') setState('idle')
+  }
+
+  const check = (x) => ({
+    first_name: !x.first_name.trim(),
+    last_name: !x.last_name.trim(),
+    company: !x.company.trim(),
+    company_size: !SIZES.includes(x.company_size),
+    email: !EMAIL_RE.test(x.email.trim()),
+  })
+
   const submit = async (e) => {
     e.preventDefault()
     if (state === 'sending') return
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) { setState('invalid'); return }
+    const errs = check(v)
+    if (Object.values(errs).some(Boolean)) {
+      setBad(errs); setState('invalid')
+      const first = Object.keys(errs).find((k) => errs[k])
+      document.getElementById(`cta-${first}`)?.focus()
+      return
+    }
     setState('sending')
     try {
       const res = await fetch(DEMO_REQUEST_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: email.trim(),
+          first_name: v.first_name.trim(),
+          last_name: v.last_name.trim(),
+          company: v.company.trim(),
+          company_size: v.company_size,
+          email: v.email.trim(),
           lang,
           source: 'next-data-web',
           page_url: window.location.href,
@@ -131,13 +162,28 @@ export function Cta() {
           company_website: trap,
         }),
       })
-      if (res.ok) setState('sent')
-      else setState(res.status === 400 ? 'invalid' : 'error')
+      if (res.ok) { setState('sent'); return }
+      if (res.status === 400) {
+        const data = await res.json().catch(() => ({}))
+        const errs2 = {}
+        ;(data.fields || ['email']).forEach((k) => { errs2[k] = true })
+        setBad(errs2); setState('invalid')
+      } else setState('error')
     } catch {
       setState('error')
     }
   }
+
   const msg = state === 'invalid' ? c.invalid : state === 'error' ? c.error : ''
+  const busy = state === 'sending'
+  const field = (k, props = {}) => (
+    <label className={`cf ${props.wide ? 'cf-wide' : ''}`} htmlFor={`cta-${k}`}>
+      <span>{f[k]}</span>
+      <input id={`cta-${k}`} value={v[k]} onChange={set(k)} disabled={busy}
+        aria-invalid={!!bad[k]} aria-describedby="cta-err" {...props.input} />
+    </label>
+  )
+
   return (
     <section className="section cta-sec" id="demo">
       <div className="wrap">
@@ -153,14 +199,22 @@ export function Cta() {
               </motion.p>
             ) : (
               <motion.form key="f" className="cta-form" onSubmit={submit} noValidate exit={{ opacity: 0 }}>
-                <label className="sr-only" htmlFor="cta-email">Email</label>
-                <input id="cta-email" type="email" placeholder={c.placeholder} value={email}
-                  onChange={(e) => { setEmail(e.target.value); if (state !== 'sending') setState('idle') }}
-                  aria-invalid={state === 'invalid'} aria-describedby="cta-err" autoComplete="email" disabled={state === 'sending'} />
+                {field('first_name', { input: { type: 'text', autoComplete: 'given-name', placeholder: f.first_name_ph } })}
+                {field('last_name', { input: { type: 'text', autoComplete: 'family-name', placeholder: f.last_name_ph } })}
+                {field('company', { wide: true, input: { type: 'text', autoComplete: 'organization', placeholder: f.company_ph } })}
+                <label className="cf cf-wide" htmlFor="cta-company_size">
+                  <span>{f.company_size}</span>
+                  <select id="cta-company_size" value={v.company_size} onChange={set('company_size')} disabled={busy}
+                    aria-invalid={!!bad.company_size} aria-describedby="cta-err" className={v.company_size ? '' : 'is-empty'}>
+                    <option value="" disabled>{f.company_size_ph}</option>
+                    {SIZES.map((s) => <option key={s} value={s}>{s} {f.employees}</option>)}
+                  </select>
+                </label>
+                {field('email', { wide: true, input: { type: 'email', autoComplete: 'email', placeholder: c.placeholder } })}
                 <input className="hp" type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden="true"
                   value={trap} onChange={(e) => setTrap(e.target.value)} />
-                <Button type="submit" variant="lime" arrow={state !== 'sending'} disabled={state === 'sending'} aria-busy={state === 'sending'}>
-                  {state === 'sending' ? c.sending : c.button}
+                <Button type="submit" variant="lime" arrow={!busy} disabled={busy} aria-busy={busy} className="cf-wide">
+                  {busy ? c.sending : c.button}
                 </Button>
                 <span id="cta-err" className="cta-err" role="alert">{msg}</span>
               </motion.form>

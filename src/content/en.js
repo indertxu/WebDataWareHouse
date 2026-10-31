@@ -255,13 +255,21 @@ export default {
   cta: {
     title: "Bring your trial balance. We'll show you your group in Next Data.",
     sub: 'In 30 minutes, with your companies and your ERPs. No commitment.',
+    fields: {
+      first_name: 'First name', first_name_ph: 'Laura',
+      last_name: 'Last name', last_name_ph: 'García',
+      company: 'Company', company_ph: 'Norvia Group',
+      company_size: 'Company size', company_size_ph: 'Choose the number of employees',
+      employees: 'employees',
+      email: 'Work email',
+    },
     placeholder: 'you@company.com',
     button: 'Book a demo',
     or: 'or write to',
     sending: 'Sending…',
     error: "We couldn't send it. Please try again in a moment.",
     sent: "Got it. We'll write within 24 h.",
-    invalid: 'Enter a valid work email.',
+    invalid: 'Check the highlighted fields: they are all required.',
   },
   footer: {
     line: 'Next Data is a Next Finance product.',
