@@ -258,6 +258,8 @@ export default {
     placeholder: 'you@company.com',
     button: 'Book a demo',
     or: 'or write to',
+    sending: 'Sending…',
+    error: "We couldn't send it. Please try again in a moment.",
     sent: "Got it. We'll write within 24 h.",
     invalid: 'Enter a valid work email.',
   },

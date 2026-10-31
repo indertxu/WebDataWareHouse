@@ -4,7 +4,7 @@ import { Button, Icon, Reveal, SectionHead } from './ui.jsx'
 import Logo from './Logo.jsx'
 import { useLang } from '../i18n.jsx'
 import { onAnchor } from '../scroll.js'
-import { APP_LOGIN_URL, REPORTING_URL } from '../config.js'
+import { APP_LOGIN_URL, REPORTING_URL, DEMO_REQUEST_URL } from '../config.js'
 
 const ease = [0.16, 1, 0.3, 1]
 
@@ -108,16 +108,36 @@ export function Faq() {
 }
 
 export function Cta() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const c = t.cta
   const [email, setEmail] = useState('')
-  const [state, setState] = useState('idle') // idle | invalid | sent
-  const submit = (e) => {
+  const [trap, setTrap] = useState('') // campo oculto anti-bots
+  const [state, setState] = useState('idle') // idle | invalid | sending | sent | error
+  const submit = async (e) => {
     e.preventDefault()
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { setState('invalid'); return }
-    // TODO: conectar con el CRM o el formulario de Next Finance.
-    setState('sent')
+    if (state === 'sending') return
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) { setState('invalid'); return }
+    setState('sending')
+    try {
+      const res = await fetch(DEMO_REQUEST_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email.trim(),
+          lang,
+          source: 'next-data-web',
+          page_url: window.location.href,
+          referrer: document.referrer || null,
+          company_website: trap,
+        }),
+      })
+      if (res.ok) setState('sent')
+      else setState(res.status === 400 ? 'invalid' : 'error')
+    } catch {
+      setState('error')
+    }
   }
+  const msg = state === 'invalid' ? c.invalid : state === 'error' ? c.error : ''
   return (
     <section className="section cta-sec" id="demo">
       <div className="wrap">
@@ -135,10 +155,14 @@ export function Cta() {
               <motion.form key="f" className="cta-form" onSubmit={submit} noValidate exit={{ opacity: 0 }}>
                 <label className="sr-only" htmlFor="cta-email">Email</label>
                 <input id="cta-email" type="email" placeholder={c.placeholder} value={email}
-                  onChange={(e) => { setEmail(e.target.value); setState('idle') }}
-                  aria-invalid={state === 'invalid'} aria-describedby="cta-err" autoComplete="email" />
-                <Button type="submit" variant="lime" arrow>{c.button}</Button>
-                <span id="cta-err" className="cta-err" role="alert">{state === 'invalid' ? c.invalid : ''}</span>
+                  onChange={(e) => { setEmail(e.target.value); if (state !== 'sending') setState('idle') }}
+                  aria-invalid={state === 'invalid'} aria-describedby="cta-err" autoComplete="email" disabled={state === 'sending'} />
+                <input className="hp" type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden="true"
+                  value={trap} onChange={(e) => setTrap(e.target.value)} />
+                <Button type="submit" variant="lime" arrow={state !== 'sending'} disabled={state === 'sending'} aria-busy={state === 'sending'}>
+                  {state === 'sending' ? c.sending : c.button}
+                </Button>
+                <span id="cta-err" className="cta-err" role="alert">{msg}</span>
               </motion.form>
             )}
           </AnimatePresence>

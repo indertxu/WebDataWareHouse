@@ -258,6 +258,8 @@ export default {
     placeholder: 'tu@empresa.com',
     button: 'Pide tu demo',
     or: 'o escríbenos a',
+    sending: 'Enviando…',
+    error: 'No se ha podido enviar. Inténtalo de nuevo en un momento.',
     sent: 'Recibido. Te escribimos en menos de 24 h.',
     invalid: 'Escribe un correo de empresa válido.',
   },

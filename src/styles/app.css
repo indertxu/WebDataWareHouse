@@ -842,3 +842,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .sheet-actions { margin-top: auto; display: grid; gap: 10px; }
 .sheet-actions .btn { width: 100%; }
 @media (max-width: 820px) { .nav-login { display: none; } }
+
+/* Formulario de demo */
+.cta-form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.cta-form { position: relative; }
+.cta-form .btn[disabled] { opacity: .75; cursor: progress; transform: none; }
+.cta-form input:disabled { opacity: .7; }
