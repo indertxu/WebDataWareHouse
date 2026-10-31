@@ -4,7 +4,8 @@ import { Button, Icon, Reveal, SectionHead } from './ui.jsx'
 import Logo from './Logo.jsx'
 import { useLang } from '../i18n.jsx'
 import { onAnchor } from '../scroll.js'
-import { APP_LOGIN_URL, REPORTING_URL, DEMO_REQUEST_URL } from '../config.js'
+import { openCookieSettings } from '../consent.js'
+import { APP_LOGIN_URL, REPORTING_URL, DEMO_REQUEST_URL, LEGAL_URL } from '../config.js'
 
 const ease = [0.16, 1, 0.3, 1]
 
@@ -245,8 +246,9 @@ export function Footer() {
           <a href={REPORTING_URL} target="_blank" rel="noreferrer">{c.links.reporting}</a>
           <a href={APP_LOGIN_URL}>{c.links.login}</a>
           <a href="#demo" onClick={onAnchor}>{c.links.contact}</a>
-          <a href="#">{c.links.privacy}</a>
-          <a href="#">{c.links.legal}</a>
+          <a href={LEGAL_URL} target="_blank" rel="noreferrer">{c.links.privacy}</a>
+          <button type="button" className="f-btn" onClick={openCookieSettings}>{c.links.cookies}</button>
+          <a href={LEGAL_URL} target="_blank" rel="noreferrer">{c.links.legal}</a>
         </nav>
       </div>
       <div className="wrap footer-base">

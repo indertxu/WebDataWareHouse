@@ -12,6 +12,7 @@ import AI from './components/AI.jsx'
 import Cloud from './components/Cloud.jsx'
 import { Security, Pricing, Faq, Cta, Footer, CtaStrip, FloatingCta } from './components/Sections.jsx'
 import { setLenis } from './scroll.js'
+import Consent from './components/Consent.jsx'
 
 export default function App() {
   useEffect(() => {
@@ -46,6 +47,7 @@ export default function App() {
         <Cta />
       </main>
       <Footer />
+      <Consent />
     </MotionConfig>
   )
 }

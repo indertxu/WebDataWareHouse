@@ -870,3 +870,46 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .cta-form [aria-invalid="true"] { border-color: #FBBF24 !important; }
 .cta-form .btn { height: 52px; margin-top: 4px; }
 @media (max-width: 520px) { .cta-form { grid-template-columns: 1fr; } }
+
+/* ---------- Aviso de cookies ---------- */
+.ck-banner {
+  position: fixed; left: 20px; bottom: 20px; z-index: 80; width: min(440px, calc(100vw - 32px));
+  padding: 18px 18px 16px; border-radius: 18px;
+  background: var(--bg-card); color: var(--fg); border: 1px solid var(--line);
+  box-shadow: 0 30px 70px -24px rgba(6,42,33,.55);
+}
+.ck-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.ck-head b { font-weight: 800; letter-spacing: -0.02em; }
+.ck-ico { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: var(--panel-solid); color: var(--mint); }
+.ck-banner p { margin: 0 0 14px; font-size: 14px; color: var(--fg-2); line-height: 1.5; }
+.ck-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.ck-actions .btn { height: 40px; }
+.ck-link { margin-right: auto; font-size: 14px; font-weight: 700; color: var(--accent-strong); text-decoration: underline; text-underline-offset: 3px; }
+.ck-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(3,20,13,.45); backdrop-filter: blur(6px); display: grid; place-items: center; padding: 16px; }
+.ck-panel { width: min(560px, 100%); max-height: calc(100vh - 32px); overflow: auto; background: var(--bg-card); color: var(--fg); border-radius: 22px; padding: 22px; border: 1px solid var(--line); box-shadow: var(--shadow-focus); }
+.ck-panel-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.ck-panel h2 { margin: 0; font-size: 22px; font-weight: 900; letter-spacing: -0.04em; }
+.ck-intro { color: var(--fg-2); font-size: 14.5px; margin: 8px 0 14px; }
+.ck-cats { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.ck-cats li { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.ck-cats b { display: block; font-weight: 800; letter-spacing: -0.02em; }
+.ck-cats span { display: block; font-size: 13.5px; color: var(--fg-3); margin-top: 2px; }
+.ck-always { flex: none; font: 500 11.5px var(--mono) !important; color: var(--accent-strong) !important; padding: 4px 8px; border-radius: 7px; background: var(--pos-bg); margin: 0 !important; }
+.ck-toggle { flex: none; width: 46px; height: 26px; border-radius: 99px; padding: 3px; display: flex; justify-content: flex-start; background: var(--bg-sunk); border: 1px solid var(--line-2); transition: background .25s ease; }
+.ck-toggle.is-on { justify-content: flex-end; background: var(--accent); border-color: transparent; }
+.ck-knob { width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
+.ck-actions-panel { margin-top: 16px; }
+.f-btn { text-align: left; font-size: 14.5px; color: var(--fg-2); }
+.f-btn:hover { color: var(--accent-strong); }
+body.consent-open .fcta { visibility: hidden; }
+@media (max-width: 520px) {
+  .ck-banner { left: 12px; right: 12px; bottom: 12px; width: auto; }
+  .ck-actions .btn { flex: 1; }
+  .ck-link { width: 100%; text-align: center; margin: 0 0 4px; }
+}
+
+.ck-more { color: var(--accent-strong); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+@media (max-width: 520px) {
+  .ck-actions-panel { flex-direction: column-reverse; align-items: stretch; }
+  .ck-actions-panel .btn { width: 100%; flex: none; height: 46px; }
+}
