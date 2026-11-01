@@ -188,37 +188,60 @@ export function Cta() {
   return (
     <section className="section cta-sec" id="demo">
       <div className="wrap">
-        <Reveal className="cta-band">
-          <div className="cta-copy">
-            <h2 className="h2">{c.title}</h2>
-            <p>{c.sub}</p>
-          </div>
+        <Reveal className={`cta-band ${state === 'sent' ? 'is-done' : ''}`}>
           <AnimatePresence mode="wait" initial={false}>
             {state === 'sent' ? (
-              <motion.p key="ok" className="cta-sent" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}>
-                <Icon name="check" size={18} stroke={2.6} /> {c.sent}
-              </motion.p>
+              <motion.div key="done" className="cta-done" role="status"
+                initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease }}>
+                <motion.span className="cta-done-ico" initial={{ scale: 0.4, rotate: -12 }} animate={{ scale: 1, rotate: 0 }}
+                  transition={{ duration: 0.7, ease: [0.34, 1.56, 0.64, 1], delay: 0.1 }}>
+                  <Icon name="check" size={34} stroke={2.8} />
+                </motion.span>
+                <p className="cta-done-kicker">{c.sent}</p>
+                <h2 className="h2">{c.doneTitle.replace('{name}', v.first_name.trim())}</h2>
+                <p className="cta-done-lead">{c.sentText}</p>
+                <ol className="cta-done-steps">
+                  {c.doneSteps.map((st, i) => (
+                    <motion.li key={st.title} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.55, ease, delay: 0.35 + i * 0.1 }}>
+                      <span className="cd-n">{i + 1}</span>
+                      <b>{st.title}</b>
+                      <span>{st.text.replace('{email}', v.email.trim())}</span>
+                    </motion.li>
+                  ))}
+                </ol>
+                <div className="cta-done-actions">
+                  <Button href="#producto" onClick={onAnchor} variant="lime" arrow>{c.doneCta}</Button>
+                  <Button href="#como-funciona" onClick={onAnchor} variant="ghost-dark">{c.doneCta2}</Button>
+                </div>
+              </motion.div>
             ) : (
-              <motion.form key="f" className="cta-form" onSubmit={submit} noValidate exit={{ opacity: 0 }}>
+              <motion.div key="form" className="cta-grid" exit={{ opacity: 0, y: -10, transition: { duration: 0.25 } }}>
+                <div className="cta-copy">
+                  <h2 className="h2">{c.title}</h2>
+                  <p>{c.sub}</p>
+                </div>
+                <form className="cta-form" onSubmit={submit} noValidate>
                 {field('first_name', { input: { type: 'text', autoComplete: 'given-name', placeholder: f.first_name_ph } })}
-                {field('last_name', { input: { type: 'text', autoComplete: 'family-name', placeholder: f.last_name_ph } })}
-                {field('company', { wide: true, input: { type: 'text', autoComplete: 'organization', placeholder: f.company_ph } })}
-                <label className="cf cf-wide" htmlFor="cta-company_size">
-                  <span>{f.company_size}</span>
-                  <select id="cta-company_size" value={v.company_size} onChange={set('company_size')} disabled={busy}
-                    aria-invalid={!!bad.company_size} aria-describedby="cta-err" className={v.company_size ? '' : 'is-empty'}>
-                    <option value="" disabled>{f.company_size_ph}</option>
-                    {SIZES.map((s) => <option key={s} value={s}>{s} {f.employees}</option>)}
-                  </select>
-                </label>
-                {field('email', { wide: true, input: { type: 'email', autoComplete: 'email', placeholder: c.placeholder } })}
-                <input className="hp" type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden="true"
-                  value={trap} onChange={(e) => setTrap(e.target.value)} />
-                <Button type="submit" variant="lime" arrow={!busy} disabled={busy} aria-busy={busy} className="cf-wide">
-                  {busy ? c.sending : c.button}
-                </Button>
-                <span id="cta-err" className="cta-err" role="alert">{msg}</span>
-              </motion.form>
+                  {field('last_name', { input: { type: 'text', autoComplete: 'family-name', placeholder: f.last_name_ph } })}
+                  {field('company', { wide: true, input: { type: 'text', autoComplete: 'organization', placeholder: f.company_ph } })}
+                  <label className="cf cf-wide" htmlFor="cta-company_size">
+                    <span>{f.company_size}</span>
+                    <select id="cta-company_size" value={v.company_size} onChange={set('company_size')} disabled={busy}
+                      aria-invalid={!!bad.company_size} aria-describedby="cta-err" className={v.company_size ? '' : 'is-empty'}>
+                      <option value="" disabled>{f.company_size_ph}</option>
+                      {SIZES.map((s) => <option key={s} value={s}>{s} {f.employees}</option>)}
+                    </select>
+                  </label>
+                  {field('email', { wide: true, input: { type: 'email', autoComplete: 'email', placeholder: c.placeholder } })}
+                  <input className="hp" type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden="true"
+                    value={trap} onChange={(e) => setTrap(e.target.value)} />
+                  <Button type="submit" variant="lime" arrow={!busy} disabled={busy} aria-busy={busy} className="cf-wide">
+                    {busy ? c.sending : c.button}
+                  </Button>
+                  <span id="cta-err" className="cta-err" role="alert">{msg}</span>
+                </form>
+              </motion.div>
             )}
           </AnimatePresence>
         </Reveal>

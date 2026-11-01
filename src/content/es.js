@@ -268,7 +268,16 @@ export default {
     or: 'o escríbenos a',
     sending: 'Enviando…',
     error: 'No se ha podido enviar. Inténtalo de nuevo en un momento.',
-    sent: 'Recibido. Te escribimos en menos de 24 h.',
+    sent: '¡Solicitud recibida!',
+    sentText: 'Te hemos enviado una confirmación a tu email. Alguien de nuestro equipo se pondrá en contacto contigo en menos de 24 horas.',
+    doneTitle: 'Gracias, {name}. Ya está en marcha.',
+    doneSteps: [
+      { title: 'Confirmación enviada', text: 'Revisa {email}: ahí tienes el resumen de tu solicitud.' },
+      { title: 'Te escribimos en menos de 24\u00a0h', text: 'Alguien del equipo te contacta para cerrar día y hora.' },
+      { title: 'Demo de 30 minutos', text: 'Con tus ERPs y tus sociedades, sin compromiso.' },
+    ],
+    doneCta: 'Mientras tanto, mira el producto',
+    doneCta2: 'Cómo funciona',
     invalid: 'Revisa los campos marcados: todos son obligatorios.',
   },
   cookies: {

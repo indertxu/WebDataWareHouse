@@ -268,7 +268,16 @@ export default {
     or: 'or write to',
     sending: 'Sending…',
     error: "We couldn't send it. Please try again in a moment.",
-    sent: "Got it. We'll write within 24 h.",
+    sent: 'Request received!',
+    sentText: "We've sent a confirmation to your email. Someone from our team will get in touch within 24 hours.",
+    doneTitle: "Thank you, {name}. It's on its way.",
+    doneSteps: [
+      { title: 'Confirmation sent', text: 'Check {email}: your request summary is there.' },
+      { title: "We'll write within 24\u00a0h", text: 'Someone from the team will reach you to set a date and time.' },
+      { title: 'A 30-minute demo', text: 'With your ERPs and your companies, no commitment.' },
+    ],
+    doneCta: 'Meanwhile, see the product',
+    doneCta2: 'How it works',
     invalid: 'Check the highlighted fields: they are all required.',
   },
   cookies: {
