@@ -6,13 +6,13 @@ import Hero from './components/Hero.jsx'
 import Problem from './components/Problem.jsx'
 import Platform from './components/Platform.jsx'
 import Layers from './components/Layers.jsx'
-import { Trust } from './components/Cloud.jsx'
+import { Trust } from './components/Security.jsx'
 import Backdrop, { ScrollBar } from './components/Backdrop.jsx'
-import { DwIntro, Repository, Consolidation, Planning, Reporting, Implementation, WhoStrip } from './components/Tools.jsx'
-import { Faq, Cta, Footer, CtaStrip, FloatingCta } from './components/Sections.jsx'
+import { Repository, Consolidation, Planning, Reporting } from './components/Tools.jsx'
+import { Faq, Cta, Footer, FloatingCta } from './components/Sections.jsx'
 import { setLenis } from './scroll.js'
 import Consent from './components/Consent.jsx'
-import { AI, ChapterRail, Manifesto } from './components/Fx.jsx'
+import { ChapterRail, Manifesto } from './components/Fx.jsx'
 import { usePanelGlow } from './components/ui.jsx'
 
 export default function App() {
@@ -37,22 +37,17 @@ export default function App() {
       <ChapterRail />
       <main id="main">
         <Hero />
-        <WhoStrip />
         <Problem />
         <Manifesto />
         <Platform />
-        {/* Capítulo 01 · Data Warehouse (con capas, conectores y repositorio) */}
-        <DwIntro />
+        {/* Capítulo 01 · Data Warehouse: las tres capas y el repositorio */}
         <Layers />
         <Repository />
-        <CtaStrip />
         {/* Capítulos 02-04 */}
         <Consolidation />
         <Planning />
         <Reporting />
-        <AI />
         <Trust />
-        <Implementation />
         <Faq />
         <Cta />
       </main>

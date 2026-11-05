@@ -109,18 +109,6 @@ export default {
     plan: { actual: 'Real', budget: 'Presupuesto', forecast: 'Forecast', kpi: [['Ventas 2027', '82,4 M €', '+9,1 %'], ['EBITDA', '21,7 M €', '+6,3 %'], ['Desviación YTD', '−1,8 %', 'vs. ppto.']] },
     report: { kpis: [['Ingresos', '67,9 M €', '+8,6 %'], ['EBITDA', '18,2 M €', '+13,0 %'], ['Unidades vendidas', '1,82 M', '+6,4 %']], chart: 'Ingresos · 12 meses', drill: 'Clic en cualquier cifra → hasta el apunte' },
   },
-  dw: {
-    kicker: 'Data Warehouse',
-    title: 'Tu data warehouse de grupo: finanzas y operaciones en un mismo modelo.',
-    sub: 'La base de todo. Lee tus ERPs y sistemas operativos, estandariza cada apunte y cada dato de negocio, y lo publica por sociedad y mes.',
-    dataTitle: 'Qué datos entran',
-    data: [{ label: 'Financieros', items: ['Diario y apuntes', 'Sumas y saldos', 'Plan de cuentas', 'Dimensiones', 'Tipos de cambio', 'Intercompañía'] }, { label: 'Operativos', items: ['Ventas por producto y cliente', 'Unidades y precios', 'Plantilla y horas', 'Stock e inventario', 'Producción y pedidos', 'Tus KPIs propios'] }],
-    features: [
-      { icon: 'db', title: 'Conecta', text: 'Business Central, SQL Server, mapeos en Excel y el Secure file drop, un portal seguro para recibir ficheros. Tus sociedades, plan de cuentas y dimensiones llegan solos.', soon: 'Más ERPs y app de Windows' },
-      { icon: 'history', title: 'Cargas programadas', text: 'Diarias u horarias, con alertas si algo falla.' },
-      { icon: 'globe', title: 'Tipos de cambio', text: 'De Konsolidator, después de tus ERPs y, si no, del BCE. Cierre y medio por divisa y mes.' },
-    ],
-  },
   chapters: {
     title: 'Las cuatro herramientas',
     items: [
@@ -134,53 +122,14 @@ export default {
     text: 'Un solo dato, financiero y operativo, cuadrado y firmado, del que beben la consolidación, el presupuesto, los informes y tu BI. Sin copias. Sin conciliaciones entre herramientas. Sin «¿qué versión es la buena?».',
     marks: ['Un solo dato,', 'Sin copias.'],
   },
-  console: {
-    title: 'Cargas · Grupo Norvia',
-    live: 'En directo',
-    lines: [
-      ['bronze', 'Business Central → Norvia Iberia', '48.210 filas'],
-      ['bronze', 'SQL Server → Norvia México', '31.977 filas'],
-      ['bronze', 'SQL Server → plantilla y horas', '4.380 filas'],
-      ['silver', 'Mapeo al plan de grupo', '100 % cuentas'],
-      ['silver', 'Ventas por producto y cliente', '212 SKUs'],
-      ['check', 'Sumas y saldos · Norvia Iberia', 'dif. 0,00'],
-      ['check', 'Intercompañía IBE ↔ UK', 'cuadra'],
-      ['gold', 'Publicado gold · oct 2026', '7 / 8 sociedades'],
-      ['sign', 'Firmado por Laura García', 'Norvia Iberia'],
-    ],
-    progress: 'Cierre de octubre',
-  },
   query: {
     sql: "select producto, unidades, margen_unidad from gold.ventas where sociedad = 'IBE' and periodo = '2026-10'",
     meta: '21 ms · 212 filas',
   },
-  ai: {
-    kicker: 'Con IA',
-    title: 'La IA propone. Tu equipo firma.',
-    sub: 'La puesta en marcha que antes eran semanas de mapeos a mano ahora la prepara un asistente que conoce tus datos. Tú revisas y confirmas.',
-    points: [
-      { title: 'Mapeos propuestos', text: 'Sociedades, cuentas, productos y campos sugeridos a partir de tus filas reales.' },
-      { title: 'Descuadres explicados', text: 'Por qué no cuadra una pareja intercompañía, separado en causas.' },
-      { title: 'Preguntas con respuesta trazable', text: 'Cada respuesta enlaza al asiento del que sale.' },
-      { title: 'Nada entra sin una persona', text: 'Ningún cambio llega al gold, ni a la consolidación, sin una confirmación explícita.' },
-    ],
-    chat: {
-      title: 'Asistente · Grupo Norvia',
-      q: '¿Por qué no cuadran Norvia Iberia y Norvia UK en octubre?',
-      a: 'Hay 12.480 £ de diferencia en la cuenta A.02. 11.900 £ son tipo de cambio: Iberia convierte a medio y UK a cierre. Los 580 £ restantes son una factura registrada solo en UK.',
-      rows: [
-        ['Tipo de cambio', '11.900,00 £'],
-        ['Registrado en un solo lado', '580,00 £'],
-      ],
-      link: 'Ver asientos · INV-2210',
-      action: 'Proponer ajuste',
-      placeholder: 'Pregunta sobre tus datos…',
-    },
-  },
   layers: {
-    kicker: 'Del ERP a gold',
-    title: 'Tres capas. Ningún dato se pierde por el camino.',
-    sub: 'Sigue un mismo apunte mientras bajas: así pasa de lo que da tu ERP a tu modelo de grupo, cuadrado y firmado. Un pedido o una fila de plantilla hacen el mismo camino.',
+    kicker: 'Data Warehouse',
+    title: 'Del ERP a un modelo de grupo, en tres capas.',
+    sub: 'Next Data lee tus ERPs y sistemas operativos y lleva cada apunte, cada pedido y cada fila de plantilla de bronze a gold: cuadrado, firmado y publicado por sociedad y mes.',
     recordTitle: 'El mismo apunte, en cada capa',
     steps: [
       {
@@ -301,7 +250,7 @@ export default {
   security: {
     kicker: 'Seguridad y nube',
     title: 'Seguridad desde el diseño.',
-    sub: 'Cada empresa aislada, cada persona con lo suyo y ninguna credencial a la vista.',
+    sub: 'En Google Cloud (BigQuery) o Microsoft Fabric, a tu elección. Cada empresa aislada, cada persona con lo suyo y ninguna credencial a la vista.',
     items: [
       { icon: 'key', title: 'Inicio de sesión único', text: 'Un solo acceso para todas las herramientas, con verificación en dos pasos obligatoria (Google Authenticator).' },
       { icon: 'shield', title: 'Cada empresa, aislada', text: 'Seguridad a nivel de fila y permisos por persona: cada usuario ve solo sus herramientas y sociedades.' },
@@ -309,40 +258,10 @@ export default {
       { icon: 'trace', title: 'Cada cifra, trazable', text: 'Linaje completo: de cualquier número de gold al apunte del que sale.' },
     ],
   },
-  cloud: {
-    kicker: 'Tu nube',
-    title: 'Tú eliges la tecnología.',
-    sub: 'Google BigQuery por defecto o, si tu grupo trabaja con Microsoft, Fabric. Las herramientas funcionan igual.',
-    options: [
-      { key: 'gcp', name: 'Google Cloud', store: 'BigQuery', keys: 'Secret Manager' },
-      { key: 'fabric', name: 'Microsoft Fabric', store: 'Fabric · OneLake', keys: 'Azure Key Vault' },
-    ],
-    labels: { project: 'Next Data', erp: 'Tus ERPs y ficheros', out: 'Consolidación · Planificación · Reporting', readonly: 'acceso seguro', keys: 'Claves', checked: 'cuadrado y firmado' },
-  },
-  impl: {
-    kicker: 'Implantación',
-    title: 'Implantación por módulos, a tu ritmo.',
-    sub: 'Empieza por el Data Warehouse y añade el resto cuando quieras, sin rehacer nada: todo se apoya en el mismo modelo.',
-    phases: ['Puesta en marcha', 'Sistemas', 'Go-live', 'Formación'],
-    modules: ['Data Warehouse', 'Consolidación', 'Planificación', 'Reporting'],
-    base: 'Base común · gold',
-    hint: 'Pulsa un módulo para añadirlo',
-    pricing: 'Licencias por herramienta según volumen de datos; implantación en un pago único por módulo.',
-  },
-  who: {
-    kicker: 'Hecho para',
-    title: 'Hecho para equipos de finanzas y operaciones de grupos.',
-    items: [
-      { icon: 'layers', title: 'Grupos de varias sociedades', text: 'Con varios ERPs o monedas, que consolidan cada mes o trimestre.' },
-      { icon: 'chart', title: 'Finanzas y operaciones', text: 'Que quieren un dato único, contable y de negocio, sin montar un equipo de datos.' },
-      { icon: 'send', title: 'Usuarios de Konsolidator', text: 'Que quieren datos más limpios y automáticos, sin cambiar de herramienta.' },
-      { icon: 'trace', title: 'Despachos y consultores', text: 'Que necesitan datos estandarizados de sus clientes.' },
-    ],
-  },
   strips: {
-    afterLayers: { title: '¿Lo vemos con tus datos?', text: 'En 30 minutos te enseñamos la plataforma con un caso como el tuyo.', primary: 'Solicitar demo', secondary: 'Seguir: Consolidación' },
     afterProblem: { text: '¿Te suena este cierre?', link: 'Cuéntanos cómo lo hacéis hoy' },
   },
+
   floating: 'Solicitar demo',
   faq: {
     contact: { title: '¿Otra pregunta?', text: 'Escríbenos y te responde el equipo que implanta Next Data, no un bot.', email: 'consultancy@atebiz.com', cta: 'Solicitar demo' },
@@ -352,11 +271,9 @@ export default {
       { q: '¿Tengo que contratar las cuatro herramientas?', a: 'No. Cada una se licencia por separado; todas comparten los mismos datos.' },
       { q: '¿Solo trabajáis datos financieros?', a: 'No. Contabilidad y datos operativos (ventas por producto, unidades, plantilla, stock o producción) entran en el mismo modelo, por sociedad, centro y mes, para cruzarlos sin hojas de cálculo.' },
       { q: '¿Qué ERPs conectáis?', a: 'Hoy Business Central y SQL Server, además de mapeos en Excel y el Secure file drop. Estamos añadiendo más.' },
-      { q: 'Ya uso Konsolidator, ¿qué gano?', a: 'Datos cuadrados, mapeados y firmados enviados automáticamente, con simulación previa y confirmación antes de cada envío.' },
-      { q: '¿Según qué normativa consolidáis?', a: 'NOFCAC (Plan General Contable) y NIIF.' },
       { q: '¿Dónde están mis datos?', a: 'En Google Cloud (BigQuery por defecto) o, si lo prefieres, en Microsoft Fabric.' },
-      { q: '¿Puede acceder mi auditor o mi herramienta de BI?', a: 'Tu BI, sí, sobre el gold. El acceso de terceros por API está en camino.' },
-      { q: '¿Cuánto tarda la implantación?', a: 'Depende de sociedades y sistemas. En la demo te damos un plan por módulos.' },
+      { q: 'Ya uso Konsolidator, ¿qué gano?', a: 'Datos cuadrados, mapeados y firmados enviados automáticamente, con simulación previa y confirmación antes de cada envío.' },
+      { q: '¿Cuánto tarda la implantación?', a: 'Se implanta por módulos: empiezas por el Data Warehouse y añades el resto cuando quieras. Licencia por herramienta según volumen de datos e implantación en un pago único por módulo. En la demo te damos el plan.' },
     ],
   },
   cta: {

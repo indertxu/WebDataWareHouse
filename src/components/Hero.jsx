@@ -81,7 +81,7 @@ export default function Hero() {
       <div className="wrap hero-copy">
         <motion.div className="hero-tags" {...fade(0)}>
           <span className="tag tag-strong">Next Data</span>
-          {h.tags.map((x) => <span className="tag" key={x}>{x}</span>)}
+          <span className="tag">{h.tags[0]}</span>
         </motion.div>
         <h1 className="h1" aria-label={`${h.title1} ${h.rotate[0]}`}>
           <span className="tw-line" aria-hidden="true">
@@ -100,7 +100,6 @@ export default function Hero() {
               <Button href="#demo" onClick={onAnchor} arrow>{h.primary}</Button>
               <Button href="#plataforma" onClick={onAnchor} variant="ghost" arrow="down">{h.secondary}</Button>
             </div>
-            <p className="hero-note">{h.note}</p>
           </motion.div>
         </div>
       </div>

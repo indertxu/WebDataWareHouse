@@ -108,18 +108,6 @@ export default {
     plan: { actual: 'Actual', budget: 'Budget', forecast: 'Forecast', kpi: [['Sales 2027', '€82.4M', '+9.1%'], ['EBITDA', '€21.7M', '+6.3%'], ['YTD variance', '−1.8%', 'vs. budget']] },
     report: { kpis: [['Revenue', '€67.9M', '+8.6%'], ['EBITDA', '€18.2M', '+13.0%'], ['Units sold', '1.82M', '+6.4%']], chart: 'Revenue · 12 months', drill: 'Click any figure → down to the entry' },
   },
-  dw: {
-    kicker: 'Data Warehouse',
-    title: 'Your group data warehouse: finance and operations in one model.',
-    sub: 'The foundation of everything. It reads your ERPs and operational systems, standardizes every entry and every business figure, and publishes it per company and month.',
-    dataTitle: 'What data comes in',
-    data: [{ label: 'Financial', items: ['Journal lines', 'Trial balance', 'Chart of accounts', 'Dimensions', 'Exchange rates', 'Intercompany'] }, { label: 'Operational', items: ['Sales by product and customer', 'Units and prices', 'Headcount and hours', 'Stock and inventory', 'Production and orders', 'Your own KPIs'] }],
-    features: [
-      { icon: 'db', title: 'Connect', text: 'Business Central, SQL Server, Excel mapping and Secure file drop, a secure portal for receiving files. Your companies, chart of accounts and dimensions arrive on their own.', soon: 'More ERPs and a Windows app' },
-      { icon: 'history', title: 'Scheduled loads', text: 'Daily or hourly, with alerts if something fails.' },
-      { icon: 'globe', title: 'Exchange rates', text: 'From Konsolidator, then your ERPs, then the ECB. Closing and average per currency and month.' },
-    ],
-  },
   chapters: {
     title: 'The four tools',
     items: [
@@ -133,53 +121,14 @@ export default {
     text: 'One single piece of data, financial and operational, balanced and signed off, feeding consolidation, budgets, reports and your BI. No copies. No reconciling one tool against another. No “which version is right?”.',
     marks: ['One single piece of data,', 'No copies.'],
   },
-  console: {
-    title: 'Loads · Norvia Group',
-    live: 'Live',
-    lines: [
-      ['bronze', 'Business Central → Norvia Iberia', '48,210 rows'],
-      ['bronze', 'SQL Server → Norvia Mexico', '31,977 rows'],
-      ['bronze', 'SQL Server → headcount and hours', '4,380 rows'],
-      ['silver', 'Mapped to the group chart', '100 % accounts'],
-      ['silver', 'Sales by product and customer', '212 SKUs'],
-      ['check', 'Trial balance · Norvia Iberia', 'diff. 0.00'],
-      ['check', 'Intercompany IBE ↔ UK', 'agrees'],
-      ['gold', 'Gold published · Oct 2026', '7 / 8 companies'],
-      ['sign', 'Signed off by Laura García', 'Norvia Iberia'],
-    ],
-    progress: 'October close',
-  },
   query: {
     sql: "select product, units, unit_margin from gold.sales where company = 'IBE' and period = '2026-10'",
     meta: '21 ms · 212 rows',
   },
-  ai: {
-    kicker: 'With AI',
-    title: 'AI proposes. Your team signs off.',
-    sub: 'The setup that used to take weeks of manual mapping is now prepared by an assistant that knows your data. You review and confirm.',
-    points: [
-      { title: 'Proposed mappings', text: 'Companies, accounts, products and fields suggested from your real rows.' },
-      { title: 'Differences explained', text: "Why an intercompany pair doesn't agree, split into causes." },
-      { title: 'Answers you can trace', text: 'Every answer links to the entry it comes from.' },
-      { title: 'Nothing goes in without a person', text: 'No change reaches gold, or the consolidation, without explicit confirmation.' },
-    ],
-    chat: {
-      title: 'Assistant · Norvia Group',
-      q: "Why don't Norvia Iberia and Norvia UK agree in October?",
-      a: 'There is a £12,480 difference on account A.02. £11,900 is exchange rate: Iberia translates at the average rate and UK at closing. The remaining £580 is an invoice booked only in UK.',
-      rows: [
-        ['Exchange rate', '£11,900.00'],
-        ['Booked on one side only', '£580.00'],
-      ],
-      link: 'See entries · INV-2210',
-      action: 'Propose adjustment',
-      placeholder: 'Ask about your data…',
-    },
-  },
   layers: {
-    kicker: 'From ERP to gold',
-    title: 'Three layers. Nothing gets lost on the way.',
-    sub: 'Follow one journal line as you scroll: this is how it goes from what your ERP gives to your group model, reconciled and signed off. An order or a headcount row takes the same path.',
+    kicker: 'Data Warehouse',
+    title: 'From ERP to one group model, in three layers.',
+    sub: 'Next Data reads your ERPs and operational systems and takes every journal line, every order and every headcount row from bronze to gold: reconciled, signed off and published per company and month.',
     recordTitle: 'The same journal line, in each layer',
     steps: [
       {
@@ -300,7 +249,7 @@ export default {
   security: {
     kicker: 'Security and cloud',
     title: 'Secure by design.',
-    sub: 'Every company isolated, every person with what is theirs, and no credentials on screen.',
+    sub: 'On Google Cloud (BigQuery) or Microsoft Fabric, your choice. Every company isolated, every person with what is theirs, and no credentials on screen.',
     items: [
       { icon: 'key', title: 'Single sign-on', text: 'One login for every tool, with mandatory two-step sign-in (Google Authenticator).' },
       { icon: 'shield', title: 'Every company isolated', text: 'Row-level security and per-person permissions: each user only sees their own tools and companies.' },
@@ -308,40 +257,10 @@ export default {
       { icon: 'trace', title: 'Every figure traceable', text: 'Full lineage: from any gold number to the entry it comes from.' },
     ],
   },
-  cloud: {
-    kicker: 'Your cloud',
-    title: 'You choose the technology.',
-    sub: 'Google BigQuery by default or, if your group works with Microsoft, Fabric. The tools work the same way.',
-    options: [
-      { key: 'gcp', name: 'Google Cloud', store: 'BigQuery', keys: 'Secret Manager' },
-      { key: 'fabric', name: 'Microsoft Fabric', store: 'Fabric · OneLake', keys: 'Azure Key Vault' },
-    ],
-    labels: { project: 'Next Data', erp: 'Your ERPs and files', out: 'Consolidation · Planning · Reporting', readonly: 'secure access', keys: 'Keys', checked: 'reconciled, signed off' },
-  },
-  impl: {
-    kicker: 'Implementation',
-    title: 'Implementation by module, at your pace.',
-    sub: 'Start with the Data Warehouse and add the others whenever you want, without redoing anything: everything sits on the same model.',
-    phases: ['Set-up', 'Systems', 'Go-live', 'Training'],
-    modules: ['Data Warehouse', 'Consolidation', 'Planning', 'Reporting'],
-    base: 'Shared base · gold',
-    hint: 'Click a module to add it',
-    pricing: 'Per-tool licences by data volume; one-off implementation per module.',
-  },
-  who: {
-    kicker: 'Built for',
-    title: 'Built for group finance and operations teams.',
-    items: [
-      { icon: 'layers', title: 'Multi-entity groups', text: 'With several ERPs or currencies, consolidating every month or quarter.' },
-      { icon: 'chart', title: 'Finance and operations', text: 'Who want one source of truth, accounting and business, without hiring a data team.' },
-      { icon: 'send', title: 'Konsolidator users', text: 'Who want cleaner, automated inputs without switching tools.' },
-      { icon: 'trace', title: 'Firms and advisors', text: 'Who need standardized data from their clients.' },
-    ],
-  },
   strips: {
-    afterLayers: { title: 'Shall we look at your data?', text: "In 30 minutes we'll show you the platform with a case like yours.", primary: 'Request a demo', secondary: 'Next: Consolidation' },
     afterProblem: { text: 'Sound like your close?', link: 'Tell us how you do it today' },
   },
+
   floating: 'Request a demo',
   faq: {
     contact: { title: 'Another question?', text: 'Write to us and the team that implements Next Data will answer, not a bot.', email: 'consultancy@atebiz.com', cta: 'Request a demo' },
@@ -351,11 +270,9 @@ export default {
       { q: 'Do I have to license all four tools?', a: 'No. Each one is licensed separately; they all share the same data.' },
       { q: 'Is it only for financial data?', a: 'No. Accounting and operational data (sales by product, units, headcount, stock or production) land in the same model, by company, cost centre and month, so you can combine them without spreadsheets.' },
       { q: 'Which ERPs do you connect?', a: "Today Business Central and SQL Server, plus Excel mapping and Secure file drop. We're adding more." },
-      { q: 'I already use Konsolidator. What do I gain?', a: 'Reconciled, mapped and signed-off data sent automatically, with a dry run and confirmation before every send.' },
-      { q: 'Which standards do you consolidate under?', a: 'Spanish GAAP (NOFCAC) and IFRS.' },
       { q: 'Where is my data?', a: 'On Google Cloud (BigQuery by default) or, if you prefer, on Microsoft Fabric.' },
-      { q: 'Can my auditor or my BI tool access it?', a: 'Your BI, yes, on the gold layer. Third-party API access is on its way.' },
-      { q: 'How long does implementation take?', a: "It depends on companies and systems. We'll give you a plan per module in the demo." },
+      { q: 'I already use Konsolidator, what do I gain?', a: 'Reconciled, mapped and signed-off data sent automatically, with a dry run and confirmation before every send.' },
+      { q: 'How long does implementation take?', a: 'It is rolled out module by module: start with the Data Warehouse and add the rest whenever you want. Licences per tool based on data volume, and a one-off implementation fee per module. We give you the plan in the demo.' },
     ],
   },
   cta: {

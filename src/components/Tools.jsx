@@ -3,7 +3,7 @@ import { AnimatePresence, animate, motion, useInView, useReducedMotion, } from '
 import { Button, Icon, Reveal, SectionHead } from './ui.jsx'
 import { useLang } from '../i18n.jsx'
 import { REPORTING_URL } from '../config.js'
-import { GhostCursor, PipelineConsole, TypedQuery, useGhostScript } from './Fx.jsx'
+import { GhostCursor, TypedQuery, useGhostScript } from './Fx.jsx'
 
 /* Repite fn cada ms mientras active sea true */
 function useAuto(active, ms, fn) {
@@ -34,44 +34,6 @@ function Checks({ items, cols = 1 }) {
   )
 }
 
-/* =========================================================
-   Data Warehouse: introducción
-   ========================================================= */
-export function DwIntro() {
-  const { t } = useLang()
-  const c = t.dw
-  return (
-    <section className="section dw-intro" id="data-warehouse">
-      <div className="wrap">
-        <SectionHead num="01" big kicker={c.kicker} title={c.title} sub={c.sub} />
-        <div className="dw-grid">
-        <ul className="dw-feats">
-          {c.features.map((f, i) => (
-            <Reveal as="li" key={f.title} delay={i * 0.08}>
-              <span className="dw-ico"><Icon name={f.icon} size={19} /></span>
-              <b>{f.title}</b>
-              <span>{f.text}</span>
-              {f.soon && <span className="dw-soon"><Soon /> {f.soon}</span>}
-            </Reveal>
-          ))}
-        </ul>
-        <Reveal tilt delay={0.15}><PipelineConsole /></Reveal>
-        </div>
-        <div className="dt-grid dw-data" aria-label={c.dataTitle}>
-          {c.data.map((g, gi) => (
-            <Reveal key={g.label} className="dt-col" delay={0.08 * gi}>
-              <span className="dt-label"><Icon name={gi ? 'chart' : 'db'} size={15} /> {g.label}</span>
-              <ul>{g.items.map((x, k) => (
-                <motion.li key={x} initial={{ opacity: 0, x: -8 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.6 }}
-                  transition={{ duration: 0.4, ease, delay: 0.15 + gi * 0.1 + k * 0.05 }}>{x}</motion.li>
-              ))}</ul>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
 
 /* =========================================================
    Repositorio: quién accede a qué
@@ -266,7 +228,6 @@ export function Consolidation() {
           </div>
           {mode === 0 && !touched && <div className="auto-bar" aria-hidden="true"><motion.span key={sel} initial={{ scaleX: 0 }} animate={{ scaleX: inView ? 1 : 0 }} transition={{ duration: 4.2, ease: 'linear' }} /></div>}
         </Reveal>
-        <Checks items={c.features} cols={2} />
       </div>
     </section>
   )
@@ -322,7 +283,7 @@ export function Planning() {
         <SectionHead num="03" big kicker={c.kicker} title={c.title} sub={c.sub} />
         <div className="plan-grid tool-body">
         <div className="tool-aside">
-          <Checks items={c.features} />
+          <Checks items={c.features.slice(0, 3)} />
           <p className="plan-note"><Icon name="sparkles" size={14} /> {c.note}</p>
         </div>
         <Reveal tilt className="panel plan-panel" delay={0.1}>
@@ -449,7 +410,7 @@ export function Reporting() {
           </div>
         </Reveal>
         <div className="tool-aside">
-          <Checks items={c.features} />
+          <Checks items={c.features.slice(0, 3)} />
           <a className="link-arrow rp-link" href={REPORTING_URL} target="_blank" rel="noreferrer">{c.link} <Icon name="arrow" size={15} /></a>
         </div>
         </div>
@@ -458,98 +419,5 @@ export function Reporting() {
   )
 }
 
-/* =========================================================
-   Implantación: módulos que se apilan sobre la misma base
-   ========================================================= */
-export function Implementation() {
-  const { t } = useLang()
-  const c = t.impl
-  const [on, setOn] = useState([0])
-  const [focus, setFocus] = useState(0)
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, amount: 0.4 })
-  const [touched, setTouched] = useState(false)
-  useEffect(() => {
-    if (!inView || touched) return
-    const ids = [1, 2, 3].map((i, k) => setTimeout(() => { setOn((x) => (x.includes(i) ? x : [...x, i])); setFocus(i) }, 900 + k * 900))
-    return () => ids.forEach(clearTimeout)
-  }, [inView]) // eslint-disable-line
-  const toggle = (i) => {
-    setTouched(true)
-    if (i === 0) { setFocus(0); return }
-    setOn((x) => (x.includes(i) ? x.filter((k) => k !== i) : [...x, i]))
-    setFocus(i)
-  }
-  return (
-    <section className="section impl" id="implantacion">
-      <div className="wrap impl-grid">
-        <div>
-          <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
-          <div className="impl-phases" ref={ref}>
-            <p className="impl-mod">{c.modules[focus]}</p>
-            <ol>
-              {c.phases.map((p, i) => (
-                <li key={p}>
-                  <motion.span className="impl-bar" style={{ originX: 0 }} initial={{ scaleX: 0 }} animate={inView ? { scaleX: 1 } : {}} key={`${focus}-${i}`}
-                    transition={{ duration: 0.6, delay: 0.15 + i * 0.25, ease }} />
-                  <span className="impl-n">{i + 1}</span>
-                  <b>{p}</b>
-                </li>
-              ))}
-            </ol>
-          </div>
-          <p className="impl-price"><Icon name="key" size={14} /> {c.pricing}</p>
-        </div>
 
-        <Reveal className="impl-stack-wrap" delay={0.1}>
-          <div className="impl-stack">
-            <AnimatePresence initial={false}>
-              {[...on].sort((a, b) => b - a).map((i) => (
-                <motion.button key={i} layout className={`impl-block b${i} ${focus === i ? 'is-focus' : ''}`} onClick={() => toggle(i)}
-                  initial={{ opacity: 0, y: -60, rotate: -2 }} animate={{ opacity: 1, y: 0, rotate: 0 }} exit={{ opacity: 0, y: -40, scale: 0.95 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 22 }}>
-                  {c.modules[i]}
-                </motion.button>
-              ))}
-            </AnimatePresence>
-            <div className="impl-base"><Icon name="layers" size={15} /> {c.base}</div>
-          </div>
-          <div className="impl-picks">
-            <p>{c.hint}</p>
-            {c.modules.map((m, i) => (
-              <button key={m} className={`impl-pick ${on.includes(i) ? 'is-on' : ''}`} onClick={() => toggle(i)} aria-pressed={on.includes(i)}>
-                <Icon name={on.includes(i) ? 'check' : 'plus'} size={14} stroke={2.4} /> {m}
-              </button>
-            ))}
-          </div>
-        </Reveal>
-      </div>
-    </section>
-  )
-}
-
-/* =========================================================
-   Para quién es + Próximamente
-   ========================================================= */
-export function WhoStrip() {
-  const { t } = useLang()
-  const c = t.who
-  return (
-    <section className="who-strip" id="para-quien" aria-label={c.title}>
-      <div className="wrap">
-        <div className="ws">
-          <Reveal className="ws-label"><span>{c.kicker}</span></Reveal>
-          <ul className="ws-list">
-            {c.items.map((x, i) => (
-              <Reveal as="li" key={x.title} delay={0.08 + i * 0.07}>
-                <span className="ws-ico"><Icon name={x.icon} size={17} /></span>
-                <span><b>{x.title}</b><span>{x.text}</span></span>
-              </Reveal>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </section>
-  )
-}
 

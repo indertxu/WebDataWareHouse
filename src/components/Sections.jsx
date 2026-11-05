@@ -278,27 +278,6 @@ export function Footer() {
 }
 
 /* Banda corta de llamada a la acción entre secciones */
-export function CtaStrip() {
-  const { t } = useLang()
-  const c = t.strips.afterLayers
-  return (
-    <section className="strip-sec">
-      <div className="wrap">
-        <Reveal className="strip">
-          <span className="strip-glow" aria-hidden="true" />
-          <div>
-            <b>{c.title}</b>
-            <span>{c.text}</span>
-          </div>
-          <div className="strip-actions">
-            <Button href="#consolidacion" onClick={onAnchor} variant="ghost-dark" arrow="down">{c.secondary}</Button>
-            <Button href="#demo" onClick={onAnchor} variant="lime" arrow>{c.primary}</Button>
-          </div>
-        </Reveal>
-      </div>
-    </section>
-  )
-}
 
 /* Botón flotante: aparece tras el hero y se esconde al llegar al formulario */
 export function FloatingCta() {
