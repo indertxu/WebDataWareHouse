@@ -88,7 +88,7 @@ export default function Connect() {
         <div className="dt-grid">
           {[c.finance, c.ops].map((g, gi) => (
             <Reveal key={g.label} className="dt-col" delay={0.08 * gi}>
-              <span className="dt-label"><Icon name={gi ? 'sparkles' : 'db'} size={15} /> {g.label}</span>
+              <span className="dt-label"><Icon name={gi ? 'chart' : 'db'} size={15} /> {g.label}</span>
               <ul>{g.items.map((x) => <li key={x}>{x}</li>)}</ul>
             </Reveal>
           ))}

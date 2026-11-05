@@ -1485,3 +1485,23 @@ body.consent-open .fcta { visibility: hidden; }
   .ws-list li { border-left: 0; padding-left: 0; }
   .trust-list { grid-template-columns: 1fr; }
 }
+
+/* =========================================================
+   Capítulos: título a todo el ancho, debajo la parte interactiva
+   ========================================================= */
+.shead .h2 { max-width: 19em; }
+.shead .lead { max-width: 64ch; }
+.tool-body { margin-top: clamp(28px, 3.4vw, 44px); }
+.repo-grid.tool-body { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); align-items: start; }
+.repo-grid.tool-body .repo-who { margin-top: 0; }
+.plan-grid.tool-body { grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr); align-items: center; }
+.report-grid.tool-body { grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); align-items: center; }
+.tool-aside .tl-checks { margin-top: 0; }
+.tool-aside .tl-checks li { padding: 12px 0; border-top: 1px solid var(--line); }
+.tool-aside .tl-checks li:last-child { border-bottom: 1px solid var(--line); }
+@media (max-width: 999px) {
+  .repo-grid.tool-body, .plan-grid.tool-body, .report-grid.tool-body { grid-template-columns: 1fr; }
+  .report-grid.tool-body > div:last-child { order: 0; }
+}
+/* Problema: con cinco filas, la última ocupa el ancho entero */
+.problem-list > li:last-child:nth-child(odd) { grid-column: 1 / -1; }

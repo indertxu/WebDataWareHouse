@@ -78,9 +78,10 @@ export function Repository() {
   const a = c.audiences.find((x) => x.key === aud)
   return (
     <section className="section repo" id="repositorio">
-      <div className="wrap repo-grid">
+      <div className="wrap">
+        <SectionHead num="01" kicker={c.kicker} title={c.title} sub={c.sub} />
+        <div className="repo-grid tool-body">
         <div>
-          <SectionHead num="01" kicker={c.kicker} title={c.title} sub={c.sub} />
           <p className="repo-who">{c.who}</p>
           <div className="repo-auds" role="radiogroup" aria-label={c.who}>
             {c.audiences.map((x) => {
@@ -131,6 +132,7 @@ export function Repository() {
           {a.soon && <p className="repo-soon"><Soon /> {a.via}</p>}
           </div>
         </Reveal>
+        </div>
       </div>
     </section>
   )
@@ -308,9 +310,10 @@ export function Planning() {
 
   return (
     <section className="section plan" id="planificacion">
-      <div className="wrap plan-grid">
-        <div>
-          <SectionHead num="03" big kicker={c.kicker} title={c.title} sub={c.sub} />
+      <div className="wrap">
+        <SectionHead num="03" big kicker={c.kicker} title={c.title} sub={c.sub} />
+        <div className="plan-grid tool-body">
+        <div className="tool-aside">
           <Checks items={c.features} />
           <p className="plan-note"><Icon name="sparkles" size={14} /> {c.note}</p>
         </div>
@@ -351,6 +354,7 @@ export function Planning() {
           </label>
           </div>
         </Reveal>
+        </div>
       </div>
     </section>
   )
@@ -390,7 +394,9 @@ export function Reporting() {
 
   return (
     <section className="section report" id="reporting">
-      <div className="wrap report-grid">
+      <div className="wrap">
+        <SectionHead num="04" big kicker={c.kicker} title={c.title} sub={c.sub} />
+        <div className="report-grid tool-body">
         <Reveal tilt className="panel report-panel">
           <div className="rp-in" ref={panel} onPointerDown={() => setTouched(true)}>
           <div className="rp-top">
@@ -434,10 +440,10 @@ export function Reporting() {
           <AnimatePresence>{!touched && <GhostCursor pos={ghost} click={click} />}</AnimatePresence>
           </div>
         </Reveal>
-        <div>
-          <SectionHead num="04" big kicker={c.kicker} title={c.title} sub={c.sub} />
+        <div className="tool-aside">
           <Checks items={c.features} />
           <a className="link-arrow rp-link" href={REPORTING_URL} target="_blank" rel="noreferrer">{c.link} <Icon name="arrow" size={15} /></a>
+        </div>
         </div>
       </div>
     </section>

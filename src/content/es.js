@@ -2,8 +2,8 @@
 // Lo que todavía no está disponible lleva soon: true y se muestra con la etiqueta «Próximamente».
 export default {
   meta: {
-    title: 'Next Data · Plataforma de datos financieros: data warehouse, consolidación, planificación y reporting',
-    description: 'Next Data conecta tus ERPs, estandariza cada apunte en un modelo común y, sobre esos mismos datos, consolida (NOFCAC y NIIF), planifica y reporta. Para grupos de sociedades.',
+    title: 'Next Data · Plataforma de datos financieros y operativos para grupos: data warehouse, consolidación, planificación y reporting',
+    description: 'Next Data conecta tus ERPs, bases de datos y ficheros, une contabilidad y datos operativos (ventas, unidades, plantilla, stock) en un modelo común y, sobre esos mismos datos, consolida (NOFCAC y NIIF), planifica y reporta. Para grupos de sociedades.',
   },
   soon: 'Próximamente',
   nav: {
@@ -25,10 +25,10 @@ export default {
     close: 'Cerrar',
   },
   hero: {
-    tags: ['Plataforma de datos financieros para grupos', 'Google BigQuery o Microsoft Fabric'],
+    tags: ['Datos financieros y operativos para grupos', 'Google BigQuery o Microsoft Fabric'],
     title1: 'Todos los datos de tu grupo.',
-    rotate: ['Un solo modelo.', 'Cuatro herramientas.', 'Cuadrado y firmado.', 'Listo para compartir.'],
-    sub: 'Next Data conecta tus ERPs y ficheros, estandariza cada apunte en un modelo común y, sobre esos mismos datos, consolida, planifica y reporta. Todo en la nube, con un solo acceso, y listo para que tú, y quien tú autorices, saque los datos que necesite.',
+    rotate: ['Un solo modelo.', 'Finanzas y operaciones.', 'Cuatro herramientas.', 'Cuadrado y firmado.'],
+    sub: 'Next Data conecta tus ERPs, bases de datos y ficheros y une tu contabilidad con tus datos operativos (ventas, unidades, plantilla, stock) en un modelo común. Sobre esos mismos datos, consolida, planifica y reporta. Todo en la nube, con un solo acceso.',
     primary: 'Solicitar demo',
     secondary: 'Ver cómo funciona',
     note: 'Te enseñamos la plataforma en 30 minutos, con un caso como el tuyo. Te respondemos en menos de 24 h.',
@@ -40,8 +40,8 @@ export default {
       live: 'En directo',
       sources: [
         { name: 'Business Central', sub: 'Norvia Iberia · UK' },
-        { name: 'SQL Server', sub: 'Norvia México' },
-        { name: 'Excel', sub: 'mapeo de cuentas' },
+        { name: 'SQL Server', sub: 'Ventas y plantilla' },
+        { name: 'Excel', sub: 'Mapeos y KPIs' },
         { name: 'Secure file drop', sub: 'Norvia Retail' },
       ],
       layers: [
@@ -62,15 +62,17 @@ export default {
   problem: {
     kicker: 'El problema',
     title: 'El cierre no debería empezar copiando Excel.',
-    sub: 'Cada sociedad tiene su ERP y su forma de exportar, y cada herramienta guarda su propia copia de los datos. Next Data resuelve el origen: un único modelo financiero, cuadrado y firmado, del que beben todas las herramientas.',
+    sub: 'Cada sociedad tiene su ERP, los datos operativos viven en otros sistemas y cada herramienta guarda su propia copia. Next Data resuelve el origen: un único modelo, financiero y operativo, cuadrado y firmado, del que beben todas las herramientas.',
     before: 'Hoy',
     after: 'Con Next Data',
     hint: 'Pulsa para comparar',
     tallyBefore: 'copias de los mismos datos',
     tallyAfter: 'modelo de datos para todo',
+    tallyBeforeNum: 4,
     tallyAfterNum: 1,
     rows: [
       { topic: 'Formatos', before: 'Cada sociedad tiene su ERP, su plan de cuentas y su forma de exportar.', after: 'Todo llega al mismo modelo: mismas cuentas, mismas dimensiones, mismas sociedades y meses.' },
+      { topic: 'Operaciones', before: 'Ventas por producto, unidades, plantilla o stock viven en otros sistemas y nunca casan con la contabilidad.', after: 'Datos financieros y operativos en el mismo modelo, por sociedad, centro y mes: el margen por unidad o el coste por empleado salen solos.' },
       { topic: 'Conciliación', before: 'Los datos se concilian a mano antes de consolidar, y otra vez antes de presupuestar.', after: 'Se cuadran y se firman una vez, en cada carga, y valen para todo.' },
       { topic: 'Copias', before: 'Consolidación, presupuesto, reporting y BI tienen cada uno su copia, y ninguna coincide del todo.', after: 'Las cuatro herramientas leen los mismos datos. No hay copias que reconciliar.' },
       { topic: 'Terceros', before: 'Cuando un auditor, un consultor o un banco pide datos, alguien vuelve a exportarlos.', after: 'Tu BI se conecta directamente y, muy pronto, también quien tú autorices.' },
@@ -83,15 +85,15 @@ export default {
     core: 'Las cuatro leen el mismo gold',
     auto: 'Pulsa una para verla',
     tools: [
-      { key: 'dw', name: 'Data Warehouse', text: 'Conecta, estandariza y publica tus datos financieros por sociedad y mes.' },
+      { key: 'dw', name: 'Data Warehouse', text: 'Conecta, estandariza y publica tus datos financieros y operativos por sociedad y mes.' },
       { key: 'conso', name: 'Consolidación', text: 'Motor propio conforme a NOFCAC y NIIF, o envío a Konsolidator si ya consolidas allí.' },
-      { key: 'plan', name: 'Planificación', text: 'Presupuestos y forecasts por cuenta, con reales individuales y consolidados.' },
-      { key: 'report', name: 'Reporting', text: 'Informes y KPIs con drill-down hasta la línea, dentro de la plataforma.' },
+      { key: 'plan', name: 'Planificación', text: 'Presupuestos y forecasts por cuenta y por driver operativo, con reales al lado.' },
+      { key: 'report', name: 'Reporting', text: 'KPIs financieros y operativos con drill-down hasta la línea, dentro de la plataforma.' },
     ],
     more: 'Ver en detalle',
   },
   showcase: {
-    app: { group: 'Grupo Norvia', period: 'oct 2026', search: 'Buscar sociedad, cuenta o asiento' },
+    app: { group: 'Grupo Norvia', period: 'oct 2026', search: 'Buscar sociedad, cuenta, producto o asiento' },
     screens: { dw: 'Cierre de octubre', conso: 'Consolidado · NOFCAC', plan: 'Presupuesto 2027', report: 'Cuenta de resultados' },
     ready: { title: 'Listas para el cierre', unit: 'sociedades firmadas', rows: [['Norvia Iberia', 'ok'], ['Norvia UK', 'ok'], ['Norvia México', 'warn', 'firma pendiente']] },
     ic: { title: 'Intercompañía', sub: 'quién cuadra con quién', legend: ['Cuadra', 'Revisar'] },
@@ -105,17 +107,17 @@ export default {
       signed: 'Estados firmados',
     },
     plan: { actual: 'Real', budget: 'Presupuesto', forecast: 'Forecast', kpi: [['Ventas 2027', '82,4 M €', '+9,1 %'], ['EBITDA', '21,7 M €', '+6,3 %'], ['Desviación YTD', '−1,8 %', 'vs. ppto.']] },
-    report: { kpis: [['Ingresos', '67,9 M €', '+8,6 %'], ['EBITDA', '18,2 M €', '+13,0 %'], ['Margen', '26,8 %', '+1,1 pp']], chart: 'Ingresos · 12 meses', drill: 'Clic en cualquier cifra → hasta el apunte' },
+    report: { kpis: [['Ingresos', '67,9 M €', '+8,6 %'], ['EBITDA', '18,2 M €', '+13,0 %'], ['Unidades vendidas', '1,82 M', '+6,4 %']], chart: 'Ingresos · 12 meses', drill: 'Clic en cualquier cifra → hasta el apunte' },
   },
   dw: {
     kicker: 'Data Warehouse',
-    title: 'Tu data warehouse financiero, construido por y para finanzas.',
-    sub: 'La base de todo. Lee tus sistemas, estandariza cada apunte y publica un gold por sociedad y mes del que leen todas las herramientas.',
+    title: 'Tu data warehouse de grupo: finanzas y operaciones en un mismo modelo.',
+    sub: 'La base de todo. Lee tus ERPs y sistemas operativos, estandariza cada apunte y cada dato de negocio, y publica un gold por sociedad y mes del que leen todas las herramientas.',
     features: [
       { icon: 'db', title: 'Conecta', text: 'Business Central, SQL Server y otros sistemas, mapeos en Excel y el Secure file drop, un portal seguro para recibir ficheros.' },
+      { icon: 'chart', title: 'Financieros y operativos', text: 'Contabilidad junto a ventas por producto y cliente, unidades, plantilla, horas o stock, con las mismas sociedades, centros y meses.' },
       { icon: 'history', title: 'Cargas programadas', text: 'Diarias u horarias, con alertas si algo falla.' },
       { icon: 'shield', title: 'Cuadre y firma', text: 'Las sumas y saldos se comprueban en cada carga y se firman.' },
-      { icon: 'trace', title: 'Transparencia total', text: 'Vista de pipeline con las tablas reales, quién las construyó y un mapa de linaje.' },
       { icon: 'check', title: 'Gold por sociedad y mes', text: 'Nunca duplicado. Las tablas gold (Blueprints) son el estándar del que leen todas las herramientas.' },
       { icon: 'globe', title: 'Tipos de cambio', text: 'De Konsolidator, después de tus ERPs y, si no, del BCE. Cierre y medio por divisa y mes.' },
     ],
@@ -130,7 +132,7 @@ export default {
     ],
   },
   manifesto: {
-    text: 'Un solo dato, cuadrado y firmado, del que beben la consolidación, el presupuesto, los informes y tu BI. Sin copias. Sin conciliaciones entre herramientas. Sin «¿qué versión es la buena?».',
+    text: 'Un solo dato, financiero y operativo, cuadrado y firmado, del que beben la consolidación, el presupuesto, los informes y tu BI. Sin copias. Sin conciliaciones entre herramientas. Sin «¿qué versión es la buena?».',
     marks: ['Un solo dato,', 'Sin copias.'],
   },
   console: {
@@ -139,8 +141,9 @@ export default {
     lines: [
       ['bronze', 'Business Central → Norvia Iberia', '48.210 filas'],
       ['bronze', 'SQL Server → Norvia México', '31.977 filas'],
+      ['bronze', 'SQL Server → plantilla y horas', '4.380 filas'],
       ['silver', 'Mapeo al plan de grupo', '100 % cuentas'],
-      ['silver', 'Tipos de cambio BCE · oct', '1.152 tipos'],
+      ['silver', 'Ventas por producto y cliente', '212 SKUs'],
       ['check', 'Sumas y saldos · Norvia Iberia', 'dif. 0,00'],
       ['check', 'Intercompañía IBE ↔ UK', 'cuadra'],
       ['gold', 'Publicado gold · oct 2026', '7 / 8 sociedades'],
@@ -149,15 +152,15 @@ export default {
     progress: 'Cierre de octubre',
   },
   query: {
-    sql: "select cuenta_grupo, saldo from gold.sumas_saldos where sociedad = 'IBE' and periodo = '2026-10'",
-    meta: '18 ms · 412 filas',
+    sql: "select producto, unidades, margen_unidad from gold.ventas where sociedad = 'IBE' and periodo = '2026-10'",
+    meta: '21 ms · 212 filas',
   },
   ai: {
     kicker: 'Con IA',
     title: 'La IA propone. Tu equipo firma.',
     sub: 'La puesta en marcha que antes eran semanas de mapeos a mano ahora la prepara un asistente que conoce tus datos. Tú revisas y confirmas.',
     points: [
-      { title: 'Mapeos propuestos', text: 'Sociedades, cuentas y campos sugeridos a partir de tus filas reales.' },
+      { title: 'Mapeos propuestos', text: 'Sociedades, cuentas, productos y campos sugeridos a partir de tus filas reales.' },
       { title: 'Descuadres explicados', text: 'Por qué no cuadra una pareja intercompañía, separado en causas.' },
       { title: 'Preguntas con respuesta trazable', text: 'Cada respuesta enlaza al asiento del que sale.' },
       { title: 'Nada entra sin una persona', text: 'Ningún cambio llega al gold, ni a la consolidación, sin una confirmación explícita.' },
@@ -178,7 +181,7 @@ export default {
   layers: {
     kicker: 'Del ERP a gold',
     title: 'Tres capas. Ningún dato se pierde por el camino.',
-    sub: 'Sigue un mismo apunte mientras bajas: así pasa de lo que da tu ERP a tu modelo de grupo, cuadrado y firmado.',
+    sub: 'Sigue un mismo apunte mientras bajas: así pasa de lo que da tu ERP a tu modelo de grupo, cuadrado y firmado. Un pedido o una fila de plantilla hacen el mismo camino.',
     recordTitle: 'El mismo apunte, en cada capa',
     steps: [
       {
@@ -234,7 +237,7 @@ export default {
   connect: {
     kicker: 'Conectores',
     title: 'Conecta tus sistemas. Trae cualquier fichero.',
-    sub: 'Lo que está disponible hoy, y lo que llega después. Tus sociedades, tu plan de cuentas y tus dimensiones llegan solos.',
+    sub: 'Lo que está disponible hoy, y lo que llega después. Contabilidad, ventas, plantilla o stock: tus sociedades, tu plan de cuentas y tus dimensiones llegan solos.',
     steps: [
       { title: 'Elige la fuente', text: 'Un ERP, una base de datos o el Secure file drop.' },
       { title: 'Da un acceso seguro', text: 'La credencial va directa a un almacén de claves.' },
@@ -252,11 +255,11 @@ export default {
     ],
     dataTitle: 'Qué datos entran',
     finance: { label: 'Financieros', items: ['Diario y apuntes', 'Sumas y saldos', 'Plan de cuentas', 'Dimensiones', 'Tipos de cambio', 'Intercompañía'] },
-    ops: { label: 'Tecnología a elegir', items: ['Google BigQuery (por defecto)', 'Microsoft Fabric', 'Google Cloud Storage', 'Secret Manager'] },
+    ops: { label: 'Operativos', items: ['Ventas por producto y cliente', 'Unidades y precios', 'Plantilla y horas', 'Stock e inventario', 'Producción y pedidos', 'Tus KPIs propios'] },
   },
   repo: {
     kicker: 'Repositorio',
-    title: 'Tus datos financieros, estandarizados y listos para quien los necesite.',
+    title: 'Tus datos financieros y operativos, estandarizados y listos para quien los necesite.',
     sub: 'El gold de Next Data no es solo la base de nuestras herramientas. Es un repositorio de todos tus datos con un único modelo, y un catálogo de tablas y columnas para que cualquiera sepa qué hay y qué significa.',
     who: 'Quién accede',
     audiences: [
@@ -270,7 +273,8 @@ export default {
       ['gold.sumas_saldos', 'Sumas y saldos por sociedad y mes', '48.210', ['you', 'team', 'third']],
       ['gold.apuntes', 'Cada línea, mapeada a la cuenta de grupo', '3,4 M', ['you', 'team']],
       ['gold.intercompania', 'Parejas y diferencias por contraparte', '12.904', ['you', 'team', 'third']],
-      ['gold.tipos_cambio', 'Cierre y medio por divisa y mes', '1.152', ['you', 'team', 'third']],
+      ['gold.ventas', 'Ventas por producto, cliente y mes, en unidades e importe', '212.040', ['you', 'team']],
+      ['gold.plantilla', 'Plantilla, horas y coste por centro y mes', '4.380', ['you']],
       ['gold.dimensiones', 'Centros, proyectos y segmentos', '2.380', ['you', 'team']],
       ['gold.presupuesto', 'Presupuestos y forecasts por cuenta', '96.400', ['you']],
     ],
@@ -302,24 +306,24 @@ export default {
   plan: {
     kicker: 'Planificación',
     title: 'Presupuesta sobre tus reales, no sobre una copia.',
-    sub: 'Presupuestos y forecasts por cuenta, con los reales individuales y consolidados al lado. Cambia de escenario o mueve el driver.',
+    sub: 'Presupuestos y forecasts por cuenta y por driver operativo (unidades, precios, plantilla), con los reales al lado. Cambia de escenario o mueve el driver.',
     scenarios: ['Presupuesto', 'Forecast', 'Mejor caso', 'Peor caso'],
     driver: 'Crecimiento de ventas',
     actual: 'Real 2026',
     months: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],
     kpis: ['Ventas 2027', 'EBITDA 2027', 'vs. 2026'],
-    features: ['Drivers, fórmulas y escenarios', 'Reales individuales y consolidados al lado', 'Tu primer presupuesto lo construimos contigo'],
+    features: ['Drivers operativos: unidades, precios, plantilla', 'Fórmulas y escenarios', 'Reales individuales y consolidados al lado', 'Tu primer presupuesto lo construimos contigo'],
     note: 'Planificación es el módulo más reciente y seguirá ganando funciones.',
   },
   report: {
     kicker: 'Reporting',
     title: 'Next Reporting: del KPI a la línea en un clic.',
-    sub: 'Informes y KPIs integrados en la plataforma. Pulsa cualquier cifra y baja hasta el apunte.',
+    sub: 'Informes y KPIs financieros y operativos integrados en la plataforma. Pulsa cualquier cifra y baja hasta el apunte.',
     levels: ['Grupo', 'Sociedad', 'Cuenta', 'Apuntes'],
     start: 'Ingresos del grupo',
     back: 'Volver',
     hint: 'Pulsa una barra para bajar un nivel',
-    features: ['Lee de tus datos en Next Data o de Konsolidator', 'Planes Low, Base, Pro y Max', 'En Pro y Max, un estudio para diseñar tus propias estructuras de informe', 'También disponible como aplicación independiente'],
+    features: ['KPIs operativos junto a los financieros: margen por unidad, coste por empleado', 'Lee de tus datos en Next Data o de Konsolidator', 'Planes Low, Base, Pro y Max', 'En Pro y Max, un estudio para diseñar tus propias estructuras de informe', 'También disponible como aplicación independiente'],
     link: 'Conoce Next Reporting',
   },
   how: {
@@ -369,10 +373,10 @@ export default {
   },
   who: {
     kicker: 'Hecho para',
-    title: 'Hecho para direcciones financieras de grupos.',
+    title: 'Hecho para equipos de finanzas y operaciones de grupos.',
     items: [
       { icon: 'layers', title: 'Grupos de varias sociedades', text: 'Con varios ERPs o monedas, que consolidan cada mes o trimestre.' },
-      { icon: 'chart', title: 'Direcciones financieras', text: 'Que quieren un dato único sin montar un equipo de datos.' },
+      { icon: 'chart', title: 'Finanzas y operaciones', text: 'Que quieren un dato único, contable y de negocio, sin montar un equipo de datos.' },
       { icon: 'send', title: 'Usuarios de Konsolidator', text: 'Que quieren datos más limpios y automáticos, sin cambiar de herramienta.' },
       { icon: 'trace', title: 'Despachos y consultores', text: 'Que necesitan datos estandarizados de sus clientes.' },
     ],
@@ -393,6 +397,7 @@ export default {
     title: 'Lo que siempre nos preguntan.',
     items: [
       { q: '¿Tengo que contratar las cuatro herramientas?', a: 'No. Cada una se licencia por separado; todas comparten los mismos datos.' },
+      { q: '¿Solo trabajáis datos financieros?', a: 'No. Contabilidad y datos operativos (ventas por producto, unidades, plantilla, stock o producción) entran en el mismo modelo, por sociedad, centro y mes, para cruzarlos sin hojas de cálculo.' },
       { q: '¿Qué ERPs conectáis?', a: 'Hoy Business Central y SQL Server, además de mapeos en Excel y el Secure file drop. Estamos añadiendo más.' },
       { q: 'Ya uso Konsolidator, ¿qué gano?', a: 'Datos cuadrados, mapeados y firmados enviados automáticamente, con simulación previa y confirmación antes de cada envío.' },
       { q: '¿Según qué normativa consolidáis?', a: 'NOFCAC (Plan General Contable) y NIIF.' },
@@ -405,7 +410,7 @@ export default {
     title: 'Ve tus propios datos en Next Data.',
     sub: 'Te enseñamos la plataforma con un caso como el tuyo. 30 minutos, sin compromiso.',
     points: [
-      { icon: 'eye', title: 'Tu caso, no una demo genérica', text: 'Con tus ERPs, tu número de sociedades y las herramientas que te interesan.' },
+      { icon: 'eye', title: 'Tu caso, no una demo genérica', text: 'Con tus ERPs, tus datos operativos, tu número de sociedades y las herramientas que te interesan.' },
       { icon: 'layers', title: 'Las cuatro herramientas sobre el mismo dato', text: 'Del apunte del ERP al consolidado, el presupuesto y el informe.' },
       { icon: 'history', title: 'Respuesta en menos de 24 horas', text: 'Te escribimos para cerrar día y hora. 30 minutos, sin compromiso.' },
     ],
@@ -459,7 +464,7 @@ export default {
     },
   },
   footer: {
-    line: 'Next Data es la plataforma de datos financieros de Next Finance.',
+    line: 'Next Data es la plataforma de datos financieros y operativos de Next Finance.',
     product: 'Plataforma',
     company: 'Next Finance',
     links: { cookies: 'Cookies', login: 'Acceso clientes', reporting: 'Next Reporting', privacy: 'Privacidad', legal: 'Aviso legal', contact: 'Contacto' },

@@ -64,7 +64,7 @@ export default function Problem() {
               <motion.span key={after ? 'a' : 'b'} className={`tally-num ${after ? 'is-after' : ''}`}
                 initial={{ y: 40, opacity: 0, filter: 'blur(8px)' }} animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
                 exit={{ y: -40, opacity: 0, filter: 'blur(8px)' }} transition={{ duration: 0.5, ease }}>
-                {after ? (c.tallyAfterNum ?? 0) : n}
+                {after ? (c.tallyAfterNum ?? 0) : (c.tallyBeforeNum ?? n)}
               </motion.span>
             </AnimatePresence>
             <span className="tally-label">{after ? c.tallyAfter : c.tallyBefore}</span>
