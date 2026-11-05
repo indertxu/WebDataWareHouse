@@ -7,10 +7,10 @@ import Problem from './components/Problem.jsx'
 import Platform from './components/Platform.jsx'
 import Layers from './components/Layers.jsx'
 import Connect from './components/Connect.jsx'
-import Cloud from './components/Cloud.jsx'
+import { Trust } from './components/Cloud.jsx'
 import Backdrop, { ScrollBar } from './components/Backdrop.jsx'
-import { DwIntro, Repository, Consolidation, Planning, Reporting, Implementation, WhoFor, Roadmap } from './components/Tools.jsx'
-import { Security, Faq, Cta, Footer, CtaStrip, FloatingCta } from './components/Sections.jsx'
+import { DwIntro, Repository, Consolidation, Planning, Reporting, Implementation, WhoStrip, Roadmap } from './components/Tools.jsx'
+import { Faq, Cta, Footer, CtaStrip, FloatingCta } from './components/Sections.jsx'
 import { setLenis } from './scroll.js'
 import Consent from './components/Consent.jsx'
 import { AI, ChapterRail, Manifesto } from './components/Fx.jsx'
@@ -38,6 +38,7 @@ export default function App() {
       <ChapterRail />
       <main id="main">
         <Hero />
+        <WhoStrip />
         <Problem />
         <Manifesto />
         <Platform />
@@ -52,10 +53,8 @@ export default function App() {
         <Planning />
         <Reporting />
         <AI />
-        <Security />
-        <Cloud />
+        <Trust />
         <Implementation />
-        <WhoFor />
         <Roadmap />
         <Faq />
         <Cta />

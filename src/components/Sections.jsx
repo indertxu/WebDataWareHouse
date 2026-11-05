@@ -81,7 +81,15 @@ export function Faq() {
   return (
     <section className="section faq" id="preguntas">
       <div className="wrap faq-grid">
-        <SectionHead kicker={c.kicker} title={c.title} />
+        <div className="faq-side">
+          <SectionHead kicker={c.kicker} title={c.title} />
+          <Reveal className="faq-contact" delay={0.2}>
+            <b>{c.contact.title}</b>
+            <span>{c.contact.text}</span>
+            <a className="faq-mail" href={`mailto:${c.contact.email}`}><Icon name="send" size={15} /> {c.contact.email}</a>
+            <Button href="#demo" onClick={onAnchor} variant="primary" arrow>{c.contact.cta}</Button>
+          </Reveal>
+        </div>
         <div className="faq-list">
           {c.items.map((x, i) => {
             const on = open === i

@@ -517,6 +517,28 @@ export function Implementation() {
 /* =========================================================
    Para quién es + Próximamente
    ========================================================= */
+export function WhoStrip() {
+  const { t } = useLang()
+  const c = t.who
+  return (
+    <section className="who-strip" id="para-quien" aria-label={c.title}>
+      <div className="wrap">
+        <div className="ws">
+          <Reveal className="ws-label"><span>{c.kicker}</span></Reveal>
+          <ul className="ws-list">
+            {c.items.map((x, i) => (
+              <Reveal as="li" key={x.title} delay={0.08 + i * 0.07}>
+                <span className="ws-ico"><Icon name={x.icon} size={17} /></span>
+                <span><b>{x.title}</b><span>{x.text}</span></span>
+              </Reveal>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export function WhoFor() {
   const { t } = useLang()
   const c = t.who

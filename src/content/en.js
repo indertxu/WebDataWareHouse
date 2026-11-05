@@ -367,7 +367,7 @@ export default {
     pricing: 'Per-tool licences by data volume; one-off implementation per module.',
   },
   who: {
-    kicker: "Who it's for",
+    kicker: 'Built for',
     title: 'Built for group finance teams.',
     items: [
       { icon: 'layers', title: 'Multi-entity groups', text: 'With several ERPs or currencies, consolidating every month or quarter.' },
@@ -387,6 +387,7 @@ export default {
   },
   floating: 'Request a demo',
   faq: {
+    contact: { title: 'Another question?', text: 'Write to us and the team that implements Next Data will answer, not a bot.', email: 'consultancy@atebiz.com', cta: 'Request a demo' },
     kicker: 'FAQ',
     title: 'What we always get asked.',
     items: [

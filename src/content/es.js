@@ -368,7 +368,7 @@ export default {
     pricing: 'Licencias por herramienta según volumen de datos; implantación en un pago único por módulo.',
   },
   who: {
-    kicker: 'Para quién es',
+    kicker: 'Hecho para',
     title: 'Hecho para direcciones financieras de grupos.',
     items: [
       { icon: 'layers', title: 'Grupos de varias sociedades', text: 'Con varios ERPs o monedas, que consolidan cada mes o trimestre.' },
@@ -388,6 +388,7 @@ export default {
   },
   floating: 'Solicitar demo',
   faq: {
+    contact: { title: '¿Otra pregunta?', text: 'Escríbenos y te responde el equipo que implanta Next Data, no un bot.', email: 'consultancy@atebiz.com', cta: 'Solicitar demo' },
     kicker: 'Preguntas',
     title: 'Lo que siempre nos preguntan.',
     items: [
