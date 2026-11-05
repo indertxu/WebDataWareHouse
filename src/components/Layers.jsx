@@ -116,7 +116,7 @@ export default function Layers() {
 
   if (!desktop || reduce) {
     return (
-      <section className="section layers layers-flat" id="como-funciona">
+      <section className="section layers layers-flat" id="capas">
         <div className="wrap">
           <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
           <div className="lf-list">
@@ -137,7 +137,7 @@ export default function Layers() {
   }
 
   return (
-    <section className="layers" id="como-funciona" ref={outer}>
+    <section className="layers" id="capas" ref={outer}>
       <div className="layers-sticky">
         <div className="wrap layers-grid">
           <div className="layers-left">

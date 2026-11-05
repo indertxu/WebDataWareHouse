@@ -1,0 +1,519 @@
+import { useMemo, useRef, useState } from 'react'
+import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion'
+import { Button, Icon, Reveal, SectionHead } from './ui.jsx'
+import { useLang } from '../i18n.jsx'
+import { onAnchor } from '../scroll.js'
+import { REPORTING_URL } from '../config.js'
+
+const ease = [0.16, 1, 0.3, 1]
+const spring = { type: 'spring', stiffness: 380, damping: 32 }
+
+export function Soon({ children }) {
+  const { t } = useLang()
+  return <span className="soon">{children || t.soon}</span>
+}
+
+function Checks({ items, cols = 1 }) {
+  return (
+    <ul className={`tl-checks cols-${cols}`}>
+      {items.map((x, i) => (
+        <Reveal as="li" key={x} delay={0.04 * i}>
+          <Icon name="check" size={15} stroke={2.6} /> <span>{x}</span>
+        </Reveal>
+      ))}
+    </ul>
+  )
+}
+
+/* =========================================================
+   Data Warehouse: introducción
+   ========================================================= */
+export function DwIntro() {
+  const { t } = useLang()
+  const c = t.dw
+  return (
+    <section className="section dw-intro" id="data-warehouse">
+      <div className="wrap">
+        <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
+        <ul className="dw-feats">
+          {c.features.map((f, i) => (
+            <Reveal as="li" key={f.title} delay={(i % 3) * 0.06 + Math.floor(i / 3) * 0.08}>
+              <span className="dw-ico"><Icon name={f.icon} size={19} /></span>
+              <b>{f.title}</b>
+              <span>{f.text}</span>
+            </Reveal>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+/* =========================================================
+   Repositorio: quién accede a qué
+   ========================================================= */
+export function Repository() {
+  const { t } = useLang()
+  const c = t.repo
+  const [aud, setAud] = useState('you')
+  const a = c.audiences.find((x) => x.key === aud)
+  return (
+    <section className="section repo" id="repositorio">
+      <div className="wrap repo-grid">
+        <div>
+          <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
+          <p className="repo-who">{c.who}</p>
+          <div className="repo-auds" role="radiogroup" aria-label={c.who}>
+            {c.audiences.map((x) => {
+              const on = x.key === aud
+              return (
+                <button key={x.key} role="radio" aria-checked={on} className={`repo-aud ${on ? 'is-on' : ''}`} onClick={() => setAud(x.key)}>
+                  {on && <motion.span layoutId="repo-aud-bg" className="repo-aud-bg" transition={spring} />}
+                  <span className="repo-aud-ico"><Icon name={x.key === 'you' ? 'user' : x.key === 'team' ? 'users' : 'link'} size={17} /></span>
+                  <span className="repo-aud-txt">
+                    <b>{x.name} {x.soon && <Soon />}</b>
+                    <span>{x.text}</span>
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+          <ul className="repo-points">
+            {c.points.map((p) => <li key={p.title}><Icon name="lock" size={15} /> <span><b>{p.title}.</b> {p.text}</span></li>)}
+          </ul>
+        </div>
+
+        <Reveal className="panel repo-panel" delay={0.1}>
+          <div className="repo-head">
+            <span className="repo-cat"><Icon name="db" size={15} /> {c.catalog}</span>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span key={aud} className="chip chip-ok" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.25 }}>
+                <Icon name="link" size={12} /> {a.via}
+              </motion.span>
+            </AnimatePresence>
+          </div>
+          <div className="repo-table">
+            <div className="repo-tr repo-th">{c.cols.map((h) => <span key={h}>{h}</span>)}</div>
+            {c.tables.map(([name, desc, rows, who], i) => {
+              const open = who.includes(aud)
+              return (
+                <motion.div key={name} className={`repo-tr ${open ? '' : 'is-locked'}`} layout
+                  initial={false} animate={{ opacity: open ? 1 : 0.42 }} transition={{ duration: 0.35, delay: i * 0.03 }}>
+                  <span className="repo-name">{open ? <Icon name="check" size={13} stroke={2.6} /> : <Icon name="lock" size={13} />} {name}</span>
+                  <span className="repo-desc">{desc}</span>
+                  <span className="repo-rows">{open ? rows : c.locked}</span>
+                </motion.div>
+              )
+            })}
+          </div>
+          {a.soon && <p className="repo-soon"><Soon /> {a.via}</p>}
+        </Reveal>
+      </div>
+    </section>
+  )
+}
+
+/* =========================================================
+   Consolidación: árbol del grupo + eliminaciones
+   ========================================================= */
+export function Consolidation() {
+  const { t } = useLang()
+  const c = t.conso
+  const [sel, setSel] = useState('uk')
+  const [mode, setMode] = useState(0)
+  const [step, setStep] = useState(0)
+  const co = c.companies.find((x) => x.key === sel)
+  const children = c.companies.slice(1)
+  const methodClass = (m) => (/global|full/i.test(m) ? 'm-full' : /propor/i.test(m) ? 'm-prop' : /equiv|equity/i.test(m) ? 'm-eq' : 'm-parent')
+
+  return (
+    <section className="section conso" id="consolidacion">
+      <div className="wrap">
+        <div className="tool-head">
+          <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
+          <div className="seg" role="tablist">
+            {c.modes.map((m, i) => (
+              <button key={m} role="tab" aria-selected={mode === i} className={`seg-btn ${mode === i ? 'is-on' : ''}`} onClick={() => { setMode(i); setStep(0) }}>
+                {mode === i && <motion.span layoutId="conso-mode" className="seg-pill" transition={spring} />}
+                <span>{m}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="panel conso-panel">
+          <AnimatePresence mode="wait" initial={false}>
+            {mode === 0 ? (
+              <motion.div key="engine" className="conso-grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+                <div className="tree">
+                  <button className={`tree-node is-root ${sel === 'hold' ? 'is-on' : ''}`} onClick={() => setSel('hold')}>
+                    <b>{c.companies[0].name}</b><span className="m-parent">{c.companies[0].method}</span>
+                  </button>
+                  <svg className="tree-lines" viewBox="0 0 400 60" preserveAspectRatio="none" aria-hidden="true">
+                    {children.map((_, i) => {
+                      const x = 50 + i * 100
+                      return <path key={i} d={`M200,0 C200,30 ${x},30 ${x},60`} className={`tree-l ${children[i].key === sel ? 'is-on' : ''}`} vectorEffect="non-scaling-stroke" />
+                    })}
+                  </svg>
+                  <div className="tree-kids">
+                    {children.map((x) => (
+                      <button key={x.key} className={`tree-node ${x.key === sel ? 'is-on' : ''}`} onClick={() => setSel(x.key)}>
+                        <span className="tree-pct">{x.pct}</span>
+                        <b>{x.name}</b>
+                        <span className={methodClass(x.method)}>{x.method}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="conso-detail">
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.div key={sel} initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.35, ease }}>
+                      <p className="cd-k">{co.name} · {co.pct}</p>
+                      <h3 className="cd-m">{co.method}</h3>
+                      <p className="cd-t">{co.text}</p>
+                      {(sel === 'ibe' || sel === 'uk') && (
+                        <div className="elim">
+                          <p className="elim-t">{c.elim}</p>
+                          {c.elimRows.map(([k, v], i) => (
+                            <motion.div key={k} className="elim-row" initial={{ opacity: 1 }} animate={{ opacity: [1, 1, 0.45] }} transition={{ duration: 1.6, delay: 0.3 + i * 0.1, times: [0, 0.6, 1] }}>
+                              <span>{k}</span>
+                              <span className="elim-v">{v}<motion.i initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.5, delay: 1.1 + i * 0.1 }} /></span>
+                            </motion.div>
+                          ))}
+                          <motion.p className="elim-done" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.7 }}>
+                            <Icon name="check" size={14} stroke={2.6} /> {c.elimDone}
+                          </motion.p>
+                        </div>
+                      )}
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div key="kons" className="kons" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+                <h3>{c.kons.title}</h3>
+                <p>{c.kons.text}</p>
+                <ol className="kons-steps">
+                  {c.kons.steps.map((x, i) => (
+                    <li key={x} className={i <= step ? 'is-on' : ''}>
+                      <span className="ks-n">{i < step ? <Icon name="check" size={14} stroke={2.8} /> : i + 1}</span>
+                      <span>{x}</span>
+                    </li>
+                  ))}
+                </ol>
+                <div className="kons-actions">
+                  {step < c.kons.steps.length
+                    ? <Button variant="lime" arrow onClick={() => setStep((s) => s + 1)}>{c.kons.steps[step]}</Button>
+                    : <motion.p className="elim-done" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}><Icon name="send" size={14} /> Konsolidator · OK</motion.p>}
+                  {step > 0 && <button className="kons-reset" onClick={() => setStep(0)}>↺</button>}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+        <Checks items={c.features} cols={2} />
+      </div>
+    </section>
+  )
+}
+
+/* =========================================================
+   Planificación: escenarios y driver
+   ========================================================= */
+const ACT = [4.9, 5.1, 5.6, 5.4, 5.9, 6.2, 5.7, 5.3, 6.1, 6.4, 6.6, 7.4] // M € al mes (2026)
+const SCEN = [
+  { g: 0, m: 0.26 }, // presupuesto: usa el driver tal cual
+  { g: -1.5, m: 0.255, curve: true },
+  { g: 4, m: 0.28 },
+  { g: -6, m: 0.22 },
+]
+
+export function Planning() {
+  const { t, lang } = useLang()
+  const c = t.plan
+  const [sc, setSc] = useState(0)
+  const [drv, setDrv] = useState(9)
+  const W = 640, H = 230, PADX = 6
+  const growth = (drv + SCEN[sc].g) / 100
+  const plan = useMemo(() => ACT.map((v, i) => v * (1 + growth) * (SCEN[sc].curve ? 1 + (i - 6) * 0.004 : 1)), [growth, sc])
+  const max = Math.max(...ACT, ...plan) * 1.12
+  const min = Math.min(...ACT, ...plan) * 0.8
+  const x = (i) => PADX + (i / 11) * (W - PADX * 2)
+  const y = (v) => H - ((v - min) / (max - min)) * H
+  const line = (arr) => arr.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ')
+  const area = (arr) => `${line(arr)} L${x(11)},${H} L${x(0)},${H} Z`
+  const sum = plan.reduce((a, b) => a + b, 0)
+  const base = ACT.reduce((a, b) => a + b, 0)
+  const nf = (n, d = 1) => new Intl.NumberFormat(lang === 'es' ? 'es-ES' : 'en-GB', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n)
+  const money = (n) => (lang === 'es' ? `${nf(n)} M €` : `€${nf(n)}M`)
+  const kpis = [money(sum), money(sum * SCEN[sc].m), `${sum >= base ? '+' : ''}${nf(((sum - base) / base) * 100)} %`]
+
+  return (
+    <section className="section plan" id="planificacion">
+      <div className="wrap plan-grid">
+        <div>
+          <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
+          <Checks items={c.features} />
+          <p className="plan-note"><Icon name="sparkles" size={14} /> {c.note}</p>
+        </div>
+        <Reveal className="panel plan-panel" delay={0.1}>
+          <div className="seg seg-dark plan-seg" role="tablist">
+            {c.scenarios.map((s, i) => (
+              <button key={s} role="tab" aria-selected={sc === i} className={`seg-btn ${sc === i ? 'is-on' : ''}`} onClick={() => setSc(i)}>
+                {sc === i && <motion.span layoutId="plan-sc" className="seg-pill is-after" transition={spring} />}
+                <span>{s}</span>
+              </button>
+            ))}
+          </div>
+          <div className="plan-kpis">
+            {c.kpis.map((k, i) => (
+              <div key={k} className="plan-kpi">
+                <span>{k}</span>
+                <AnimatePresence mode="popLayout" initial={false}>
+                  <motion.b key={kpis[i]} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>{kpis[i]}</motion.b>
+                </AnimatePresence>
+              </div>
+            ))}
+          </div>
+          <svg viewBox={`0 0 ${W} ${H + 24}`} className="plan-chart" aria-hidden="true">
+            <defs><linearGradient id="plan-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#6EE7B7" stopOpacity=".32" /><stop offset="1" stopColor="#6EE7B7" stopOpacity="0" /></linearGradient></defs>
+            {[0.25, 0.5, 0.75].map((g) => <line key={g} x1="0" x2={W} y1={H * g} y2={H * g} className="pf-grid" />)}
+            <motion.path className="plan-area" fill="url(#plan-g)" animate={{ d: area(plan) }} transition={{ duration: 0.6, ease }} />
+            <path d={line(ACT)} className="plan-act" />
+            <motion.path className="plan-line" animate={{ d: line(plan) }} transition={{ duration: 0.6, ease }} />
+            {plan.map((v, i) => <motion.circle key={i} r="3.5" className="plan-dot" animate={{ cx: x(i), cy: y(v) }} transition={{ duration: 0.6, ease }} />)}
+            {c.months.map((m, i) => <text key={m} x={x(i)} y={H + 18} textAnchor="middle" className="plan-m">{m}</text>)}
+          </svg>
+          <div className="plan-legend"><span><i className="l-a" />{c.actual}</span><span><i className="l-f" />{c.scenarios[sc]} 2027</span></div>
+          <label className="plan-drv">
+            <span>{c.driver}</span>
+            <input type="range" min="0" max="20" step="0.5" value={drv} onChange={(e) => setDrv(Number(e.target.value))} />
+            <b>{drv >= 0 ? '+' : ''}{nf(drv)} %</b>
+          </label>
+        </Reveal>
+      </div>
+    </section>
+  )
+}
+
+/* =========================================================
+   Reporting: del KPI al apunte
+   ========================================================= */
+const R_COMP = [['Norvia Iberia', 25.8], ['Norvia UK', 18.4], ['Norvia México', 11.2], ['Norvia Retail', 7.9], ['Norvia Inc.', 4.6]]
+const R_ACC = [['7050000 · Ventas de producto', 0.58], ['7051000 · Servicios', 0.24], ['7052000 · Licencias', 0.12], ['7590000 · Otros ingresos', 0.06]]
+const R_ENT = [['14/10', 'FV-26-0184223', 'Grupo Pradera SL', 12500], ['15/10', 'FV-26-0184318', 'Talleres Vega SA', 48230], ['17/10', 'FV-26-0184402', 'Distribuciones Mar', 9870], ['21/10', 'FV-26-0184577', 'Norvia UK (IC)', 124000], ['24/10', 'FV-26-0184610', 'Hotel Alba', 3415]]
+
+export function Reporting() {
+  const { t, lang } = useLang()
+  const c = t.report
+  const [path, setPath] = useState([]) // [companyIdx, accountIdx]
+  const nf = (n, d = 1) => new Intl.NumberFormat(lang === 'es' ? 'es-ES' : 'en-GB', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n)
+  const money = (n) => (lang === 'es' ? `${nf(n)} M €` : `€${nf(n)}M`)
+  const level = path.length
+  const total = R_COMP.reduce((a, [, v]) => a + v, 0)
+  let rows, title, value
+  if (level === 0) { rows = R_COMP.map(([n, v]) => [n, v]); title = c.start; value = total }
+  else if (level === 1) { const [n, v] = R_COMP[path[0]]; rows = R_ACC.map(([a, s]) => [a, v * s]); title = n; value = v }
+  else { const v = R_COMP[path[0]][1] * R_ACC[path[1]][1]; title = R_ACC[path[1]][0]; value = v; rows = null }
+  const max = rows ? Math.max(...rows.map((r) => r[1])) : 1
+  const crumbs = [c.levels[0], level > 0 && R_COMP[path[0]][0], level > 1 && R_ACC[path[1]][0].split(' · ')[0]].filter(Boolean)
+
+  return (
+    <section className="section report" id="reporting">
+      <div className="wrap report-grid">
+        <Reveal className="panel report-panel">
+          <div className="rp-top">
+            <div className="rp-crumbs">
+              {crumbs.map((x, i) => (
+                <button key={x} className={i === crumbs.length - 1 ? 'is-cur' : ''} onClick={() => setPath(path.slice(0, i))} disabled={i === crumbs.length - 1}>{x}</button>
+              ))}
+            </div>
+            <span className="chip">{c.levels[Math.min(level + 1, 3)]}</span>
+          </div>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div key={path.join('-') || 'root'} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.35, ease }}>
+              <p className="rp-title">{title}</p>
+              <p className="rp-value">{money(value)}</p>
+              {rows ? (
+                <ul className="rp-bars">
+                  {rows.map(([n, v], i) => (
+                    <li key={n}>
+                      <button onClick={() => setPath([...path, i])}>
+                        <span className="rp-n">{n}</span>
+                        <span className="rp-track"><motion.span style={{ originX: 0 }} initial={{ scaleX: 0 }} animate={{ scaleX: v / max }} transition={{ duration: 0.6, delay: 0.05 * i, ease }} /></span>
+                        <span className="rp-v">{money(v)}</span>
+                        <Icon name="right" size={14} />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="rp-entries">
+                  {R_ENT.map(([d, doc, who, amt], i) => (
+                    <motion.div key={doc} className="rp-entry" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * i }}>
+                      <span>{d}</span><span className="rp-doc">{doc}</span><span>{who}</span>
+                      <b>{new Intl.NumberFormat(lang === 'es' ? 'es-ES' : 'en-GB', { minimumFractionDigits: 2 }).format(amt)}</b>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
+          <p className="rp-hint">{level < 2 ? c.hint : <button onClick={() => setPath(path.slice(0, -1))}>← {c.back}</button>}</p>
+        </Reveal>
+        <div>
+          <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
+          <Checks items={c.features} />
+          <a className="link-arrow rp-link" href={REPORTING_URL} target="_blank" rel="noreferrer">{c.link} <Icon name="arrow" size={15} /></a>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* =========================================================
+   Cómo funciona: seis pasos que se encienden al bajar
+   ========================================================= */
+export function HowItWorks() {
+  const { t } = useLang()
+  const c = t.how
+  const ref = useRef(null)
+  const reduce = useReducedMotion()
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 75%', 'end 55%'] })
+  const fill = useTransform(scrollYProgress, [0, 1], [0, 1])
+  const [lit, setLit] = useState(reduce ? 6 : 0)
+  useMotionValueEvent(scrollYProgress, 'change', (v) => { if (!reduce) setLit(Math.round(v * c.steps.length + 0.3)) })
+  return (
+    <section className="section how" id="como-funciona">
+      <div className="wrap">
+        <SectionHead kicker={c.kicker} title={c.title} align="center" />
+        <div className="how-track" ref={ref}>
+          <span className="how-line" aria-hidden="true"><motion.span style={{ scaleX: reduce ? 1 : fill }} /></span>
+          <ol className="how-steps">
+            {c.steps.map((s, i) => (
+              <li key={s.title} className={`${i < lit ? 'is-lit' : ''} ${s.soon ? 'is-soon' : ''}`}>
+                <span className="how-ico"><Icon name={s.icon} size={20} /></span>
+                <span className="how-n">{String(i + 1).padStart(2, '0')}</span>
+                <b>{s.title} {s.soon && <Soon />}</b>
+                <span>{s.text}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* =========================================================
+   Implantación: módulos que se apilan sobre la misma base
+   ========================================================= */
+export function Implementation() {
+  const { t } = useLang()
+  const c = t.impl
+  const [on, setOn] = useState([0])
+  const [focus, setFocus] = useState(0)
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, amount: 0.4 })
+  const toggle = (i) => {
+    if (i === 0) { setFocus(0); return }
+    setOn((x) => (x.includes(i) ? x.filter((k) => k !== i) : [...x, i]))
+    setFocus(i)
+  }
+  return (
+    <section className="section impl" id="implantacion">
+      <div className="wrap impl-grid">
+        <div>
+          <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
+          <div className="impl-phases" ref={ref}>
+            <p className="impl-mod">{c.modules[focus]}</p>
+            <ol>
+              {c.phases.map((p, i) => (
+                <li key={p}>
+                  <motion.span className="impl-bar" style={{ originX: 0 }} initial={{ scaleX: 0 }} animate={inView ? { scaleX: 1 } : {}} key={`${focus}-${i}`}
+                    transition={{ duration: 0.6, delay: 0.15 + i * 0.25, ease }} />
+                  <span className="impl-n">{i + 1}</span>
+                  <b>{p}</b>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <p className="impl-price"><Icon name="key" size={14} /> {c.pricing}</p>
+        </div>
+
+        <Reveal className="impl-stack-wrap" delay={0.1}>
+          <div className="impl-stack">
+            <AnimatePresence initial={false}>
+              {[...on].sort((a, b) => b - a).map((i) => (
+                <motion.button key={i} layout className={`impl-block b${i} ${focus === i ? 'is-focus' : ''}`} onClick={() => toggle(i)}
+                  initial={{ opacity: 0, y: -60, rotate: -2 }} animate={{ opacity: 1, y: 0, rotate: 0 }} exit={{ opacity: 0, y: -40, scale: 0.95 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 22 }}>
+                  {c.modules[i]}
+                </motion.button>
+              ))}
+            </AnimatePresence>
+            <div className="impl-base"><Icon name="layers" size={15} /> {c.base}</div>
+          </div>
+          <div className="impl-picks">
+            <p>{c.hint}</p>
+            {c.modules.map((m, i) => (
+              <button key={m} className={`impl-pick ${on.includes(i) ? 'is-on' : ''}`} onClick={() => toggle(i)} aria-pressed={on.includes(i)}>
+                <Icon name={on.includes(i) ? 'check' : 'plus'} size={14} stroke={2.4} /> {m}
+              </button>
+            ))}
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  )
+}
+
+/* =========================================================
+   Para quién es + Próximamente
+   ========================================================= */
+export function WhoFor() {
+  const { t } = useLang()
+  const c = t.who
+  return (
+    <section className="section who" id="para-quien">
+      <div className="wrap">
+        <SectionHead kicker={c.kicker} title={c.title} />
+        <ul className="who-list">
+          {c.items.map((x, i) => (
+            <Reveal as="li" key={x.title} delay={0.06 * i}>
+              <span className="who-ico"><Icon name={x.icon} size={20} /></span>
+              <b>{x.title}</b>
+              <span>{x.text}</span>
+            </Reveal>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+export function Roadmap() {
+  const { t } = useLang()
+  const c = t.roadmap
+  return (
+    <section className="section roadmap" id="proximamente">
+      <div className="wrap">
+        <div className="panel rm-panel">
+          <div className="rm-head">
+            <span className="soon">{c.kicker}</span>
+            <h2 className="h2">{c.title}</h2>
+          </div>
+          <ol className="rm-track">
+            {c.items.map((x, i) => (
+              <Reveal as="li" key={x} delay={0.07 * i}>
+                <span className="rm-dot" />
+                <span>{x}</span>
+              </Reveal>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
+  )
+}

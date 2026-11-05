@@ -16,15 +16,15 @@ const LAYOUTS = {
     w: 1400, h: 520,
     sources: [0, 1, 2, 3].map((i) => ({ x: 24, y: 78 + i * 80, w: 224, h: 64 })),
     layers: [326, 616, 906].map((x) => ({ x, y: 40, w: 236, h: 380 })),
-    outputs: [0, 1, 2].map((i) => ({ x: 1200, y: 88 + i * 100, w: 176, h: 84 })),
+    outputs: [0, 1, 2, 3].map((i) => ({ x: 1200, y: 50 + i * 96, w: 176, h: 78 })),
     tray: { x: 644, y: 456, w: 180, h: 44 },
     card: 'tall',
   },
   v: {
-    w: 400, h: 1060,
+    w: 400, h: 1140,
     sources: [[16, 16], [208, 16], [16, 88], [208, 88]].map(([x, y]) => ({ x, y, w: 176, h: 60 })),
     layers: [196, 452, 708].map((y) => ({ x: 24, y, w: 352, h: 196 })),
-    outputs: [16, 143, 270].map((x) => ({ x, y: 964, w: 114, h: 80 })),
+    outputs: [[16, 960], [208, 960], [16, 1052], [208, 1052]].map(([x, y]) => ({ x, y, w: 176, h: 76 })),
     tray: null,
     card: 'wide',
   },
@@ -191,15 +191,15 @@ export default function FlowDiagram({ start, mode = 'h', p, lang }) {
         <motion.path key={d} d={d} className={`fd-link ${p.sources[i].ghost ? 'is-ghost' : ''}`} {...draw(0.6 + i * 0.1)} />
       ))}
       {linkD.map((d, i) => <motion.path key={d} d={d} className="fd-link fd-link-strong" {...draw(i === 0 ? 2.1 : 3.4, 0.5)} />)}
-      {outD.map((d, i) => <motion.path key={d} d={d} className="fd-link" {...draw(4.7 + i * 0.1)} />)}
+      {outD.map((d, i) => <motion.path key={d} d={d} className={`fd-link ${p.outputs[i].ghost ? 'is-ghost' : ''}`} {...draw(4.7 + i * 0.1)} />)}
       {trayD && <motion.path d={trayD} className="fd-link fd-link-warn" {...draw(3.2, 0.4)} />}
 
       {/* partículas: los apuntes viajando */}
       {live && (
         <g filter="url(#fd-glow)">
-          {srcD.slice(0, 3).map((d, i) => <Particles key={d} d={d} n={3} dur={2.4 + i * 0.3} color={METAL.bronze} offset={i * 0.4} />)}
+          {srcD.map((d, i) => <Particles key={d} d={d} n={3} dur={2.4 + i * 0.3} color={METAL.bronze} offset={i * 0.4} />)}
           {linkD.map((d, i) => <Particles key={d} d={d} n={2} dur={1.2} color={i === 0 ? METAL.silver : METAL.gold} offset={i * 0.3} />)}
-          {outD.map((d, i) => <Particles key={d} d={d} n={2} dur={2.2} color="#6EE7B7" offset={i * 0.5} />)}
+          {outD.map((d, i) => (p.outputs[i].ghost ? null : <Particles key={d} d={d} n={2} dur={2.2} color="#6EE7B7" offset={i * 0.5} />))}
           {trayD && <Particles d={trayD} n={1} dur={3.2} color="#FBBF24" r={2.2} offset={1} />}
         </g>
       )}
@@ -244,15 +244,16 @@ export default function FlowDiagram({ start, mode = 'h', p, lang }) {
       {/* destinos */}
       {L.outputs.map((o, i) => {
         const out = p.outputs[i]
-        const small = L.card === 'wide'
+        if (!out) return null
+        const ghost = !!out.ghost
         return (
-          <motion.g key={i} initial={{ opacity: 0, x: 12 }} animate={start ? { opacity: 1, x: 0 } : {}}
+          <motion.g key={i} initial={{ opacity: 0, x: 12 }} animate={start ? { opacity: ghost ? 0.75 : 1, x: 0 } : {}}
             transition={{ delay: 4.9 + i * 0.12, duration: 0.6, ease }}>
             <g transform={`translate(${o.x},${o.y})`}>
-              <rect width={o.w} height={o.h} rx="14" className={`fd-node fd-out ${i === 0 ? 'is-main' : ''}`} />
-              <text x={small ? 12 : 16} y={small ? 32 : 36} className={`fd-name ${small ? 'fd-name-sm' : ''}`}>{out.name}</text>
-              <text x={small ? 12 : 16} y={small ? 52 : 58} className="fd-mono">{out.sub}</text>
-              <Check x={o.w - (small ? 14 : 18)} y={small ? 14 : 18} on={start} delay={5.2 + i * 0.12} />
+              <rect width={o.w} height={o.h} rx="14" className={`fd-node fd-out ${i === 0 ? 'is-main' : ''} ${ghost ? 'is-ghost' : ''}`} />
+              <text x="16" y={o.h / 2 - 3} className="fd-name">{out.name}</text>
+              <text x="16" y={o.h / 2 + 15} className={ghost ? 'fd-soon' : 'fd-mono'}>{out.sub}</text>
+              {!ghost && <Check x={o.w - 18} y={18} on={start} delay={5.2 + i * 0.12} />}
             </g>
           </motion.g>
         )

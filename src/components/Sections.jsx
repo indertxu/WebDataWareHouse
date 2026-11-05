@@ -109,13 +109,16 @@ export function Faq() {
 }
 
 const SIZES = ['1-10', '11-50', '51-200', '201-500', '501-1000', '1000+']
+const ENTITIES = ['1', '2-5', '6-15', '16-50', '50+']
+const ERPS = ['Business Central', 'SAP', 'Sage', 'a3ERP', 'Odoo', 'Holded', 'NetSuite', 'Excel']
+const TOOLS = ['dw', 'conso', 'plan', 'report']
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
 export function Cta() {
   const { t, lang } = useLang()
   const c = t.cta
   const f = c.fields
-  const empty = { first_name: '', last_name: '', company: '', company_size: '', email: '' }
+  const empty = { first_name: '', last_name: '', company: '', company_size: '', entities: '', erps: [], erp_other: '', tools: [], email: '' }
   const [v, setV] = useState(empty)
   const [bad, setBad] = useState({}) // campos con error
   const [trap, setTrap] = useState('') // campo oculto anti-bots
@@ -127,11 +130,19 @@ export function Cta() {
     if (state === 'invalid' || state === 'error') setState('idle')
   }
 
+  const toggleIn = (k, val) => {
+    setV((x) => ({ ...x, [k]: x[k].includes(val) ? x[k].filter((y) => y !== val) : [...x[k], val] }))
+    if (bad[k]) setBad((b) => ({ ...b, [k]: false }))
+    if (state === 'invalid' || state === 'error') setState('idle')
+  }
+
   const check = (x) => ({
     first_name: !x.first_name.trim(),
     last_name: !x.last_name.trim(),
     company: !x.company.trim(),
     company_size: !SIZES.includes(x.company_size),
+    entities: !ENTITIES.includes(x.entities),
+    tools: x.tools.length === 0,
     email: !EMAIL_RE.test(x.email.trim()),
   })
 
@@ -142,7 +153,7 @@ export function Cta() {
     if (Object.values(errs).some(Boolean)) {
       setBad(errs); setState('invalid')
       const first = Object.keys(errs).find((k) => errs[k])
-      document.getElementById(`cta-${first}`)?.focus()
+      (document.getElementById(`cta-${first}`)?.querySelector?.('button') || document.getElementById(`cta-${first}`))?.focus()
       return
     }
     setState('sending')
@@ -155,6 +166,9 @@ export function Cta() {
           last_name: v.last_name.trim(),
           company: v.company.trim(),
           company_size: v.company_size,
+          entities_count: v.entities,
+          erps: [...v.erps.filter((x) => x !== 'other'), ...(v.erps.includes('other') && v.erp_other.trim() ? [v.erp_other.trim()] : [])],
+          tools: v.tools,
           email: v.email.trim(),
           lang,
           source: 'next-data-web',
@@ -211,7 +225,7 @@ export function Cta() {
                   ))}
                 </ol>
                 <div className="cta-done-actions">
-                  <Button href="#producto" onClick={onAnchor} variant="lime" arrow>{c.doneCta}</Button>
+                  <Button href="#plataforma" onClick={onAnchor} variant="lime" arrow>{c.doneCta}</Button>
                   <Button href="#como-funciona" onClick={onAnchor} variant="ghost-dark">{c.doneCta2}</Button>
                 </div>
               </motion.div>
@@ -225,7 +239,7 @@ export function Cta() {
                 {field('first_name', { input: { type: 'text', autoComplete: 'given-name', placeholder: f.first_name_ph } })}
                   {field('last_name', { input: { type: 'text', autoComplete: 'family-name', placeholder: f.last_name_ph } })}
                   {field('company', { wide: true, input: { type: 'text', autoComplete: 'organization', placeholder: f.company_ph } })}
-                  <label className="cf cf-wide" htmlFor="cta-company_size">
+                  <label className="cf" htmlFor="cta-company_size">
                     <span>{f.company_size}</span>
                     <select id="cta-company_size" value={v.company_size} onChange={set('company_size')} disabled={busy}
                       aria-invalid={!!bad.company_size} aria-describedby="cta-err" className={v.company_size ? '' : 'is-empty'}>
@@ -233,6 +247,37 @@ export function Cta() {
                       {SIZES.map((s) => <option key={s} value={s}>{s} {f.employees}</option>)}
                     </select>
                   </label>
+                  <label className="cf" htmlFor="cta-entities">
+                    <span>{f.entities}</span>
+                    <select id="cta-entities" value={v.entities} onChange={set('entities')} disabled={busy}
+                      aria-invalid={!!bad.entities} aria-describedby="cta-err" className={v.entities ? '' : 'is-empty'}>
+                      <option value="" disabled>{f.entities_ph}</option>
+                      {ENTITIES.map((s) => <option key={s} value={s}>{s} {f.entity_word}</option>)}
+                    </select>
+                  </label>
+                  <fieldset className="cf cf-wide cf-chips" id="cta-erps">
+                    <legend><span>{f.erps}</span> <em>{f.erps_hint}</em></legend>
+                    <div className="chips">
+                      {[...ERPS, 'other'].map((e) => (
+                        <button type="button" key={e} className={`pick ${v.erps.includes(e) ? 'is-on' : ''}`} aria-pressed={v.erps.includes(e)} onClick={() => toggleIn('erps', e)} disabled={busy}>
+                          {e === 'other' ? f.erp_other : e}
+                        </button>
+                      ))}
+                    </div>
+                    {v.erps.includes('other') && (
+                      <input className="erp-other" value={v.erp_other} onChange={set('erp_other')} placeholder={f.erp_other} aria-label={f.erp_other} disabled={busy} />
+                    )}
+                  </fieldset>
+                  <fieldset className="cf cf-wide cf-chips" id="cta-tools" aria-invalid={!!bad.tools}>
+                    <legend><span>{f.tools}</span> <em>{f.tools_hint}</em></legend>
+                    <div className={`chips ${bad.tools ? 'is-bad' : ''}`}>
+                      {TOOLS.map((k) => (
+                        <button type="button" key={k} className={`pick ${v.tools.includes(k) ? 'is-on' : ''}`} aria-pressed={v.tools.includes(k)} onClick={() => toggleIn('tools', k)} disabled={busy}>
+                          {v.tools.includes(k) && <Icon name="check" size={13} stroke={2.6} />} {c.tools[k]}
+                        </button>
+                      ))}
+                    </div>
+                  </fieldset>
                   {field('email', { wide: true, input: { type: 'email', autoComplete: 'email', placeholder: c.placeholder } })}
                   <input className="hp" type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden="true"
                     value={trap} onChange={(e) => setTrap(e.target.value)} />
@@ -296,7 +341,7 @@ export function CtaStrip() {
             <span>{c.text}</span>
           </div>
           <div className="strip-actions">
-            <Button href="#producto" onClick={onAnchor} variant="ghost-dark">{c.secondary}</Button>
+            <Button href="#plataforma" onClick={onAnchor} variant="ghost-dark">{c.secondary}</Button>
             <Button href="#demo" onClick={onAnchor} variant="lime" arrow>{c.primary}</Button>
           </div>
         </Reveal>
