@@ -120,6 +120,52 @@ export default {
       { icon: 'globe', title: 'Tipos de cambio', text: 'De Konsolidator, después de tus ERPs y, si no, del BCE. Cierre y medio por divisa y mes.' },
     ],
   },
+  manifesto: {
+    text: 'Un solo dato, cuadrado y firmado, del que beben la consolidación, el presupuesto, los informes y tu BI. Sin copias. Sin conciliaciones entre herramientas. Sin «¿qué versión es la buena?».',
+    marks: ['Un solo dato,', 'Sin copias.'],
+  },
+  console: {
+    title: 'Cargas · Grupo Norvia',
+    live: 'En directo',
+    lines: [
+      ['bronze', 'Business Central → Norvia Iberia', '48.210 filas'],
+      ['bronze', 'SQL Server → Norvia México', '31.977 filas'],
+      ['silver', 'Mapeo al plan de grupo', '100 % cuentas'],
+      ['silver', 'Tipos de cambio BCE · oct', '1.152 tipos'],
+      ['check', 'Sumas y saldos · Norvia Iberia', 'dif. 0,00'],
+      ['check', 'Intercompañía IBE ↔ UK', 'cuadra'],
+      ['gold', 'Publicado gold · oct 2026', '7 / 8 sociedades'],
+      ['sign', 'Firmado por Laura García', 'Norvia Iberia'],
+    ],
+    progress: 'Cierre de octubre',
+  },
+  query: {
+    sql: "select cuenta_grupo, saldo from gold.sumas_saldos where sociedad = 'IBE' and periodo = '2026-10'",
+    meta: '18 ms · 412 filas',
+  },
+  ai: {
+    kicker: 'Con IA',
+    title: 'La IA propone. Tu equipo firma.',
+    sub: 'La puesta en marcha que antes eran semanas de mapeos a mano ahora la prepara un asistente que conoce tus datos. Tú revisas y confirmas.',
+    points: [
+      { title: 'Mapeos propuestos', text: 'Sociedades, cuentas y campos sugeridos a partir de tus filas reales.' },
+      { title: 'Descuadres explicados', text: 'Por qué no cuadra una pareja intercompañía, separado en causas.' },
+      { title: 'Preguntas con respuesta trazable', text: 'Cada respuesta enlaza al asiento del que sale.' },
+      { title: 'Nada entra sin una persona', text: 'Ningún cambio llega al gold, ni a la consolidación, sin una confirmación explícita.' },
+    ],
+    chat: {
+      title: 'Asistente · Grupo Norvia',
+      q: '¿Por qué no cuadran Norvia Iberia y Norvia UK en octubre?',
+      a: 'Hay 12.480 £ de diferencia en la cuenta A.02. 11.900 £ son tipo de cambio: Iberia convierte a medio y UK a cierre. Los 580 £ restantes son una factura registrada solo en UK.',
+      rows: [
+        ['Tipo de cambio', '11.900,00 £'],
+        ['Registrado en un solo lado', '580,00 £'],
+      ],
+      link: 'Ver asientos · INV-2210',
+      action: 'Proponer ajuste',
+      placeholder: 'Pregunta sobre tus datos…',
+    },
+  },
   layers: {
     kicker: 'Del ERP a gold',
     title: 'Tres capas. Ningún dato se pierde por el camino.',

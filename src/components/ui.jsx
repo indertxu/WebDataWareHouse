@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { motion, useInView, useReducedMotion } from 'framer-motion'
 
 /* ---------- Icons (trazos tipo lucide, 24x24) ---------- */
@@ -64,34 +64,87 @@ export function SectionHead({ kicker, title, sub, align = 'left', dark = false }
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '0px 0px -12% 0px' })
   const reduce = useReducedMotion()
-  const v = (i) => ({
+  const v = (delay) => ({
     initial: reduce ? false : { opacity: 0, y: 22, filter: 'blur(6px)' },
     animate: inView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : undefined,
-    transition: { duration: 0.75, ease, delay: i * 0.09 },
+    transition: { duration: 0.75, ease, delay },
   })
+  const words = typeof title === 'string' ? title.split(' ') : null
   return (
     <div ref={ref} className={`shead shead-${align} ${dark ? 'on-dark' : ''}`}>
       {kicker && <motion.p className="kicker" {...v(0)}>{kicker}</motion.p>}
-      <motion.h2 className="h2" {...v(1)}>{title}</motion.h2>
-      {sub && <motion.p className="lead" {...v(2)}>{sub}</motion.p>}
+      {words ? (
+        <h2 className="h2" aria-label={title}>
+          {words.map((w, i) => (
+            <Fragment key={i}>
+              <span className="w" aria-hidden="true">
+                <motion.span className="w-in"
+                  initial={reduce ? false : { y: '108%', rotate: 4 }}
+                  animate={inView ? { y: '0%', rotate: 0 } : undefined}
+                  transition={{ duration: 0.9, ease, delay: 0.08 + i * 0.045 }}>{w}</motion.span>
+              </span>{i < words.length - 1 ? ' ' : ''}
+            </Fragment>
+          ))}
+        </h2>
+      ) : <motion.h2 className="h2" {...v(0.09)}>{title}</motion.h2>}
+      {sub && <motion.p className="lead" {...v(0.12 + (words ? words.length * 0.045 : 0.1))}>{sub}</motion.p>}
     </div>
   )
 }
 
 /* ---------- Reveal: para bloques que entran después del título ---------- */
-export function Reveal({ children, delay = 0, y = 26, className, as = 'div', ...rest }) {
+export function Reveal({ children, delay = 0, y = 26, tilt = false, className, as = 'div', ...rest }) {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '0px 0px -10% 0px' })
   const reduce = useReducedMotion()
   const M = motion[as]
+  const from = tilt ? { opacity: 0, y: 70, rotateX: 16, scale: 0.96, transformPerspective: 1400 } : { opacity: 0, y }
+  const to = tilt ? { opacity: 1, y: 0, rotateX: 0, scale: 1, transformPerspective: 1400 } : { opacity: 1, y: 0 }
   return (
     <M ref={ref} className={className}
-      initial={reduce ? false : { opacity: 0, y }}
-      animate={inView ? { opacity: 1, y: 0 } : undefined}
-      transition={{ duration: 0.8, ease, delay }} {...rest}>
+      initial={reduce ? false : from}
+      animate={inView ? to : undefined}
+      transition={{ duration: tilt ? 1.1 : 0.8, ease, delay }} {...rest}>
       {children}
     </M>
   )
+}
+
+/* ---------- Texto que se escribe solo ---------- */
+export function useTyped(text, start, { speed = 18, step = 2, delay = 0 } = {}) {
+  const reduce = useReducedMotion()
+  const [n, setN] = useState(reduce ? text.length : 0)
+  useEffect(() => {
+    if (!start) return
+    if (reduce) { setN(text.length); return }
+    setN(0)
+    let id
+    const t0 = setTimeout(() => {
+      id = setInterval(() => setN((x) => { if (x >= text.length) { clearInterval(id); return x } return Math.min(text.length, x + step) }), speed)
+    }, delay)
+    return () => { clearTimeout(t0); clearInterval(id) }
+  }, [start, text, speed, step, delay, reduce])
+  return [text.slice(0, n), n >= text.length]
+}
+
+/* ---------- Brillo que sigue al ratón sobre los paneles oscuros ---------- */
+export function usePanelGlow() {
+  useEffect(() => {
+    if (window.matchMedia('(hover: none)').matches) return
+    let last = null
+    const onMove = (e) => {
+      const el = e.target.closest && e.target.closest('.panel')
+      if (last && last !== el) last.classList.remove('is-glow')
+      last = el
+      if (!el) return
+      const r = el.getBoundingClientRect()
+      el.style.setProperty('--mx', `${e.clientX - r.left}px`)
+      el.style.setProperty('--my', `${e.clientY - r.top}px`)
+      el.classList.add('is-glow')
+    }
+    window.addEventListener('pointermove', onMove, { passive: true })
+    return () => window.removeEventListener('pointermove', onMove)
+  }, [])
 }
 
 /* ---------- Contador con desaceleración cuártica ---------- */

@@ -1,9 +1,19 @@
-import { useMemo, useRef, useState } from 'react'
-import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { AnimatePresence, animate, motion, useInView, useReducedMotion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion'
 import { Button, Icon, Reveal, SectionHead } from './ui.jsx'
 import { useLang } from '../i18n.jsx'
 import { onAnchor } from '../scroll.js'
 import { REPORTING_URL } from '../config.js'
+import { GhostCursor, PipelineConsole, TypedQuery, useGhostScript } from './Fx.jsx'
+
+/* Repite fn cada ms mientras active sea true */
+function useAuto(active, ms, fn) {
+  useEffect(() => {
+    if (!active) return
+    const id = setInterval(fn, ms)
+    return () => clearInterval(id)
+  }, [active, ms]) // eslint-disable-line
+}
 
 const ease = [0.16, 1, 0.3, 1]
 const spring = { type: 'spring', stiffness: 380, damping: 32 }
@@ -35,15 +45,18 @@ export function DwIntro() {
     <section className="section dw-intro" id="data-warehouse">
       <div className="wrap">
         <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
+        <div className="dw-grid">
         <ul className="dw-feats">
           {c.features.map((f, i) => (
-            <Reveal as="li" key={f.title} delay={(i % 3) * 0.06 + Math.floor(i / 3) * 0.08}>
+            <Reveal as="li" key={f.title} delay={(i % 2) * 0.06 + Math.floor(i / 2) * 0.08}>
               <span className="dw-ico"><Icon name={f.icon} size={19} /></span>
               <b>{f.title}</b>
               <span>{f.text}</span>
             </Reveal>
           ))}
         </ul>
+        <Reveal tilt delay={0.15}><PipelineConsole /></Reveal>
+        </div>
       </div>
     </section>
   )
@@ -56,6 +69,12 @@ export function Repository() {
   const { t } = useLang()
   const c = t.repo
   const [aud, setAud] = useState('you')
+  const [touched, setTouched] = useState(false)
+  const panel = useRef(null)
+  const inView = useInView(panel, { amount: 0.4 })
+  const seen = useInView(panel, { once: true, amount: 0.4 })
+  const keys = c.audiences.map((x) => x.key)
+  useAuto(inView && !touched, 3600, () => setAud((k) => keys[(keys.indexOf(k) + 1) % keys.length]))
   const a = c.audiences.find((x) => x.key === aud)
   return (
     <section className="section repo" id="repositorio">
@@ -67,7 +86,7 @@ export function Repository() {
             {c.audiences.map((x) => {
               const on = x.key === aud
               return (
-                <button key={x.key} role="radio" aria-checked={on} className={`repo-aud ${on ? 'is-on' : ''}`} onClick={() => setAud(x.key)}>
+                <button key={x.key} role="radio" aria-checked={on} className={`repo-aud ${on ? 'is-on' : ''}`} onClick={() => { setTouched(true); setAud(x.key) }}>
                   {on && <motion.span layoutId="repo-aud-bg" className="repo-aud-bg" transition={spring} />}
                   <span className="repo-aud-ico"><Icon name={x.key === 'you' ? 'user' : x.key === 'team' ? 'users' : 'link'} size={17} /></span>
                   <span className="repo-aud-txt">
@@ -83,7 +102,9 @@ export function Repository() {
           </ul>
         </div>
 
-        <Reveal className="panel repo-panel" delay={0.1}>
+        <Reveal tilt className="panel repo-panel" delay={0.1}>
+          <div ref={panel}>
+          <TypedQuery start={seen} />
           <div className="repo-head">
             <span className="repo-cat"><Icon name="db" size={15} /> {c.catalog}</span>
             <AnimatePresence mode="wait" initial={false}>
@@ -98,7 +119,8 @@ export function Repository() {
               const open = who.includes(aud)
               return (
                 <motion.div key={name} className={`repo-tr ${open ? '' : 'is-locked'}`} layout
-                  initial={false} animate={{ opacity: open ? 1 : 0.42 }} transition={{ duration: 0.35, delay: i * 0.03 }}>
+                  initial={{ opacity: 0, x: -12 }} animate={seen ? { opacity: open ? 1 : 0.42, x: 0 } : {}} transition={{ duration: 0.45, delay: seen ? i * 0.06 : 0 }}>
+                  {open && <motion.span key={aud} className="repo-sweep" initial={{ x: '-100%' }} animate={{ x: '120%' }} transition={{ duration: 0.9, delay: i * 0.06, ease }} />}
                   <span className="repo-name">{open ? <Icon name="check" size={13} stroke={2.6} /> : <Icon name="lock" size={13} />} {name}</span>
                   <span className="repo-desc">{desc}</span>
                   <span className="repo-rows">{open ? rows : c.locked}</span>
@@ -107,6 +129,7 @@ export function Repository() {
             })}
           </div>
           {a.soon && <p className="repo-soon"><Soon /> {a.via}</p>}
+          </div>
         </Reveal>
       </div>
     </section>
@@ -119,9 +142,15 @@ export function Repository() {
 export function Consolidation() {
   const { t } = useLang()
   const c = t.conso
-  const [sel, setSel] = useState('uk')
+  const [sel, setSel] = useState('ibe')
   const [mode, setMode] = useState(0)
   const [step, setStep] = useState(0)
+  const [touched, setTouched] = useState(false)
+  const box = useRef(null)
+  const inView = useInView(box, { amount: 0.35 })
+  const order = ['ibe', 'uk', 'mex', 'ret', 'hold']
+  useAuto(inView && !touched && mode === 0, 4200, () => setSel((k) => order[(order.indexOf(k) + 1) % order.length]))
+  const pick = (k) => { setTouched(true); setSel(k) }
   const co = c.companies.find((x) => x.key === sel)
   const children = c.companies.slice(1)
   const methodClass = (m) => (/global|full/i.test(m) ? 'm-full' : /propor/i.test(m) ? 'm-prop' : /equiv|equity/i.test(m) ? 'm-eq' : 'm-parent')
@@ -141,23 +170,36 @@ export function Consolidation() {
           </div>
         </div>
 
-        <div className="panel conso-panel">
+        <Reveal tilt className="panel conso-panel" delay={0.05}>
+          <div ref={box}>
           <AnimatePresence mode="wait" initial={false}>
             {mode === 0 ? (
               <motion.div key="engine" className="conso-grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
                 <div className="tree">
-                  <button className={`tree-node is-root ${sel === 'hold' ? 'is-on' : ''}`} onClick={() => setSel('hold')}>
+                  <button className={`tree-node is-root ${sel === 'hold' ? 'is-on' : ''}`} onClick={() => pick('hold')}>
                     <b>{c.companies[0].name}</b><span className="m-parent">{c.companies[0].method}</span>
                   </button>
                   <svg className="tree-lines" viewBox="0 0 400 60" preserveAspectRatio="none" aria-hidden="true">
                     {children.map((_, i) => {
                       const x = 50 + i * 100
-                      return <path key={i} d={`M200,0 C200,30 ${x},30 ${x},60`} className={`tree-l ${children[i].key === sel ? 'is-on' : ''}`} vectorEffect="non-scaling-stroke" />
+                      const d = `M200,0 C200,30 ${x},30 ${x},60`
+                      return (
+                        <g key={i}>
+                          <path id={`tl-${i}`} d={d} className={`tree-l ${children[i].key === sel || sel === 'hold' ? 'is-on' : ''}`} vectorEffect="non-scaling-stroke" />
+                          {[0, 1].map((k) => (
+                            <circle key={k} r="2.6" className="tree-p">
+                              <animateMotion dur={`${1.8 + i * 0.2}s`} begin={`${k * 0.9 + i * 0.3}s`} repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear">
+                                <mpath href={`#tl-${i}`} />
+                              </animateMotion>
+                            </circle>
+                          ))}
+                        </g>
+                      )
                     })}
                   </svg>
                   <div className="tree-kids">
                     {children.map((x) => (
-                      <button key={x.key} className={`tree-node ${x.key === sel ? 'is-on' : ''}`} onClick={() => setSel(x.key)}>
+                      <button key={x.key} className={`tree-node ${x.key === sel ? 'is-on' : ''}`} onClick={() => pick(x.key)}>
                         <span className="tree-pct">{x.pct}</span>
                         <b>{x.name}</b>
                         <span className={methodClass(x.method)}>{x.method}</span>
@@ -168,7 +210,7 @@ export function Consolidation() {
 
                 <div className="conso-detail">
                   <AnimatePresence mode="wait" initial={false}>
-                    <motion.div key={sel} initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.35, ease }}>
+                    <motion.div key={sel} initial={{ opacity: 0, x: 18, filter: 'blur(4px)' }} animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, x: -12, filter: 'blur(4px)' }} transition={{ duration: 0.4, ease }}>
                       <p className="cd-k">{co.name} · {co.pct}</p>
                       <h3 className="cd-m">{co.method}</h3>
                       <p className="cd-t">{co.text}</p>
@@ -211,7 +253,9 @@ export function Consolidation() {
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+          </div>
+          {mode === 0 && !touched && <div className="auto-bar" aria-hidden="true"><motion.span key={sel} initial={{ scaleX: 0 }} animate={{ scaleX: inView ? 1 : 0 }} transition={{ duration: 4.2, ease: 'linear' }} /></div>}
+        </Reveal>
         <Checks items={c.features} cols={2} />
       </div>
     </section>
@@ -234,6 +278,19 @@ export function Planning() {
   const c = t.plan
   const [sc, setSc] = useState(0)
   const [drv, setDrv] = useState(9)
+  const [touched, setTouched] = useState(false)
+  const reduce = useReducedMotion()
+  const box = useRef(null)
+  const seen = useInView(box, { once: true, amount: 0.45 })
+  const inView = useInView(box, { amount: 0.3 })
+  // Al entrar: el driver barre de 0 a 9 % y la curva crece en directo
+  useEffect(() => {
+    if (!seen || reduce) return
+    setDrv(0)
+    const ctl = animate(0, 9, { duration: 2, delay: 0.5, ease: [0.33, 1, 0.68, 1], onUpdate: (v) => setDrv(Math.round(v * 2) / 2) })
+    return () => ctl.stop()
+  }, [seen]) // eslint-disable-line
+  useAuto(inView && seen && !touched, 3400, () => setSc((k) => (k + 1) % 4))
   const W = 640, H = 230, PADX = 6
   const growth = (drv + SCEN[sc].g) / 100
   const plan = useMemo(() => ACT.map((v, i) => v * (1 + growth) * (SCEN[sc].curve ? 1 + (i - 6) * 0.004 : 1)), [growth, sc])
@@ -257,10 +314,11 @@ export function Planning() {
           <Checks items={c.features} />
           <p className="plan-note"><Icon name="sparkles" size={14} /> {c.note}</p>
         </div>
-        <Reveal className="panel plan-panel" delay={0.1}>
+        <Reveal tilt className="panel plan-panel" delay={0.1}>
+          <div ref={box}>
           <div className="seg seg-dark plan-seg" role="tablist">
             {c.scenarios.map((s, i) => (
-              <button key={s} role="tab" aria-selected={sc === i} className={`seg-btn ${sc === i ? 'is-on' : ''}`} onClick={() => setSc(i)}>
+              <button key={s} role="tab" aria-selected={sc === i} className={`seg-btn ${sc === i ? 'is-on' : ''}`} onClick={() => { setTouched(true); setSc(i) }}>
                 {sc === i && <motion.span layoutId="plan-sc" className="seg-pill is-after" transition={spring} />}
                 <span>{s}</span>
               </button>
@@ -278,7 +336,7 @@ export function Planning() {
           </div>
           <svg viewBox={`0 0 ${W} ${H + 24}`} className="plan-chart" aria-hidden="true">
             <defs><linearGradient id="plan-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#6EE7B7" stopOpacity=".32" /><stop offset="1" stopColor="#6EE7B7" stopOpacity="0" /></linearGradient></defs>
-            {[0.25, 0.5, 0.75].map((g) => <line key={g} x1="0" x2={W} y1={H * g} y2={H * g} className="pf-grid" />)}
+            {[0.25, 0.5, 0.75].map((g) => <line key={g} x1="0" x2={W} y1={H * g} y2={H * g} className="pf-gl" />)}
             <motion.path className="plan-area" fill="url(#plan-g)" animate={{ d: area(plan) }} transition={{ duration: 0.6, ease }} />
             <path d={line(ACT)} className="plan-act" />
             <motion.path className="plan-line" animate={{ d: line(plan) }} transition={{ duration: 0.6, ease }} />
@@ -288,9 +346,10 @@ export function Planning() {
           <div className="plan-legend"><span><i className="l-a" />{c.actual}</span><span><i className="l-f" />{c.scenarios[sc]} 2027</span></div>
           <label className="plan-drv">
             <span>{c.driver}</span>
-            <input type="range" min="0" max="20" step="0.5" value={drv} onChange={(e) => setDrv(Number(e.target.value))} />
+            <input type="range" min="0" max="20" step="0.5" value={drv} onChange={(e) => { setTouched(true); setDrv(Number(e.target.value)) }} />
             <b>{drv >= 0 ? '+' : ''}{nf(drv)} %</b>
           </label>
+          </div>
         </Reveal>
       </div>
     </section>
@@ -308,6 +367,16 @@ export function Reporting() {
   const { t, lang } = useLang()
   const c = t.report
   const [path, setPath] = useState([]) // [companyIdx, accountIdx]
+  const [touched, setTouched] = useState(false)
+  const panel = useRef(null)
+  const inView = useInView(panel, { amount: 0.5 })
+  const [ghost, click] = useGhostScript(panel, inView && !touched, [
+    ['.rp-bars li:nth-child(1) button', () => setPath([0]), 1700],
+    ['.rp-bars li:nth-child(1) button', () => setPath([0, 0]), 2600],
+    ['.rp-crumbs button:first-child', () => setPath([]), 1600],
+    ['.rp-bars li:nth-child(2) button', () => setPath([1]), 2200],
+    ['.rp-crumbs button:first-child', () => setPath([]), 1400],
+  ])
   const nf = (n, d = 1) => new Intl.NumberFormat(lang === 'es' ? 'es-ES' : 'en-GB', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n)
   const money = (n) => (lang === 'es' ? `${nf(n)} M €` : `€${nf(n)}M`)
   const level = path.length
@@ -322,7 +391,8 @@ export function Reporting() {
   return (
     <section className="section report" id="reporting">
       <div className="wrap report-grid">
-        <Reveal className="panel report-panel">
+        <Reveal tilt className="panel report-panel">
+          <div className="rp-in" ref={panel} onPointerDown={() => setTouched(true)}>
           <div className="rp-top">
             <div className="rp-crumbs">
               {crumbs.map((x, i) => (
@@ -361,6 +431,8 @@ export function Reporting() {
             </motion.div>
           </AnimatePresence>
           <p className="rp-hint">{level < 2 ? c.hint : <button onClick={() => setPath(path.slice(0, -1))}>← {c.back}</button>}</p>
+          <AnimatePresence>{!touched && <GhostCursor pos={ghost} click={click} />}</AnimatePresence>
+          </div>
         </Reveal>
         <div>
           <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
@@ -416,7 +488,14 @@ export function Implementation() {
   const [focus, setFocus] = useState(0)
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, amount: 0.4 })
+  const [touched, setTouched] = useState(false)
+  useEffect(() => {
+    if (!inView || touched) return
+    const ids = [1, 2, 3].map((i, k) => setTimeout(() => { setOn((x) => (x.includes(i) ? x : [...x, i])); setFocus(i) }, 900 + k * 900))
+    return () => ids.forEach(clearTimeout)
+  }, [inView]) // eslint-disable-line
   const toggle = (i) => {
+    setTouched(true)
     if (i === 0) { setFocus(0); return }
     setOn((x) => (x.includes(i) ? x.filter((k) => k !== i) : [...x, i]))
     setFocus(i)
@@ -505,6 +584,7 @@ export function Roadmap() {
             <h2 className="h2">{c.title}</h2>
           </div>
           <ol className="rm-track">
+            <motion.span className="rm-line" aria-hidden="true" initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true, amount: 0.6 }} transition={{ duration: 1.6, ease }} />
             {c.items.map((x, i) => (
               <Reveal as="li" key={x} delay={0.07 * i}>
                 <span className="rm-dot" />

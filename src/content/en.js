@@ -119,6 +119,52 @@ export default {
       { icon: 'globe', title: 'Exchange rates', text: 'From Konsolidator, then your ERPs, then the ECB. Closing and average per currency and month.' },
     ],
   },
+  manifesto: {
+    text: 'One single piece of data, balanced and signed off, feeding consolidation, budgets, reports and your BI. No copies. No reconciling one tool against another. No “which version is right?”.',
+    marks: ['One single piece of data,', 'No copies.'],
+  },
+  console: {
+    title: 'Loads · Norvia Group',
+    live: 'Live',
+    lines: [
+      ['bronze', 'Business Central → Norvia Iberia', '48,210 rows'],
+      ['bronze', 'SQL Server → Norvia Mexico', '31,977 rows'],
+      ['silver', 'Mapped to the group chart', '100 % accounts'],
+      ['silver', 'ECB exchange rates · Oct', '1,152 rates'],
+      ['check', 'Trial balance · Norvia Iberia', 'diff. 0.00'],
+      ['check', 'Intercompany IBE ↔ UK', 'agrees'],
+      ['gold', 'Gold published · Oct 2026', '7 / 8 companies'],
+      ['sign', 'Signed off by Laura García', 'Norvia Iberia'],
+    ],
+    progress: 'October close',
+  },
+  query: {
+    sql: "select group_account, balance from gold.trial_balance where company = 'IBE' and period = '2026-10'",
+    meta: '18 ms · 412 rows',
+  },
+  ai: {
+    kicker: 'With AI',
+    title: 'AI proposes. Your team signs off.',
+    sub: 'The setup that used to take weeks of manual mapping is now prepared by an assistant that knows your data. You review and confirm.',
+    points: [
+      { title: 'Proposed mappings', text: 'Companies, accounts and fields suggested from your real rows.' },
+      { title: 'Differences explained', text: "Why an intercompany pair doesn't agree, split into causes." },
+      { title: 'Answers you can trace', text: 'Every answer links to the entry it comes from.' },
+      { title: 'Nothing goes in without a person', text: 'No change reaches gold, or the consolidation, without explicit confirmation.' },
+    ],
+    chat: {
+      title: 'Assistant · Norvia Group',
+      q: "Why don't Norvia Iberia and Norvia UK agree in October?",
+      a: 'There is a £12,480 difference on account A.02. £11,900 is exchange rate: Iberia translates at the average rate and UK at closing. The remaining £580 is an invoice booked only in UK.',
+      rows: [
+        ['Exchange rate', '£11,900.00'],
+        ['Booked on one side only', '£580.00'],
+      ],
+      link: 'See entries · INV-2210',
+      action: 'Propose adjustment',
+      placeholder: 'Ask about your data…',
+    },
+  },
   layers: {
     kicker: 'From ERP to gold',
     title: 'Three layers. Nothing gets lost on the way.',

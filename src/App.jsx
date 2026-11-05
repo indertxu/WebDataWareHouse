@@ -13,8 +13,11 @@ import { DwIntro, Repository, Consolidation, Planning, Reporting, HowItWorks, Im
 import { Security, Faq, Cta, Footer, CtaStrip, FloatingCta } from './components/Sections.jsx'
 import { setLenis } from './scroll.js'
 import Consent from './components/Consent.jsx'
+import { AI, Manifesto } from './components/Fx.jsx'
+import { usePanelGlow } from './components/ui.jsx'
 
 export default function App() {
+  usePanelGlow()
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const lenis = new Lenis({ duration: 1.15, smoothWheel: true })
@@ -35,6 +38,7 @@ export default function App() {
       <main id="main">
         <Hero />
         <Problem />
+        <Manifesto />
         <Platform />
         <DwIntro />
         <Layers />
@@ -45,6 +49,7 @@ export default function App() {
         <Planning />
         <Reporting />
         <HowItWorks />
+        <AI />
         <Security />
         <Cloud />
         <Implementation />
