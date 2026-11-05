@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, animate, motion, useInView, useReducedMotion, } from 'framer-motion'
 import { Button, Icon, Reveal, SectionHead } from './ui.jsx'
 import { useLang } from '../i18n.jsx'
-import { onAnchor } from '../scroll.js'
 import { REPORTING_URL } from '../config.js'
 import { GhostCursor, PipelineConsole, TypedQuery, useGhostScript } from './Fx.jsx'
 
@@ -48,14 +47,26 @@ export function DwIntro() {
         <div className="dw-grid">
         <ul className="dw-feats">
           {c.features.map((f, i) => (
-            <Reveal as="li" key={f.title} delay={(i % 2) * 0.06 + Math.floor(i / 2) * 0.08}>
+            <Reveal as="li" key={f.title} delay={i * 0.08}>
               <span className="dw-ico"><Icon name={f.icon} size={19} /></span>
               <b>{f.title}</b>
               <span>{f.text}</span>
+              {f.soon && <span className="dw-soon"><Soon /> {f.soon}</span>}
             </Reveal>
           ))}
         </ul>
         <Reveal tilt delay={0.15}><PipelineConsole /></Reveal>
+        </div>
+        <div className="dt-grid dw-data" aria-label={c.dataTitle}>
+          {c.data.map((g, gi) => (
+            <Reveal key={g.label} className="dt-col" delay={0.08 * gi}>
+              <span className="dt-label"><Icon name={gi ? 'chart' : 'db'} size={15} /> {g.label}</span>
+              <ul>{g.items.map((x, k) => (
+                <motion.li key={x} initial={{ opacity: 0, x: -8 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.6 }}
+                  transition={{ duration: 0.4, ease, delay: 0.15 + gi * 0.1 + k * 0.05 }}>{x}</motion.li>
+              ))}</ul>
+            </Reveal>
+          ))}
         </div>
       </div>
     </section>
@@ -98,9 +109,6 @@ export function Repository() {
               )
             })}
           </div>
-          <ul className="repo-points">
-            {c.points.map((p) => <li key={p.title}><Icon name="lock" size={15} /> <span><b>{p.title}.</b> {p.text}</span></li>)}
-          </ul>
         </div>
 
         <Reveal tilt className="panel repo-panel" delay={0.1}>
@@ -545,49 +553,3 @@ export function WhoStrip() {
   )
 }
 
-export function WhoFor() {
-  const { t } = useLang()
-  const c = t.who
-  return (
-    <section className="section who" id="para-quien">
-      <div className="wrap">
-        <SectionHead kicker={c.kicker} title={c.title} />
-        <ul className="who-list">
-          {c.items.map((x, i) => (
-            <Reveal as="li" key={x.title} delay={0.06 * i}>
-              <span className="who-ico"><Icon name={x.icon} size={20} /></span>
-              <b>{x.title}</b>
-              <span>{x.text}</span>
-            </Reveal>
-          ))}
-        </ul>
-      </div>
-    </section>
-  )
-}
-
-export function Roadmap() {
-  const { t } = useLang()
-  const c = t.roadmap
-  return (
-    <section className="section roadmap" id="proximamente">
-      <div className="wrap">
-        <div className="panel rm-panel">
-          <div className="rm-head">
-            <span className="soon">{c.kicker}</span>
-            <h2 className="h2">{c.title}</h2>
-          </div>
-          <ol className="rm-track">
-            <motion.span className="rm-line" aria-hidden="true" initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true, amount: 0.6 }} transition={{ duration: 1.6, ease }} />
-            {c.items.map((x, i) => (
-              <Reveal as="li" key={x} delay={0.07 * i}>
-                <span className="rm-dot" />
-                <span>{x}</span>
-              </Reveal>
-            ))}
-          </ol>
-        </div>
-      </div>
-    </section>
-  )
-}

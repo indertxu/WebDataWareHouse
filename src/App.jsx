@@ -6,10 +6,9 @@ import Hero from './components/Hero.jsx'
 import Problem from './components/Problem.jsx'
 import Platform from './components/Platform.jsx'
 import Layers from './components/Layers.jsx'
-import Connect from './components/Connect.jsx'
 import { Trust } from './components/Cloud.jsx'
 import Backdrop, { ScrollBar } from './components/Backdrop.jsx'
-import { DwIntro, Repository, Consolidation, Planning, Reporting, Implementation, WhoStrip, Roadmap } from './components/Tools.jsx'
+import { DwIntro, Repository, Consolidation, Planning, Reporting, Implementation, WhoStrip } from './components/Tools.jsx'
 import { Faq, Cta, Footer, CtaStrip, FloatingCta } from './components/Sections.jsx'
 import { setLenis } from './scroll.js'
 import Consent from './components/Consent.jsx'
@@ -45,7 +44,6 @@ export default function App() {
         {/* Capítulo 01 · Data Warehouse (con capas, conectores y repositorio) */}
         <DwIntro />
         <Layers />
-        <Connect />
         <Repository />
         <CtaStrip />
         {/* Capítulos 02-04 */}
@@ -55,7 +53,6 @@ export default function App() {
         <AI />
         <Trust />
         <Implementation />
-        <Roadmap />
         <Faq />
         <Cta />
       </main>

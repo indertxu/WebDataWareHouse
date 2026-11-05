@@ -9,71 +9,6 @@ import { APP_LOGIN_URL, REPORTING_URL, DEMO_REQUEST_URL, LEGAL_URL } from '../co
 
 const ease = [0.16, 1, 0.3, 1]
 
-export function Security() {
-  const { t } = useLang()
-  const c = t.security
-  return (
-    <section className="section security" id="seguridad">
-      <div className="wrap">
-        <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
-        <ul className="sec-list">
-          {c.items.map((x, i) => (
-            <Reveal as="li" key={x.title} delay={(i % 2) * 0.08 + Math.floor(i / 2) * 0.06}>
-              <span className="sec-ico"><Icon name={x.icon} size={20} /></span>
-              <span>
-                <b>{x.title}</b>
-                <span>{x.text}</span>
-              </span>
-            </Reveal>
-          ))}
-        </ul>
-      </div>
-    </section>
-  )
-}
-
-export function Pricing() {
-  const { t } = useLang()
-  const c = t.pricing
-  return (
-    <section className="section pricing" id="precio">
-      <div className="wrap">
-        <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
-        <div className="equation">
-          {c.parts.map((p, i) => (
-            <Reveal key={p.name} className="eq-part-wrap" delay={i * 0.1}>
-              {i > 0 && <span className="eq-plus" aria-hidden="true">+</span>}
-              <div className={`eq-part ${i === 1 ? 'is-focus' : ''}`}>
-                <span className="eq-when">{p.when}</span>
-                <h3 className="eq-name">{p.name}</h3>
-                <p>{p.text}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-        <Reveal className="pricing-foot" delay={0.2}>
-          <blockquote>{c.quote}</blockquote>
-          <Button href="#demo" onClick={onAnchor} variant="ghost" arrow>{c.cta}</Button>
-        </Reveal>
-        <Reveal className="xsell" delay={0.1}>
-          <div className="xsell-mark" aria-hidden="true">
-            <span className="xs-a">Next Data</span>
-            <Icon name="arrow" size={16} />
-            <span className="xs-b">Next Reporting</span>
-          </div>
-          <div>
-            <b>{c.reporting.title}</b>
-            <p>{c.reporting.text}</p>
-          </div>
-          <a className="link-arrow" href={REPORTING_URL} target="_blank" rel="noreferrer">
-            {c.reporting.link} <Icon name="arrow" size={15} />
-          </a>
-        </Reveal>
-      </div>
-    </section>
-  )
-}
-
 export function Faq() {
   const { t } = useLang()
   const c = t.faq
@@ -234,7 +169,6 @@ export function Cta() {
                 </ol>
                 <div className="cta-done-actions">
                   <Button href="#plataforma" onClick={onAnchor} variant="lime" arrow>{c.doneCta}</Button>
-                  <Button href="#plataforma" onClick={onAnchor} variant="ghost-dark">{c.doneCta2}</Button>
                 </div>
               </motion.div>
             ) : (
@@ -323,7 +257,7 @@ export function Footer() {
         </div>
         <nav aria-label={c.product}>
           <span className="f-label">{c.product}</span>
-          {t.nav.links.slice(0, 4).map((l) => <a key={l.id} href={`#${l.id}`} onClick={onAnchor}>{l.label}</a>)}
+          {t.nav.links.slice(0, 6).map((l) => <a key={l.id} href={`#${l.id}`} onClick={onAnchor}>{l.label}</a>)}
         </nav>
         <nav aria-label={c.company}>
           <span className="f-label">{c.company}</span>

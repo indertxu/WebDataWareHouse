@@ -62,7 +62,7 @@ export default {
   problem: {
     kicker: 'El problema',
     title: 'El cierre no debería empezar copiando Excel.',
-    sub: 'Cada sociedad tiene su ERP, los datos operativos viven en otros sistemas y cada herramienta guarda su propia copia. Next Data resuelve el origen: un único modelo, financiero y operativo, cuadrado y firmado, del que beben todas las herramientas.',
+    sub: 'Cada sociedad tiene su ERP, los datos operativos viven en otros sistemas y cada herramienta guarda su propia copia. Así, cada cierre empieza exportando, cuadrando y volviendo a copiar.',
     before: 'Hoy',
     after: 'Con Next Data',
     hint: 'Pulsa para comparar',
@@ -81,7 +81,7 @@ export default {
   platform: {
     kicker: 'La plataforma',
     title: 'Un acceso. Cuatro herramientas. Los mismos datos.',
-    sub: 'Todo vive en la nube: cualquier persona de tu empresa ve lo mismo, desde cualquier navegador. Contratas las herramientas que necesitas; los datos de debajo son siempre los mismos.',
+    sub: 'Todo vive en la nube: cualquier persona de tu empresa ve lo mismo, desde cualquier navegador. Contratas solo las herramientas que necesitas.',
     core: 'Las cuatro leen el mismo gold',
     auto: 'Pulsa una para verla',
     tools: [
@@ -112,13 +112,12 @@ export default {
   dw: {
     kicker: 'Data Warehouse',
     title: 'Tu data warehouse de grupo: finanzas y operaciones en un mismo modelo.',
-    sub: 'La base de todo. Lee tus ERPs y sistemas operativos, estandariza cada apunte y cada dato de negocio, y publica un gold por sociedad y mes del que leen todas las herramientas.',
+    sub: 'La base de todo. Lee tus ERPs y sistemas operativos, estandariza cada apunte y cada dato de negocio, y lo publica por sociedad y mes.',
+    dataTitle: 'Qué datos entran',
+    data: [{ label: 'Financieros', items: ['Diario y apuntes', 'Sumas y saldos', 'Plan de cuentas', 'Dimensiones', 'Tipos de cambio', 'Intercompañía'] }, { label: 'Operativos', items: ['Ventas por producto y cliente', 'Unidades y precios', 'Plantilla y horas', 'Stock e inventario', 'Producción y pedidos', 'Tus KPIs propios'] }],
     features: [
-      { icon: 'db', title: 'Conecta', text: 'Business Central, SQL Server y otros sistemas, mapeos en Excel y el Secure file drop, un portal seguro para recibir ficheros.' },
-      { icon: 'chart', title: 'Financieros y operativos', text: 'Contabilidad junto a ventas por producto y cliente, unidades, plantilla, horas o stock, con las mismas sociedades, centros y meses.' },
+      { icon: 'db', title: 'Conecta', text: 'Business Central, SQL Server, mapeos en Excel y el Secure file drop, un portal seguro para recibir ficheros. Tus sociedades, plan de cuentas y dimensiones llegan solos.', soon: 'Más ERPs y app de Windows' },
       { icon: 'history', title: 'Cargas programadas', text: 'Diarias u horarias, con alertas si algo falla.' },
-      { icon: 'shield', title: 'Cuadre y firma', text: 'Las sumas y saldos se comprueban en cada carga y se firman.' },
-      { icon: 'check', title: 'Gold por sociedad y mes', text: 'Nunca duplicado. Las tablas gold (Blueprints) son el estándar del que leen todas las herramientas.' },
       { icon: 'globe', title: 'Tipos de cambio', text: 'De Konsolidator, después de tus ERPs y, si no, del BCE. Cierre y medio por divisa y mes.' },
     ],
   },
@@ -234,29 +233,6 @@ export default {
       },
     ],
   },
-  connect: {
-    kicker: 'Conectores',
-    title: 'Conecta tus sistemas. Trae cualquier fichero.',
-    sub: 'Lo que está disponible hoy, y lo que llega después. Contabilidad, ventas, plantilla o stock: tus sociedades, tu plan de cuentas y tus dimensiones llegan solos.',
-    steps: [
-      { title: 'Elige la fuente', text: 'Un ERP, una base de datos o el Secure file drop.' },
-      { title: 'Da un acceso seguro', text: 'La credencial va directa a un almacén de claves.' },
-      { title: 'Elige las sociedades', text: 'Y la primera carga empieza.' },
-    ],
-    liveLabel: 'Disponible hoy',
-    nextLabel: 'Próximamente',
-    hub: [
-      { name: 'Business Central', live: true },
-      { name: 'SQL Server', live: true },
-      { name: 'Mapeos en Excel', live: true },
-      { name: 'Secure file drop', live: true },
-      { name: 'Más ERPs' },
-      { name: 'App de Windows' },
-    ],
-    dataTitle: 'Qué datos entran',
-    finance: { label: 'Financieros', items: ['Diario y apuntes', 'Sumas y saldos', 'Plan de cuentas', 'Dimensiones', 'Tipos de cambio', 'Intercompañía'] },
-    ops: { label: 'Operativos', items: ['Ventas por producto y cliente', 'Unidades y precios', 'Plantilla y horas', 'Stock e inventario', 'Producción y pedidos', 'Tus KPIs propios'] },
-  },
   repo: {
     kicker: 'Repositorio',
     title: 'Tus datos financieros y operativos, estandarizados y listos para quien los necesite.',
@@ -279,10 +255,6 @@ export default {
       ['gold.presupuesto', 'Presupuestos y forecasts por cuenta', '96.400', ['you']],
     ],
     locked: 'sin acceso',
-    points: [
-      { title: 'Tus datos siguen siendo tuyos', text: 'Separados por empresa, con permisos y sin duplicados.' },
-      { title: 'Un catálogo que se entiende', text: 'Cada tabla y columna explicada, por cliente.' },
-    ],
   },
   conso: {
     kicker: 'Consolidación',
@@ -326,27 +298,13 @@ export default {
     features: ['KPIs operativos junto a los financieros: margen por unidad, coste por empleado', 'Lee de tus datos en Next Data o de Konsolidator', 'Planes Low, Base, Pro y Max', 'En Pro y Max, un estudio para diseñar tus propias estructuras de informe', 'También disponible como aplicación independiente'],
     link: 'Conoce Next Reporting',
   },
-  how: {
-    kicker: 'Cómo funciona',
-    title: 'De tu ERP a tu decisión, en seis pasos.',
-    steps: [
-      { icon: 'db', title: 'Conecta', text: 'ERPs, bases de datos, Excel y Secure file drop.' },
-      { icon: 'history', title: 'Estandariza', text: 'Bronze → silver → gold, mapeado a tu plan de grupo, cuadrado y firmado.' },
-      { icon: 'layers', title: 'Consolida', text: 'Con nuestro motor NOFCAC/NIIF o enviando a Konsolidator.' },
-      { icon: 'chart', title: 'Planifica', text: 'Presupuestos y forecasts sobre reales.' },
-      { icon: 'eye', title: 'Reporta', text: 'Informes y KPIs con drill-down.' },
-      { icon: 'send', title: 'Comparte', text: 'Abre datos gobernados a quien autorices.', soon: true },
-    ],
-  },
   security: {
     kicker: 'Seguridad y nube',
     title: 'Seguridad desde el diseño.',
     sub: 'Cada empresa aislada, cada persona con lo suyo y ninguna credencial a la vista.',
     items: [
       { icon: 'key', title: 'Inicio de sesión único', text: 'Un solo acceso para todas las herramientas, con verificación en dos pasos obligatoria (Google Authenticator).' },
-      { icon: 'shield', title: 'Empresas aisladas', text: 'La configuración de cada empresa, separada con seguridad a nivel de fila.' },
-      { icon: 'eye', title: 'Permisos por empresa y persona', text: 'Cada usuario ve solo las herramientas y sociedades que le corresponden.' },
-      { icon: 'cloud', title: 'Datos en Google Cloud', text: 'BigQuery y Cloud Storage. Si lo prefieres, Microsoft Fabric.' },
+      { icon: 'shield', title: 'Cada empresa, aislada', text: 'Seguridad a nivel de fila y permisos por persona: cada usuario ve solo sus herramientas y sociedades.' },
       { icon: 'history', title: 'Credenciales bajo llave', text: 'En Google Secret Manager, nunca visibles en la interfaz.' },
       { icon: 'trace', title: 'Cada cifra, trazable', text: 'Linaje completo: de cualquier número de gold al apunte del que sale.' },
     ],
@@ -381,11 +339,6 @@ export default {
       { icon: 'trace', title: 'Despachos y consultores', text: 'Que necesitan datos estandarizados de sus clientes.' },
     ],
   },
-  roadmap: {
-    kicker: 'Próximamente',
-    title: 'Lo que viene.',
-    items: ['Más conectores de ERP', 'App de Windows para el Secure file drop', 'Repositorio abierto a terceros: APIs y compartición gobernada', 'Planificación más completa', 'Más automatización del cierre'],
-  },
   strips: {
     afterLayers: { title: '¿Lo vemos con tus datos?', text: 'En 30 minutos te enseñamos la plataforma con un caso como el tuyo.', primary: 'Solicitar demo', secondary: 'Seguir: Consolidación' },
     afterProblem: { text: '¿Te suena este cierre?', link: 'Cuéntanos cómo lo hacéis hoy' },
@@ -412,7 +365,7 @@ export default {
     points: [
       { icon: 'eye', title: 'Tu caso, no una demo genérica', text: 'Con tus ERPs, tus datos operativos, tu número de sociedades y las herramientas que te interesan.' },
       { icon: 'layers', title: 'Las cuatro herramientas sobre el mismo dato', text: 'Del apunte del ERP al consolidado, el presupuesto y el informe.' },
-      { icon: 'history', title: 'Respuesta en menos de 24 horas', text: 'Te escribimos para cerrar día y hora. 30 minutos, sin compromiso.' },
+      { icon: 'history', title: 'Respuesta en menos de 24 horas', text: 'Te escribimos para cerrar día y hora contigo.' },
     ],
     fields: {
       first_name: 'Nombre', first_name_ph: 'Laura',
@@ -441,7 +394,6 @@ export default {
       { title: 'Demo de 30 minutos', text: 'Con un caso como el tuyo, sin compromiso.' },
     ],
     doneCta: 'Mientras tanto, mira la plataforma',
-    doneCta2: 'Cómo funciona',
     invalid: 'Revisa los campos marcados.',
   },
   cookies: {

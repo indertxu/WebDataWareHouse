@@ -61,7 +61,7 @@ export default {
   problem: {
     kicker: 'The problem',
     title: "Closing the books shouldn't start by copying spreadsheets.",
-    sub: 'Every company has its own ERP, operational data lives in other systems and every tool keeps its own copy. Next Data fixes the root cause: one model, financial and operational, reconciled and signed off, that every tool reads from.',
+    sub: 'Every company has its own ERP, operational data lives in other systems and every tool keeps its own copy. So every close starts by exporting, reconciling and copying all over again.',
     before: 'Today',
     after: 'With Next Data',
     hint: 'Tap to compare',
@@ -80,7 +80,7 @@ export default {
   platform: {
     kicker: 'The platform',
     title: 'One login. Four tools. The same data.',
-    sub: 'Everything lives in the cloud: everyone in your company sees the same numbers from any browser. License the tools you need; the data underneath is always the same.',
+    sub: 'Everything lives in the cloud: everyone in your company sees the same numbers from any browser. License only the tools you need.',
     core: 'All four read the same gold',
     auto: 'Click one to see it',
     tools: [
@@ -111,13 +111,12 @@ export default {
   dw: {
     kicker: 'Data Warehouse',
     title: 'Your group data warehouse: finance and operations in one model.',
-    sub: 'The foundation of everything. It reads your ERPs and operational systems, standardizes every entry and every business figure, and publishes gold per company and month for every tool to read.',
+    sub: 'The foundation of everything. It reads your ERPs and operational systems, standardizes every entry and every business figure, and publishes it per company and month.',
+    dataTitle: 'What data comes in',
+    data: [{ label: 'Financial', items: ['Journal lines', 'Trial balance', 'Chart of accounts', 'Dimensions', 'Exchange rates', 'Intercompany'] }, { label: 'Operational', items: ['Sales by product and customer', 'Units and prices', 'Headcount and hours', 'Stock and inventory', 'Production and orders', 'Your own KPIs'] }],
     features: [
-      { icon: 'db', title: 'Connect', text: 'Business Central, SQL Server and other systems, Excel mapping and Secure file drop, a secure portal for receiving files.' },
-      { icon: 'chart', title: 'Financial and operational', text: 'Accounting alongside sales by product and customer, units, headcount, hours or stock, with the same companies, cost centres and months.' },
+      { icon: 'db', title: 'Connect', text: 'Business Central, SQL Server, Excel mapping and Secure file drop, a secure portal for receiving files. Your companies, chart of accounts and dimensions arrive on their own.', soon: 'More ERPs and a Windows app' },
       { icon: 'history', title: 'Scheduled loads', text: 'Daily or hourly, with alerts if something fails.' },
-      { icon: 'shield', title: 'Reconcile and sign off', text: 'Trial balances are checked on every load and signed off.' },
-      { icon: 'check', title: 'Gold per company and month', text: 'Never duplicated. Gold tables (Blueprints) are the standard every tool reads.' },
       { icon: 'globe', title: 'Exchange rates', text: 'From Konsolidator, then your ERPs, then the ECB. Closing and average per currency and month.' },
     ],
   },
@@ -233,29 +232,6 @@ export default {
       },
     ],
   },
-  connect: {
-    kicker: 'Connectors',
-    title: 'Connect your systems. Bring any file.',
-    sub: "What's available today, and what's next. Accounting, sales, headcount or stock: your companies, chart of accounts and dimensions arrive on their own.",
-    steps: [
-      { title: 'Pick the source', text: 'An ERP, a database or the Secure file drop.' },
-      { title: 'Give secure access', text: 'The credential goes straight into a key store.' },
-      { title: 'Choose the companies', text: 'And the first load starts.' },
-    ],
-    liveLabel: 'Available today',
-    nextLabel: 'Coming soon',
-    hub: [
-      { name: 'Business Central', live: true },
-      { name: 'SQL Server', live: true },
-      { name: 'Excel mapping', live: true },
-      { name: 'Secure file drop', live: true },
-      { name: 'More ERPs' },
-      { name: 'Windows app' },
-    ],
-    dataTitle: 'What data comes in',
-    finance: { label: 'Financial', items: ['Journal lines', 'Trial balance', 'Chart of accounts', 'Dimensions', 'Exchange rates', 'Intercompany'] },
-    ops: { label: 'Operational', items: ['Sales by product and customer', 'Units and prices', 'Headcount and hours', 'Stock and inventory', 'Production and orders', 'Your own KPIs'] },
-  },
   repo: {
     kicker: 'Repository',
     title: 'Your financial and operational data, standardized and ready for whoever needs it.',
@@ -278,10 +254,6 @@ export default {
       ['gold.budget', 'Budgets and forecasts per account', '96,400', ['you']],
     ],
     locked: 'no access',
-    points: [
-      { title: 'Your data stays yours', text: 'Separated per company, permissioned, never duplicated.' },
-      { title: 'A catalog people understand', text: 'Every table and column explained, per client.' },
-    ],
   },
   conso: {
     kicker: 'Consolidation',
@@ -325,27 +297,13 @@ export default {
     features: ['Operational KPIs next to financial ones: margin per unit, cost per employee', 'Reads from your data in Next Data or from Konsolidator', 'Low, Base, Pro and Max plans', 'Pro and Max include a studio to design your own report structures', 'Also available as a standalone app'],
     link: 'Discover Next Reporting',
   },
-  how: {
-    kicker: 'How it works',
-    title: 'From your ERP to your decision, in six steps.',
-    steps: [
-      { icon: 'db', title: 'Connect', text: 'ERPs, databases, Excel and Secure file drop.' },
-      { icon: 'history', title: 'Standardize', text: 'Bronze → silver → gold, mapped to your group chart, reconciled and signed off.' },
-      { icon: 'layers', title: 'Consolidate', text: 'With our Spanish GAAP/IFRS engine or by sending to Konsolidator.' },
-      { icon: 'chart', title: 'Plan', text: 'Budgets and forecasts on actuals.' },
-      { icon: 'eye', title: 'Report', text: 'Reports and KPIs with drill-down.' },
-      { icon: 'send', title: 'Share', text: 'Open governed data to whoever you authorize.', soon: true },
-    ],
-  },
   security: {
     kicker: 'Security and cloud',
     title: 'Secure by design.',
     sub: 'Every company isolated, every person with what is theirs, and no credentials on screen.',
     items: [
       { icon: 'key', title: 'Single sign-on', text: 'One login for every tool, with mandatory two-step sign-in (Google Authenticator).' },
-      { icon: 'shield', title: 'Isolated companies', text: "Each company's configuration kept apart with row-level security." },
-      { icon: 'eye', title: 'Permissions per company and person', text: 'Each user only sees the tools and companies that are theirs.' },
-      { icon: 'cloud', title: 'Data on Google Cloud', text: 'BigQuery and Cloud Storage. Microsoft Fabric if you prefer.' },
+      { icon: 'shield', title: 'Every company isolated', text: 'Row-level security and per-person permissions: each user only sees their own tools and companies.' },
       { icon: 'history', title: 'Credentials locked away', text: 'In Google Secret Manager, never shown in the interface.' },
       { icon: 'trace', title: 'Every figure traceable', text: 'Full lineage: from any gold number to the entry it comes from.' },
     ],
@@ -380,11 +338,6 @@ export default {
       { icon: 'trace', title: 'Firms and advisors', text: 'Who need standardized data from their clients.' },
     ],
   },
-  roadmap: {
-    kicker: 'Coming soon',
-    title: "What's next.",
-    items: ['More ERP connectors', 'Windows app for Secure file drop', 'Repository open to third parties: APIs and governed sharing', 'A more complete Planning module', 'More close automation'],
-  },
   strips: {
     afterLayers: { title: 'Shall we look at your data?', text: "In 30 minutes we'll show you the platform with a case like yours.", primary: 'Request a demo', secondary: 'Next: Consolidation' },
     afterProblem: { text: 'Sound like your close?', link: 'Tell us how you do it today' },
@@ -411,7 +364,7 @@ export default {
     points: [
       { icon: 'eye', title: 'Your case, not a generic demo', text: 'With your ERPs, your operational data, your number of companies and the tools you care about.' },
       { icon: 'layers', title: 'All four tools on the same data', text: 'From the ERP line to the consolidation, the budget and the report.' },
-      { icon: 'history', title: 'Reply within 24 hours', text: "We'll write to set a date and time. 30 minutes, no commitment." },
+      { icon: 'history', title: 'Reply within 24 hours', text: "We'll write to set a date and time with you." },
     ],
     fields: {
       first_name: 'First name', first_name_ph: 'Laura',
@@ -440,7 +393,6 @@ export default {
       { title: 'A 30-minute demo', text: 'With a case like yours, no commitment.' },
     ],
     doneCta: 'Meanwhile, see the platform',
-    doneCta2: 'How it works',
     invalid: 'Check the highlighted fields.',
   },
   cookies: {
