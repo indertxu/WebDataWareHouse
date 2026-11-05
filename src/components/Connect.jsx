@@ -71,7 +71,7 @@ export default function Connect() {
     <section className="section connect" id="conecta">
       <div className="wrap connect-grid">
         <div>
-          <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
+          <SectionHead num="01" kicker={c.kicker} title={c.title} sub={c.sub} />
           <ol className="steps3">
             {c.steps.map((s, i) => (
               <Reveal as="li" key={s.title} delay={0.1 + i * 0.09}>

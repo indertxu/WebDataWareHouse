@@ -80,8 +80,8 @@ export default {
     kicker: 'La plataforma',
     title: 'Un acceso. Cuatro herramientas. Los mismos datos.',
     sub: 'Todo vive en la nube: cualquier persona de tu empresa ve lo mismo, desde cualquier navegador. Contratas las herramientas que necesitas; los datos de debajo son siempre los mismos.',
-    core: 'Gold · un solo modelo',
-    auto: 'Pasan solas · pulsa una para verla',
+    core: 'Las cuatro leen el mismo gold',
+    auto: 'Pulsa una para verla',
     tools: [
       { key: 'dw', name: 'Data Warehouse', text: 'Conecta, estandariza y publica tus datos financieros por sociedad y mes.' },
       { key: 'conso', name: 'Consolidación', text: 'Motor propio conforme a NOFCAC y NIIF, o envío a Konsolidator si ya consolidas allí.' },
@@ -118,6 +118,15 @@ export default {
       { icon: 'trace', title: 'Transparencia total', text: 'Vista de pipeline con las tablas reales, quién las construyó y un mapa de linaje.' },
       { icon: 'check', title: 'Gold por sociedad y mes', text: 'Nunca duplicado. Las tablas gold (Blueprints) son el estándar del que leen todas las herramientas.' },
       { icon: 'globe', title: 'Tipos de cambio', text: 'De Konsolidator, después de tus ERPs y, si no, del BCE. Cierre y medio por divisa y mes.' },
+    ],
+  },
+  chapters: {
+    title: 'Las cuatro herramientas',
+    items: [
+      { n: '01', label: 'Data Warehouse', from: 'data-warehouse', to: 'repositorio' },
+      { n: '02', label: 'Consolidación', from: 'consolidacion', to: 'consolidacion' },
+      { n: '03', label: 'Planificación', from: 'planificacion', to: 'planificacion' },
+      { n: '04', label: 'Reporting', from: 'reporting', to: 'reporting' },
     ],
   },
   manifesto: {
@@ -374,7 +383,7 @@ export default {
     items: ['Más conectores de ERP', 'App de Windows para el Secure file drop', 'Repositorio abierto a terceros: APIs y compartición gobernada', 'Planificación más completa', 'Más automatización del cierre'],
   },
   strips: {
-    afterLayers: { title: '¿Lo vemos con tus datos?', text: 'En 30 minutos te enseñamos la plataforma con un caso como el tuyo.', primary: 'Solicitar demo', secondary: 'Ver las herramientas' },
+    afterLayers: { title: '¿Lo vemos con tus datos?', text: 'En 30 minutos te enseñamos la plataforma con un caso como el tuyo.', primary: 'Solicitar demo', secondary: 'Seguir: Consolidación' },
     afterProblem: { text: '¿Te suena este cierre?', link: 'Cuéntanos cómo lo hacéis hoy' },
   },
   floating: 'Solicitar demo',
@@ -394,6 +403,11 @@ export default {
   cta: {
     title: 'Ve tus propios datos en Next Data.',
     sub: 'Te enseñamos la plataforma con un caso como el tuyo. 30 minutos, sin compromiso.',
+    points: [
+      { icon: 'eye', title: 'Tu caso, no una demo genérica', text: 'Con tus ERPs, tu número de sociedades y las herramientas que te interesan.' },
+      { icon: 'layers', title: 'Las cuatro herramientas sobre el mismo dato', text: 'Del apunte del ERP al consolidado, el presupuesto y el informe.' },
+      { icon: 'history', title: 'Respuesta en menos de 24 horas', text: 'Te escribimos para cerrar día y hora. 30 minutos, sin compromiso.' },
+    ],
     fields: {
       first_name: 'Nombre', first_name_ph: 'Laura',
       last_name: 'Apellidos', last_name_ph: 'García López',

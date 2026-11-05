@@ -79,8 +79,8 @@ export default {
     kicker: 'The platform',
     title: 'One login. Four tools. The same data.',
     sub: 'Everything lives in the cloud: everyone in your company sees the same numbers from any browser. License the tools you need; the data underneath is always the same.',
-    core: 'Gold · one model',
-    auto: 'They rotate · click one to see it',
+    core: 'All four read the same gold',
+    auto: 'Click one to see it',
     tools: [
       { key: 'dw', name: 'Data Warehouse', text: 'Connects, standardizes and publishes your financial data per company and month.' },
       { key: 'conso', name: 'Consolidation', text: 'Our own Spanish GAAP (NOFCAC) and IFRS engine, or send to Konsolidator if you already consolidate there.' },
@@ -117,6 +117,15 @@ export default {
       { icon: 'trace', title: 'Full transparency', text: 'A pipeline view with the real tables, who built them and a lineage map.' },
       { icon: 'check', title: 'Gold per company and month', text: 'Never duplicated. Gold tables (Blueprints) are the standard every tool reads.' },
       { icon: 'globe', title: 'Exchange rates', text: 'From Konsolidator, then your ERPs, then the ECB. Closing and average per currency and month.' },
+    ],
+  },
+  chapters: {
+    title: 'The four tools',
+    items: [
+      { n: '01', label: 'Data Warehouse', from: 'data-warehouse', to: 'repositorio' },
+      { n: '02', label: 'Consolidation', from: 'consolidacion', to: 'consolidacion' },
+      { n: '03', label: 'Planning', from: 'planificacion', to: 'planificacion' },
+      { n: '04', label: 'Reporting', from: 'reporting', to: 'reporting' },
     ],
   },
   manifesto: {
@@ -373,7 +382,7 @@ export default {
     items: ['More ERP connectors', 'Windows app for Secure file drop', 'Repository open to third parties: APIs and governed sharing', 'A more complete Planning module', 'More close automation'],
   },
   strips: {
-    afterLayers: { title: 'Shall we look at your data?', text: "In 30 minutes we'll show you the platform with a case like yours.", primary: 'Request a demo', secondary: 'See the tools' },
+    afterLayers: { title: 'Shall we look at your data?', text: "In 30 minutes we'll show you the platform with a case like yours.", primary: 'Request a demo', secondary: 'Next: Consolidation' },
     afterProblem: { text: 'Sound like your close?', link: 'Tell us how you do it today' },
   },
   floating: 'Request a demo',
@@ -393,6 +402,11 @@ export default {
   cta: {
     title: 'See your own data in Next Data.',
     sub: "We'll show you the platform with a case like yours. 30 minutes, no commitment.",
+    points: [
+      { icon: 'eye', title: 'Your case, not a generic demo', text: 'With your ERPs, your number of companies and the tools you care about.' },
+      { icon: 'layers', title: 'All four tools on the same data', text: 'From the ERP line to the consolidation, the budget and the report.' },
+      { icon: 'history', title: 'Reply within 24 hours', text: "We'll write to set a date and time. 30 minutes, no commitment." },
+    ],
     fields: {
       first_name: 'First name', first_name_ph: 'Laura',
       last_name: 'Last name', last_name_ph: 'García',

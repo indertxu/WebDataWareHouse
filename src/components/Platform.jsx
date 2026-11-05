@@ -196,27 +196,6 @@ function ReportScreen({ s }) {
 const SCREENS = { dw: DwScreen, conso: ConsoScreen, plan: PlanScreen, report: ReportScreen }
 
 /* ---------- Núcleo: un solo modelo, cuatro herramientas ---------- */
-function Core({ tools, active, label }) {
-  const pos = [[60, 30], [300, 30], [60, 130], [300, 130]]
-  return (
-    <svg className="pf-core" viewBox="0 0 360 160" aria-hidden="true">
-      {pos.map(([x, y], i) => (
-        <g key={i}>
-          <line x1="180" y1="80" x2={x} y2={y} className={`pf-spoke ${tools[i].key === active ? 'is-on' : ''}`} />
-          {tools[i].key === active && (
-            <circle r="3.5" className="pf-pulse">
-              <animateMotion dur="1.4s" repeatCount="indefinite" path={`M180,80 L${x},${y}`} />
-            </circle>
-          )}
-          <circle cx={x} cy={y} r="5" className={`pf-node ${tools[i].key === active ? 'is-on' : ''}`} />
-        </g>
-      ))}
-      <rect x="80" y="64" width="200" height="32" rx="16" className="pf-core-pill" />
-      <text x="180" y="84" textAnchor="middle" className="pf-core-t">{label}</text>
-    </svg>
-  )
-}
-
 export default function Platform() {
   const { t } = useLang()
   const c = t.platform
@@ -286,8 +265,10 @@ export default function Platform() {
                 )
               })}
             </ul>
-            <Core tools={c.tools} active={active} label={c.core} />
-            <p className="pf-auto">{touched ? '' : c.auto}</p>
+            <p className="pf-auto">
+              <span className="pf-model"><Icon name="layers" size={14} /> {c.core}</span>
+              {!touched && <span>{c.auto}</span>}
+            </p>
           </div>
 
           <div className="pf-stage" onMouseMove={onMove} onMouseLeave={() => { mx.set(0); my.set(0) }}>

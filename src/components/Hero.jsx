@@ -98,7 +98,7 @@ export default function Hero() {
           <motion.div className="hero-cta" {...fade(0.85)}>
             <div className="hero-buttons">
               <Button href="#demo" onClick={onAnchor} arrow>{h.primary}</Button>
-              <Button href="#como-funciona" onClick={onAnchor} variant="ghost" arrow="down">{h.secondary}</Button>
+              <Button href="#plataforma" onClick={onAnchor} variant="ghost" arrow="down">{h.secondary}</Button>
             </div>
             <p className="hero-note">{h.note}</p>
           </motion.div>

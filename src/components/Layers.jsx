@@ -118,7 +118,7 @@ export default function Layers() {
     return (
       <section className="section layers layers-flat" id="capas">
         <div className="wrap">
-          <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
+          <SectionHead num="01" kicker={c.kicker} title={c.title} sub={c.sub} />
           <div className="lf-list">
             {c.steps.map((s, i) => (
               <Reveal key={s.key} className="lf-item">
@@ -141,7 +141,7 @@ export default function Layers() {
       <div className="layers-sticky">
         <div className="wrap layers-grid">
           <div className="layers-left">
-            <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
+            <SectionHead num="01" kicker={c.kicker} title={c.title} sub={c.sub} />
             <ol className="ly-steps">
               <span className="ly-track" aria-hidden="true"><motion.span style={{ scaleY: bar }} /></span>
               {c.steps.map((s, i) => (

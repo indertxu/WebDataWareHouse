@@ -18,8 +18,11 @@ export function Manifesto() {
   const { t } = useLang()
   const c = t.manifesto
   const ref = useRef(null)
+  const textRef = useRef(null)
   const reduce = useReducedMotion()
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 80%', 'end 45%'] })
+  // Empieza cuando el texto asoma y termina cuando su última línea pasa por el 62 % de la pantalla:
+  // al llegar al centro ya está entera.
+  const { scrollYProgress } = useScroll({ target: textRef, offset: ['start 92%', 'end 62%'] })
   const words = c.text.split(' ')
   // Palabras destacadas: las que forman parte de alguna de las frases marcadas
   const marked = new Set()
@@ -32,12 +35,12 @@ export function Manifesto() {
   return (
     <section className="section manifesto" ref={ref} aria-label={c.text}>
       <div className="wrap">
-        <p className="mf-text" aria-hidden="true">
+        <p className="mf-text" aria-hidden="true" ref={textRef}>
           {words.map((w, i) => {
             const a = i / words.length
             return reduce
               ? <span key={i} className={`mf-w ${marked.has(i) ? 'is-mark' : ''}`}>{w} </span>
-              : <Word key={i} progress={scrollYProgress} range={[a * 0.9, a * 0.9 + 0.12]} mark={marked.has(i)}>{w}</Word>
+              : <Word key={i} progress={scrollYProgress} range={[a * 0.85, a * 0.85 + 0.15]} mark={marked.has(i)}>{w}</Word>
           })}
         </p>
       </div>
@@ -259,5 +262,63 @@ export function AI() {
         </Reveal>
       </div>
     </section>
+  )
+}
+
+/* =========================================================
+   Raíl de capítulos: en qué herramienta estás (pantallas anchas)
+   ========================================================= */
+export function ChapterRail() {
+  const { t } = useLang()
+  const c = t.chapters
+  const [state, setState] = useState({ show: false, active: -1, prog: [0, 0, 0, 0] })
+  useEffect(() => {
+    let raf = 0
+    const measure = () => {
+      raf = 0
+      const mid = window.innerHeight * 0.5
+      const prog = c.items.map(({ from, to }) => {
+        const a = document.getElementById(from), b = document.getElementById(to)
+        if (!a || !b) return 0
+        const top = a.getBoundingClientRect().top, bottom = b.getBoundingClientRect().bottom
+        return Math.min(1, Math.max(0, (mid - top) / (bottom - top)))
+      })
+      const first = document.getElementById(c.items[0].from), last = document.getElementById(c.items[c.items.length - 1].to)
+      const show = !!first && !!last && first.getBoundingClientRect().top < mid && last.getBoundingClientRect().bottom > mid
+      let active = -1
+      prog.forEach((p, i) => { if (p > 0 && p < 1) active = i })
+      setState({ show, active, prog })
+    }
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(measure) }
+    measure()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); cancelAnimationFrame(raf) }
+  }, [c])
+  const go = (id) => (e) => {
+    e.preventDefault()
+    const el = document.getElementById(id)
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 24, behavior: 'smooth' })
+  }
+  return (
+    <AnimatePresence>
+      {state.show && (
+        <motion.nav className="rail" aria-label={c.title}
+          initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.4, ease }}>
+          <p className="rail-t">{c.title}</p>
+          <ol>
+            {c.items.map((x, i) => (
+              <li key={x.n} className={`${i === state.active ? 'is-on' : ''} ${state.prog[i] >= 1 ? 'is-done' : ''}`}>
+                <a href={`#${x.from}`} onClick={go(x.from)}>
+                  <span className="rail-n">{x.n}</span>
+                  <span className="rail-l">{x.label}</span>
+                </a>
+                <span className="rail-bar"><span style={{ transform: `scaleY(${state.prog[i]})` }} /></span>
+              </li>
+            ))}
+          </ol>
+        </motion.nav>
+      )}
+    </AnimatePresence>
   )
 }

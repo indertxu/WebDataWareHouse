@@ -50,7 +50,7 @@
   --bounce: cubic-bezier(.34, 1.56, .64, 1);
   --font: "Inter Variable", "Inter", system-ui, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, monospace;
-  --max: 1240px;
+  --max: 1280px;
   --gutter: clamp(16px, 4vw, 40px);
   color-scheme: light;
 }

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { AnimatePresence, animate, motion, useInView, useReducedMotion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion'
+import { AnimatePresence, animate, motion, useInView, useReducedMotion, } from 'framer-motion'
 import { Button, Icon, Reveal, SectionHead } from './ui.jsx'
 import { useLang } from '../i18n.jsx'
 import { onAnchor } from '../scroll.js'
@@ -44,7 +44,7 @@ export function DwIntro() {
   return (
     <section className="section dw-intro" id="data-warehouse">
       <div className="wrap">
-        <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
+        <SectionHead num="01" big kicker={c.kicker} title={c.title} sub={c.sub} />
         <div className="dw-grid">
         <ul className="dw-feats">
           {c.features.map((f, i) => (
@@ -80,7 +80,7 @@ export function Repository() {
     <section className="section repo" id="repositorio">
       <div className="wrap repo-grid">
         <div>
-          <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
+          <SectionHead num="01" kicker={c.kicker} title={c.title} sub={c.sub} />
           <p className="repo-who">{c.who}</p>
           <div className="repo-auds" role="radiogroup" aria-label={c.who}>
             {c.audiences.map((x) => {
@@ -159,7 +159,7 @@ export function Consolidation() {
     <section className="section conso" id="consolidacion">
       <div className="wrap">
         <div className="tool-head">
-          <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
+          <SectionHead num="02" big kicker={c.kicker} title={c.title} sub={c.sub} />
           <div className="seg" role="tablist">
             {c.modes.map((m, i) => (
               <button key={m} role="tab" aria-selected={mode === i} className={`seg-btn ${mode === i ? 'is-on' : ''}`} onClick={() => { setMode(i); setStep(0) }}>
@@ -310,7 +310,7 @@ export function Planning() {
     <section className="section plan" id="planificacion">
       <div className="wrap plan-grid">
         <div>
-          <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
+          <SectionHead num="03" big kicker={c.kicker} title={c.title} sub={c.sub} />
           <Checks items={c.features} />
           <p className="plan-note"><Icon name="sparkles" size={14} /> {c.note}</p>
         </div>
@@ -435,43 +435,9 @@ export function Reporting() {
           </div>
         </Reveal>
         <div>
-          <SectionHead kicker={c.kicker} title={c.title} sub={c.sub} />
+          <SectionHead num="04" big kicker={c.kicker} title={c.title} sub={c.sub} />
           <Checks items={c.features} />
           <a className="link-arrow rp-link" href={REPORTING_URL} target="_blank" rel="noreferrer">{c.link} <Icon name="arrow" size={15} /></a>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* =========================================================
-   Cómo funciona: seis pasos que se encienden al bajar
-   ========================================================= */
-export function HowItWorks() {
-  const { t } = useLang()
-  const c = t.how
-  const ref = useRef(null)
-  const reduce = useReducedMotion()
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 75%', 'end 55%'] })
-  const fill = useTransform(scrollYProgress, [0, 1], [0, 1])
-  const [lit, setLit] = useState(reduce ? 6 : 0)
-  useMotionValueEvent(scrollYProgress, 'change', (v) => { if (!reduce) setLit(Math.round(v * c.steps.length + 0.3)) })
-  return (
-    <section className="section how" id="como-funciona">
-      <div className="wrap">
-        <SectionHead kicker={c.kicker} title={c.title} align="center" />
-        <div className="how-track" ref={ref}>
-          <span className="how-line" aria-hidden="true"><motion.span style={{ scaleX: reduce ? 1 : fill }} /></span>
-          <ol className="how-steps">
-            {c.steps.map((s, i) => (
-              <li key={s.title} className={`${i < lit ? 'is-lit' : ''} ${s.soon ? 'is-soon' : ''}`}>
-                <span className="how-ico"><Icon name={s.icon} size={20} /></span>
-                <span className="how-n">{String(i + 1).padStart(2, '0')}</span>
-                <b>{s.title} {s.soon && <Soon />}</b>
-                <span>{s.text}</span>
-              </li>
-            ))}
-          </ol>
         </div>
       </div>
     </section>

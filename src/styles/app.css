@@ -1361,3 +1361,63 @@ body.consent-open .fcta { visibility: hidden; }
   .cs-body { min-height: 300px; }
 }
 @media (max-width: 999px) { .dw-grid > :last-child { order: -1; } }
+
+/* =========================================================
+   Quinta versión: orden, ritmo y capítulos
+   ========================================================= */
+/* Menos aire entre secciones: el contenido manda */
+.section { padding: clamp(56px, 6vw, 92px) 0; }
+.manifesto { padding: clamp(48px, 6vw, 88px) 0; }
+.layers { height: 225vh; }
+.roadmap { padding-top: 0; }
+.strip-sec { padding: 8px 0 clamp(24px, 3vw, 40px); }
+
+/* Número de capítulo */
+.k-num { display: inline-grid; place-items: center; min-width: 26px; height: 20px; padding: 0 6px; margin-right: 8px; border-radius: 6px; background: var(--fg); color: var(--bg); font: 700 11px var(--mono); }
+.kicker:has(.k-num)::before { display: none; }
+.shead.has-num { position: relative; }
+.ch-num { position: absolute; z-index: -1; top: -0.42em; left: -0.06em; font-size: clamp(140px, 17vw, 260px); line-height: 1; font-weight: 900; letter-spacing: -0.07em; pointer-events: none; user-select: none;
+  color: transparent; -webkit-text-stroke: 1.5px color-mix(in srgb, var(--accent) 22%, transparent); }
+.shead-center .ch-num { left: 50%; transform: translateX(-50%); }
+[data-theme="dark"] .ch-num { -webkit-text-stroke-color: rgba(110,231,183,.16); }
+.section:has(.ch-num) { isolation: isolate; }
+
+/* Raíl de capítulos (solo con margen lateral suficiente) */
+.rail { position: fixed; left: clamp(16px, 2vw, 36px); top: 50%; transform: translateY(-50%); z-index: 40; display: none; }
+.rail-t { margin: 0 0 14px; font: 600 10.5px var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--fg-3); }
+.rail ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.rail li { position: relative; padding-left: 14px; }
+.rail a { display: grid; grid-template-columns: 26px auto; align-items: center; gap: 8px; padding: 9px 10px 9px 4px; border-radius: 10px; color: var(--fg-3); transition: color .25s ease, background .25s ease; }
+.rail a:hover { color: var(--fg); background: var(--bg-sunk); }
+.rail-n { font: 700 11.5px var(--mono); }
+.rail-l { font-size: 13.5px; font-weight: 700; white-space: nowrap; }
+.rail-bar { position: absolute; left: 0; top: 6px; bottom: 6px; width: 2px; border-radius: 2px; background: var(--line-2); overflow: hidden; }
+.rail-bar span { display: block; height: 100%; background: var(--accent); transform-origin: top; transition: transform .15s linear; }
+.rail li.is-on a { color: var(--fg); }
+.rail li.is-on .rail-n { color: var(--accent); }
+.rail li.is-done .rail-n { color: var(--accent); }
+@media (min-width: 1560px) { .rail { display: block; } }
+@media (min-width: 1560px) and (max-width: 1759px) { .rail-l { display: none; } .rail li.is-on .rail-l, .rail:hover .rail-l { display: inline; } .rail-t { display: none; } }
+
+/* Plataforma: la lista ocupa la columna, sin gráfico de relleno */
+.pf-grid { align-items: stretch; }
+.pf-side { display: flex; flex-direction: column; }
+.pf-tools { flex: 1; grid-auto-rows: 1fr; }
+.pf-tool { height: 100%; align-content: center; padding: 18px; }
+.pf-auto { display: flex; justify-content: space-between; align-items: center; gap: 12px; text-align: left; margin: 14px 4px 0; }
+.pf-model { display: inline-flex; align-items: center; gap: 8px; color: var(--accent-strong); font-weight: 600; }
+.pf-window { height: 100%; }
+@media (max-width: 999px) { .pf-auto { display: none; } .pf-tools { grid-auto-rows: auto; } }
+/* Bloque de demo: la columna izquierda cuenta qué te llevas */
+.cta-points { list-style: none; padding: 0; margin: 30px 0 0; display: grid; gap: 14px; }
+.cta-points li { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 14px; align-items: start; padding: 14px; border-radius: 14px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); }
+.cta-points b { display: block; color: #F0FDF7; font-size: 15px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 2px; }
+.cta-points li > span:last-child { color: rgba(240,253,247,.72); font-size: 14px; line-height: 1.5; }
+.cta-pt-ico { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; background: linear-gradient(135deg, #34D399, #BEF264); color: #03140D; }
+
+/* Números de capítulo: más presentes, sin pisar el texto */
+.ch-num { top: -0.5em; -webkit-text-stroke: 2px color-mix(in srgb, var(--accent) 34%, transparent); }
+.shead.has-num .kicker { position: relative; }
+@media (max-width: 760px) {
+  .ch-num { left: auto; right: -0.04em; top: -0.32em; font-size: 128px; -webkit-text-stroke-width: 1.5px; }
+}

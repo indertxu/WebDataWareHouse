@@ -226,7 +226,7 @@ export function Cta() {
                 </ol>
                 <div className="cta-done-actions">
                   <Button href="#plataforma" onClick={onAnchor} variant="lime" arrow>{c.doneCta}</Button>
-                  <Button href="#como-funciona" onClick={onAnchor} variant="ghost-dark">{c.doneCta2}</Button>
+                  <Button href="#plataforma" onClick={onAnchor} variant="ghost-dark">{c.doneCta2}</Button>
                 </div>
               </motion.div>
             ) : (
@@ -234,6 +234,14 @@ export function Cta() {
                 <div className="cta-copy">
                   <h2 className="h2">{c.title}</h2>
                   <p>{c.sub}</p>
+                  <ul className="cta-points">
+                    {c.points.map((x, i) => (
+                      <Reveal as="li" key={x.title} delay={0.15 + i * 0.1}>
+                        <span className="cta-pt-ico"><Icon name={x.icon} size={17} /></span>
+                        <span><b>{x.title}</b>{x.text}</span>
+                      </Reveal>
+                    ))}
+                  </ul>
                 </div>
                 <form className="cta-form" onSubmit={submit} noValidate>
                 {field('first_name', { input: { type: 'text', autoComplete: 'given-name', placeholder: f.first_name_ph } })}
@@ -341,7 +349,7 @@ export function CtaStrip() {
             <span>{c.text}</span>
           </div>
           <div className="strip-actions">
-            <Button href="#plataforma" onClick={onAnchor} variant="ghost-dark">{c.secondary}</Button>
+            <Button href="#consolidacion" onClick={onAnchor} variant="ghost-dark" arrow="down">{c.secondary}</Button>
             <Button href="#demo" onClick={onAnchor} variant="lime" arrow>{c.primary}</Button>
           </div>
         </Reveal>

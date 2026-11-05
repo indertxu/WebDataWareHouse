@@ -60,7 +60,7 @@ export function Button({ children, variant = 'primary', arrow, href, onClick, ty
 
 /* ---------- Section head: etiqueta → título → entradilla, en orden ---------- */
 const ease = [0.16, 1, 0.3, 1]
-export function SectionHead({ kicker, title, sub, align = 'left', dark = false }) {
+export function SectionHead({ kicker, title, sub, align = 'left', dark = false, num, big = false }) {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '0px 0px -12% 0px' })
   const reduce = useReducedMotion()
@@ -71,8 +71,13 @@ export function SectionHead({ kicker, title, sub, align = 'left', dark = false }
   })
   const words = typeof title === 'string' ? title.split(' ') : null
   return (
-    <div ref={ref} className={`shead shead-${align} ${dark ? 'on-dark' : ''}`}>
-      {kicker && <motion.p className="kicker" {...v(0)}>{kicker}</motion.p>}
+    <div ref={ref} className={`shead shead-${align} ${dark ? 'on-dark' : ''} ${big && num ? 'has-num' : ''}`}>
+      {big && num && (
+        <motion.span className="ch-num" aria-hidden="true"
+          initial={reduce ? false : { opacity: 0, x: -40 }} animate={inView ? { opacity: 1, x: 0 } : undefined}
+          transition={{ duration: 1.2, ease }}>{num}</motion.span>
+      )}
+      {kicker && <motion.p className="kicker" {...v(0)}>{num && <span className="k-num">{num}</span>}{kicker}</motion.p>}
       {words ? (
         <h2 className="h2" aria-label={title}>
           {words.map((w, i) => (

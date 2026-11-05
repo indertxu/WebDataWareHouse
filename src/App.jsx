@@ -9,11 +9,11 @@ import Layers from './components/Layers.jsx'
 import Connect from './components/Connect.jsx'
 import Cloud from './components/Cloud.jsx'
 import Backdrop, { ScrollBar } from './components/Backdrop.jsx'
-import { DwIntro, Repository, Consolidation, Planning, Reporting, HowItWorks, Implementation, WhoFor, Roadmap } from './components/Tools.jsx'
+import { DwIntro, Repository, Consolidation, Planning, Reporting, Implementation, WhoFor, Roadmap } from './components/Tools.jsx'
 import { Security, Faq, Cta, Footer, CtaStrip, FloatingCta } from './components/Sections.jsx'
 import { setLenis } from './scroll.js'
 import Consent from './components/Consent.jsx'
-import { AI, Manifesto } from './components/Fx.jsx'
+import { AI, ChapterRail, Manifesto } from './components/Fx.jsx'
 import { usePanelGlow } from './components/ui.jsx'
 
 export default function App() {
@@ -35,20 +35,22 @@ export default function App() {
       <ScrollBar />
       <Nav />
       <FloatingCta />
+      <ChapterRail />
       <main id="main">
         <Hero />
         <Problem />
         <Manifesto />
         <Platform />
+        {/* Capítulo 01 · Data Warehouse (con capas, conectores y repositorio) */}
         <DwIntro />
         <Layers />
         <Connect />
-        <CtaStrip />
         <Repository />
+        <CtaStrip />
+        {/* Capítulos 02-04 */}
         <Consolidation />
         <Planning />
         <Reporting />
-        <HowItWorks />
         <AI />
         <Security />
         <Cloud />
