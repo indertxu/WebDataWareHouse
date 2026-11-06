@@ -177,5 +177,23 @@ Deno.serve(async (req) => {
     if (Object.keys(update).length) await supabase.from("demo_requests").update(update).eq("id", row.id);
   }
 
+  // Si este envío ha llegado al CRM, reintenta los que se quedaron pendientes o fallaron (máx. 5, últimos 30 días).
+  // Va en segundo plano: el visitante recibe la respuesta sin esperar a los reintentos.
+  const retryBacklog = async () => {
+    const since30 = new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString();
+    const { data: backlog } = await supabase.from("demo_requests")
+      .select("id, email, first_name, last_name, company, company_size, entities_count, erps, tools, lang, source, page_url, referrer, created_at")
+      .neq("id", row.id).or("crm_status.is.null,crm_status.neq.sent").gte("created_at", since30)
+      .order("created_at", { ascending: true }).limit(5);
+    for (const old of backlog ?? []) {
+      const r = await syncToCrm(old as Record<string, unknown>);
+      await supabase.from("demo_requests").update({
+        crm_status: r.status, crm_id: r.id ?? null, crm_error: r.error ?? null,
+        crm_synced_at: r.status === "sent" ? new Date().toISOString() : null,
+      }).eq("id", old.id);
+    }
+  };
+  if (crm.status === "sent") EdgeRuntime.waitUntil(retryBacklog().catch((e) => console.error("crm retry failed", e)));
+
   return json({ ok: true }, 200, headers);
 });
