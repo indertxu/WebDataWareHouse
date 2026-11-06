@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
 import { Button, Icon, Reveal, SectionHead } from './ui.jsx'
 import Logo from './Logo.jsx'
@@ -57,46 +57,129 @@ const ERPS = ['Business Central', 'SAP', 'Sage', 'a3ERP', 'Odoo', 'Holded', 'Net
 const TOOLS = ['dw', 'conso', 'plan', 'report']
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
+/* Icono de cada herramienta en el formulario */
+const TOOL_ICON = { dw: 'db', conso: 'layers', plan: 'chart', report: 'eye' }
+
+/* Tarjeta "Tu demo": se va rellenando mientras eliges */
+function DemoTicket({ c, v }) {
+  const p = c.preview
+  const f = c.fields
+  const erps = [...v.erps.filter((x) => x !== 'other'), ...(v.erps.includes('other') && v.erp_other.trim() ? [v.erp_other.trim()] : [])]
+  const who = [`${v.first_name} ${v.last_name}`.trim(), v.company.trim()].filter(Boolean).join(' · ')
+  const rows = [
+    { k: 'tools', label: p.tools, empty: p.tools_empty, done: v.tools.length > 0,
+      body: <span className="tk-chips">{v.tools.map((k) => <motion.span layout key={k} className="tk-chip" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}><Icon name={TOOL_ICON[k]} size={12} /> {c.tools[k]}</motion.span>)}</span> },
+    { k: 'group', label: p.group, empty: p.group_empty, done: !!(v.entities && v.company_size),
+      body: [v.entities && `${v.entities} ${f.entity_word}`, v.company_size && `${v.company_size} ${f.employees}`].filter(Boolean).join(' · ') },
+    { k: 'sources', label: p.sources, empty: p.sources_empty, done: erps.length > 0, body: erps.join(', ') },
+    { k: 'who', label: p.who, empty: p.who_empty, done: !!(v.first_name.trim() && v.company.trim()), body: who },
+  ]
+  const n = rows.filter((r) => r.done).length
+  return (
+    <div className="ticket">
+      <div className="tk-head">
+        <span className="tk-ico"><Icon name="sparkles" size={16} /></span>
+        <span><b>{p.title}</b><em>{p.meta}</em></span>
+        <span className="tk-ring" aria-label={p.progress.replace('{n}', n)}>
+          <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" className="tk-ring-bg" />
+            <motion.circle cx="18" cy="18" r="15" className="tk-ring-fg" strokeDasharray="94.25" animate={{ strokeDashoffset: 94.25 * (1 - n / 4) }} transition={{ duration: 0.6, ease }} transform="rotate(-90 18 18)" /></svg>
+          <i>{n}/4</i>
+        </span>
+      </div>
+      <ul className="tk-rows">
+        {rows.map((r) => {
+          const filled = r.done || (typeof r.body === 'string' && r.body)
+          return (
+            <li key={r.k} className={filled ? 'is-on' : ''}>
+              <span className="tk-check">{filled ? <Icon name="check" size={12} stroke={3} /> : null}</span>
+              <span className="tk-k">{r.label}</span>
+              <span className="tk-v">
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.span key={filled ? 'v' : 'e'} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.25 }}>
+                    {filled ? r.body : <span className="tk-empty">{r.empty}</span>}
+                  </motion.span>
+                </AnimatePresence>
+              </span>
+            </li>
+          )
+        })}
+      </ul>
+      <AnimatePresence>
+        {n === 4 && (
+          <motion.p className="tk-ready" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+            <Icon name="check" size={14} stroke={3} /> {p.ready}
+          </motion.p>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
 export function Cta() {
   const { t, lang } = useLang()
   const c = t.cta
   const f = c.fields
   const empty = { first_name: '', last_name: '', company: '', company_size: '', entities: '', erps: [], erp_other: '', tools: [], email: '' }
   const [v, setV] = useState(empty)
+  const [step, setStep] = useState(0)
+  const [dir, setDir] = useState(1)
   const [bad, setBad] = useState({}) // campos con error
   const [trap, setTrap] = useState('') // campo oculto anti-bots
   const [state, setState] = useState('idle') // idle | invalid | sending | sent | error
+  const [note, setNote] = useState('')
+  const formRef = useRef(null)
 
-  const set = (k) => (e) => {
-    setV((x) => ({ ...x, [k]: e.target.value }))
+  const clear = (k) => {
     if (bad[k]) setBad((b) => ({ ...b, [k]: false }))
     if (state === 'invalid' || state === 'error') setState('idle')
+    setNote('')
   }
-
+  const set = (k) => (e) => { setV((x) => ({ ...x, [k]: e.target.value })); clear(k) }
+  const pick = (k, val) => { setV((x) => ({ ...x, [k]: val })); clear(k) }
   const toggleIn = (k, val) => {
     setV((x) => ({ ...x, [k]: x[k].includes(val) ? x[k].filter((y) => y !== val) : [...x[k], val] }))
-    if (bad[k]) setBad((b) => ({ ...b, [k]: false }))
-    if (state === 'invalid' || state === 'error') setState('idle')
+    clear(k)
   }
 
+  // Qué campos van en cada paso, para validar por partes y volver al paso del error
+  const STEP_OF = { tools: 0, entities: 1, company_size: 1, first_name: 2, last_name: 2, company: 2, email: 2 }
   const check = (x) => ({
+    tools: x.tools.length === 0,
+    entities: !ENTITIES.includes(x.entities),
+    company_size: !SIZES.includes(x.company_size),
     first_name: !x.first_name.trim(),
     last_name: !x.last_name.trim(),
     company: !x.company.trim(),
-    company_size: !SIZES.includes(x.company_size),
-    entities: !ENTITIES.includes(x.entities),
-    tools: x.tools.length === 0,
     email: !EMAIL_RE.test(x.email.trim()),
   })
+  const go = (to) => {
+    setDir(to > step ? 1 : -1); setStep(to); setNote('')
+    // si el principio del formulario ha quedado fuera de pantalla (móvil), volver a él
+    const el = formRef.current
+    if (el && el.getBoundingClientRect().top < 70) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 90, behavior: 'smooth' })
+  }
+
+  const next = () => {
+    const errs = check(v)
+    const here = Object.keys(errs).filter((k) => errs[k] && STEP_OF[k] === step)
+    if (here.length) {
+      setBad((b) => ({ ...b, ...Object.fromEntries(here.map((k) => [k, true])) }))
+      setNote(step === 0 ? c.needTools : step === 1 ? c.needGroup : c.invalid)
+      return
+    }
+    go(step + 1)
+  }
 
   const submit = async (e) => {
     e.preventDefault()
+    if (step < 2) { next(); return }
     if (state === 'sending') return
     const errs = check(v)
     if (Object.values(errs).some(Boolean)) {
       setBad(errs); setState('invalid')
       const first = Object.keys(errs).find((k) => errs[k])
-      (document.getElementById(`cta-${first}`)?.querySelector?.('button') || document.getElementById(`cta-${first}`))?.focus()
+      if (STEP_OF[first] !== step) go(STEP_OF[first])
+      else document.getElementById(`cta-${first}`)?.focus()
       return
     }
     setState('sending')
@@ -124,23 +207,30 @@ export function Cta() {
       if (res.status === 400) {
         const data = await res.json().catch(() => ({}))
         const errs2 = {}
-        ;(data.fields || ['email']).forEach((k) => { errs2[k] = true })
+        ;(data.fields || ['email']).forEach((k) => { errs2[k === 'entities_count' ? 'entities' : k] = true })
         setBad(errs2); setState('invalid')
+        const first = Object.keys(errs2)[0]
+        if (STEP_OF[first] !== undefined && STEP_OF[first] !== step) go(STEP_OF[first])
       } else setState('error')
     } catch {
       setState('error')
     }
   }
 
-  const msg = state === 'invalid' ? c.invalid : state === 'error' ? c.error : ''
+  const msg = note || (state === 'invalid' ? c.invalid : state === 'error' ? c.error : '')
   const busy = state === 'sending'
   const field = (k, props = {}) => (
-    <label className={`cf ${props.wide ? 'cf-wide' : ''}`} htmlFor={`cta-${k}`}>
+    <label className={`df ${props.wide ? 'df-wide' : ''}`} htmlFor={`cta-${k}`}>
       <span>{f[k]}</span>
       <input id={`cta-${k}`} value={v[k]} onChange={set(k)} disabled={busy}
         aria-invalid={!!bad[k]} aria-describedby="cta-err" {...props.input} />
     </label>
   )
+  const slide = {
+    initial: (d) => ({ opacity: 0, x: d * 40 }),
+    animate: { opacity: 1, x: 0, transition: { duration: 0.4, ease } },
+    exit: (d) => ({ opacity: 0, x: d * -40, transition: { duration: 0.2 } }),
+  }
 
   return (
     <section className="section cta-sec" id="demo">
@@ -172,69 +262,109 @@ export function Cta() {
                 </div>
               </motion.div>
             ) : (
-              <motion.div key="form" className="cta-grid" exit={{ opacity: 0, y: -10, transition: { duration: 0.25 } }}>
+              <motion.div key="form" className="cta-grid demo-grid" exit={{ opacity: 0, y: -10, transition: { duration: 0.25 } }}>
                 <div className="cta-copy">
                   <h2 className="h2">{c.title}</h2>
                   <p>{c.sub}</p>
-                  <ul className="cta-points">
-                    {c.points.map((x, i) => (
-                      <Reveal as="li" key={x.title} delay={0.15 + i * 0.1}>
-                        <span className="cta-pt-ico"><Icon name={x.icon} size={17} /></span>
-                        <span><b>{x.title}</b>{x.text}</span>
-                      </Reveal>
-                    ))}
+                  <DemoTicket c={c} v={v} />
+                  <ul className="assure">
+                    {c.assure.map((x) => <li key={x}><Icon name="check" size={13} stroke={3} /> {x}</li>)}
                   </ul>
                 </div>
-                <form className="cta-form" onSubmit={submit} noValidate>
-                {field('first_name', { input: { type: 'text', autoComplete: 'given-name', placeholder: f.first_name_ph } })}
-                  {field('last_name', { input: { type: 'text', autoComplete: 'family-name', placeholder: f.last_name_ph } })}
-                  {field('company', { wide: true, input: { type: 'text', autoComplete: 'organization', placeholder: f.company_ph } })}
-                  <label className="cf" htmlFor="cta-company_size">
-                    <span>{f.company_size}</span>
-                    <select id="cta-company_size" value={v.company_size} onChange={set('company_size')} disabled={busy}
-                      aria-invalid={!!bad.company_size} aria-describedby="cta-err" className={v.company_size ? '' : 'is-empty'}>
-                      <option value="" disabled>{f.company_size_ph}</option>
-                      {SIZES.map((s) => <option key={s} value={s}>{s} {f.employees}</option>)}
-                    </select>
-                  </label>
-                  <label className="cf" htmlFor="cta-entities">
-                    <span>{f.entities}</span>
-                    <select id="cta-entities" value={v.entities} onChange={set('entities')} disabled={busy}
-                      aria-invalid={!!bad.entities} aria-describedby="cta-err" className={v.entities ? '' : 'is-empty'}>
-                      <option value="" disabled>{f.entities_ph}</option>
-                      {ENTITIES.map((s) => <option key={s} value={s}>{s} {f.entity_word}</option>)}
-                    </select>
-                  </label>
-                  <fieldset className="cf cf-wide cf-chips" id="cta-erps">
-                    <legend><span>{f.erps}</span> <em>{f.erps_hint}</em></legend>
-                    <div className="chips">
-                      {[...ERPS, 'other'].map((e) => (
-                        <button type="button" key={e} className={`pick ${v.erps.includes(e) ? 'is-on' : ''}`} aria-pressed={v.erps.includes(e)} onClick={() => toggleIn('erps', e)} disabled={busy}>
-                          {e === 'other' ? f.erp_other : e}
+
+                <form className="dform" onSubmit={submit} noValidate ref={formRef}>
+                  <ol className="ds-steps" aria-label={c.title}>
+                    {c.steps.map((s, i) => (
+                      <li key={s} className={`${i === step ? 'is-on' : ''} ${i < step ? 'is-done' : ''}`}>
+                        <button type="button" onClick={() => i < step && go(i)} disabled={i >= step || busy} aria-current={i === step ? 'step' : undefined}>
+                          <span className="ds-n">{i < step ? <Icon name="check" size={12} stroke={3} /> : i + 1}</span>
+                          <span className="ds-l">{s}</span>
                         </button>
-                      ))}
+                      </li>
+                    ))}
+                  </ol>
+                  <div className="ds-bar"><motion.span animate={{ scaleX: (step + 1) / 3 }} transition={{ duration: 0.5, ease }} /></div>
+
+                  <div className="ds-body">
+                    <AnimatePresence mode="wait" custom={dir} initial={false}>
+                      <motion.div key={step} custom={dir} variants={slide} initial="initial" animate="animate" exit="exit">
+                        <h3 className="ds-title">{c.stepTitles[step]}</h3>
+                        <p className="ds-hint">{c.stepHints[step]}</p>
+
+                        {step === 0 && (
+                          <div className="tool-cards" id="cta-tools" role="group" aria-label={f.tools} aria-invalid={!!bad.tools}>
+                            {TOOLS.map((k) => {
+                              const on = v.tools.includes(k)
+                              return (
+                                <motion.button type="button" key={k} className={`tcard ${on ? 'is-on' : ''} ${bad.tools ? 'is-bad' : ''}`}
+                                  aria-pressed={on} onClick={() => toggleIn('tools', k)} whileTap={{ scale: 0.97 }}>
+                                  <span className="tc-ico"><Icon name={TOOL_ICON[k]} size={20} /></span>
+                                  <span className="tc-txt"><b>{c.tools[k]}</b><span>{c.toolText[k]}</span></span>
+                                  <span className="tc-check">{on && <Icon name="check" size={13} stroke={3} />}</span>
+                                </motion.button>
+                              )
+                            })}
+                          </div>
+                        )}
+
+                        {step === 1 && (
+                          <div className="ds-group">
+                            <div className="df-pills" id="cta-entities" role="radiogroup" aria-label={f.entities} aria-invalid={!!bad.entities}>
+                              <span className="df-label">{f.entities}</span>
+                              <div className={`pills ${bad.entities ? 'is-bad' : ''}`}>
+                                {ENTITIES.map((x) => (
+                                  <button type="button" key={x} role="radio" aria-checked={v.entities === x} className={`pill ${v.entities === x ? 'is-on' : ''}`} onClick={() => pick('entities', x)}>{x}</button>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="df-pills" id="cta-company_size" role="radiogroup" aria-label={f.company_size} aria-invalid={!!bad.company_size}>
+                              <span className="df-label">{f.company_size}</span>
+                              <div className={`pills ${bad.company_size ? 'is-bad' : ''}`}>
+                                {SIZES.map((x) => (
+                                  <button type="button" key={x} role="radio" aria-checked={v.company_size === x} className={`pill ${v.company_size === x ? 'is-on' : ''}`} onClick={() => pick('company_size', x)}>{x}</button>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="df-pills" id="cta-erps">
+                              <span className="df-label">{f.erps} <em>{f.erps_hint}</em></span>
+                              <div className="pills">
+                                {[...ERPS, 'other'].map((x) => (
+                                  <button type="button" key={x} aria-pressed={v.erps.includes(x)} className={`pill pill-soft ${v.erps.includes(x) ? 'is-on' : ''}`} onClick={() => toggleIn('erps', x)}>
+                                    {v.erps.includes(x) && <Icon name="check" size={11} stroke={3} />} {x === 'other' ? f.erp_other : x}
+                                  </button>
+                                ))}
+                              </div>
+                              {v.erps.includes('other') && (
+                                <input className="df-other" value={v.erp_other} onChange={set('erp_other')} placeholder={f.erp_other_ph} aria-label={f.erp_other} autoFocus />
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {step === 2 && (
+                          <div className="ds-fields">
+                            {field('first_name', { input: { type: 'text', autoComplete: 'given-name', placeholder: f.first_name_ph, autoFocus: true } })}
+                            {field('last_name', { input: { type: 'text', autoComplete: 'family-name', placeholder: f.last_name_ph } })}
+                            {field('company', { wide: true, input: { type: 'text', autoComplete: 'organization', placeholder: f.company_ph } })}
+                            {field('email', { wide: true, input: { type: 'email', autoComplete: 'email', placeholder: c.placeholder } })}
+                            <input className="hp" type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden="true"
+                              value={trap} onChange={(e) => setTrap(e.target.value)} />
+                          </div>
+                        )}
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+
+                  <div className="ds-foot">
+                    <span id="cta-err" className="cta-err" role="alert">{msg}</span>
+                    <div className="ds-actions">
+                      {step > 0 && <button type="button" className="ds-back" onClick={() => go(step - 1)} disabled={busy}>← {c.back}</button>}
+                      {step < 2
+                        ? <Button type="submit" variant="primary" arrow>{c.next}</Button>
+                        : <Button type="submit" variant="primary" arrow={!busy} disabled={busy} aria-busy={busy}>{busy ? c.sending : c.button}</Button>}
                     </div>
-                    {v.erps.includes('other') && (
-                      <input className="erp-other" value={v.erp_other} onChange={set('erp_other')} placeholder={f.erp_other} aria-label={f.erp_other} disabled={busy} />
-                    )}
-                  </fieldset>
-                  <fieldset className="cf cf-wide cf-chips" id="cta-tools" aria-invalid={!!bad.tools}>
-                    <legend><span>{f.tools}</span> <em>{f.tools_hint}</em></legend>
-                    <div className={`chips ${bad.tools ? 'is-bad' : ''}`}>
-                      {TOOLS.map((k) => (
-                        <button type="button" key={k} className={`pick ${v.tools.includes(k) ? 'is-on' : ''}`} aria-pressed={v.tools.includes(k)} onClick={() => toggleIn('tools', k)} disabled={busy}>
-                          {v.tools.includes(k) && <Icon name="check" size={13} stroke={2.6} />} {c.tools[k]}
-                        </button>
-                      ))}
-                    </div>
-                  </fieldset>
-                  {field('email', { wide: true, input: { type: 'email', autoComplete: 'email', placeholder: c.placeholder } })}
-                  <input className="hp" type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden="true"
-                    value={trap} onChange={(e) => setTrap(e.target.value)} />
-                  <Button type="submit" variant="lime" arrow={!busy} disabled={busy} aria-busy={busy} className="cf-wide">
-                    {busy ? c.sending : c.button}
-                  </Button>
-                  <span id="cta-err" className="cta-err" role="alert">{msg}</span>
+                  </div>
+                  {step === 2 && <p className="ds-privacy"><Icon name="lock" size={12} /> {c.privacy} <a href={LEGAL_URL} target="_blank" rel="noreferrer">{c.privacyLink}</a></p>}
                 </form>
               </motion.div>
             )}
