@@ -183,7 +183,7 @@ export default {
   },
   repo: {
     kicker: 'Repository',
-    title: 'Your financial and operational data, standardized and ready for whoever needs it.',
+    title: 'One repository for all your data, ready for whoever needs it.',
     sub: "Next Data's gold layer isn't just the base for our tools. It is a repository of all your data, financial and operational, in one model, with a catalog of tables and columns so anyone knows what's there and what it means.",
     who: "Who's accessing",
     audiences: [

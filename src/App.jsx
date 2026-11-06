@@ -14,9 +14,11 @@ import { setLenis } from './scroll.js'
 import Consent from './components/Consent.jsx'
 import { ChapterRail, Manifesto } from './components/Fx.jsx'
 import { usePanelGlow } from './components/ui.jsx'
+import { useFitSections } from './fit.js'
 
 export default function App() {
   usePanelGlow()
+  useFitSections()
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const lenis = new Lenis({ duration: 1.15, smoothWheel: true })

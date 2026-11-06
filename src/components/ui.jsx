@@ -143,8 +143,9 @@ export function usePanelGlow() {
       last = el
       if (!el) return
       const r = el.getBoundingClientRect()
-      el.style.setProperty('--mx', `${e.clientX - r.left}px`)
-      el.style.setProperty('--my', `${e.clientY - r.top}px`)
+      const z = r.width / (el.offsetWidth || r.width) // zoom del bloque, si lo hay
+      el.style.setProperty('--mx', `${(e.clientX - r.left) / z}px`)
+      el.style.setProperty('--my', `${(e.clientY - r.top) / z}px`)
       el.classList.add('is-glow')
     }
     window.addEventListener('pointermove', onMove, { passive: true })

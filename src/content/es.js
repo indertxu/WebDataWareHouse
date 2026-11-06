@@ -184,7 +184,7 @@ export default {
   },
   repo: {
     kicker: 'Repositorio',
-    title: 'Tus datos financieros y operativos, estandarizados y listos para quien los necesite.',
+    title: 'Un repositorio con todos tus datos, listo para quien los necesite.',
     sub: 'El gold de Next Data no es solo la base de nuestras herramientas. Es un repositorio de todos tus datos con un único modelo, y un catálogo de tablas y columnas para que cualquiera sepa qué hay y qué significa.',
     who: 'Quién accede',
     audiences: [

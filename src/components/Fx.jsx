@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { Icon, useTyped } from './ui.jsx'
 import { useLang } from '../i18n.jsx'
+import { zoomOf } from '../fit.js'
 
 const ease = [0.16, 1, 0.3, 1]
 
@@ -104,7 +105,8 @@ export function useGhostScript(panelRef, active, steps, loopPause = 2200) {
       const el = p && p.querySelector(sel)
       if (!p || !el) return null
       const a = p.getBoundingClientRect(), b = el.getBoundingClientRect()
-      return { x: b.left - a.left + Math.min(b.width * 0.35, 120), y: b.top - a.top + b.height * 0.55 }
+      const z = zoomOf(p) // dentro de un bloque con zoom, las posiciones se dan sin zoom
+      return { x: (b.left - a.left + Math.min(b.width * 0.35, 120)) / z, y: (b.top - a.top + b.height * 0.55) / z }
     }
     ;(async () => {
       await wait(900)

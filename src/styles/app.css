@@ -1162,3 +1162,60 @@ body.consent-open .fcta { visibility: hidden; }
 .trust-list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 @media (max-width: 999px) { .trust-list { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 640px) { .trust-list { grid-template-columns: 1fr; } }
+
+/* =========================================================
+   Cada bloque cabe en la pantalla
+   Tipografía, espacios y paneles escalan también con el alto de pantalla,
+   para que título + panel se vean enteros sin hacer scroll dentro del bloque.
+   ========================================================= */
+.section { padding: clamp(36px, 6.5vh, 92px) 0; }
+.h1 { font-size: clamp(38px, min(5.7vw, 8.2vh), 82px); margin-top: clamp(12px, 2vh, 22px); }
+.h2 { font-size: clamp(28px, min(4.6vw, 6.1vh), 58px); }
+.lead { font-size: clamp(15px, min(1.35vw, 2.15vh), 18.5px); margin-top: clamp(10px, 1.8vh, 20px); line-height: 1.55; }
+.kicker { margin-bottom: clamp(10px, 2vh, 22px); }
+.tool-body { margin-top: clamp(16px, 3vh, 44px); }
+
+/* Hero: titular, texto y panel en la primera pantalla */
+.hero { padding: clamp(92px, 13vh, 132px) 0 clamp(24px, 4vh, 64px); }
+.hero-row { margin-top: clamp(14px, 2.6vh, 28px); }
+.hero-sub { font-size: clamp(15px, min(1.45vw, 2.2vh), 20px); }
+.hero-stage { margin-top: clamp(20px, 4vh, 52px); }
+/* el panel mide lo que queda de pantalla: ancho = (alto disponible - barras) x proporción del diagrama */
+.hero-panel-tilt { max-width: max(560px, calc((100svh - var(--hero-copy, 430px) - 112px) * 2.69)); margin: 0 auto; }
+
+/* Problema */
+.compare-bar { padding: clamp(12px, 2vh, 22px) 0 clamp(10px, 1.6vh, 18px); }
+.prow { padding: clamp(11px, 1.9vh, 22px) 0; }
+.compare-foot { padding: clamp(10px, 1.6vh, 18px) 0 clamp(12px, 1.8vh, 20px); }
+
+/* Plataforma */
+.pf-screen { min-height: clamp(290px, 42vh, 392px); }
+.pf-tool { padding: clamp(10px, 1.6vh, 18px) 16px; }
+
+/* Repositorio */
+.tq { min-height: 0; padding: clamp(8px, 1.3vh, 12px) 14px; margin-bottom: clamp(8px, 1.4vh, 14px); }
+.repo-tr { padding: clamp(7px, 1.25vh, 12px) 14px; }
+.repo-panel { padding: clamp(14px, 2vh, 20px); }
+.repo-aud { padding: clamp(10px, 1.5vh, 14px); }
+
+/* Planificación */
+.plan-panel { padding: clamp(14px, 2vh, 20px); }
+.plan-seg { margin-bottom: clamp(8px, 1.4vh, 16px); }
+.plan-kpi { padding: clamp(8px, 1.2vh, 12px) 14px; }
+.plan-chart { max-height: clamp(150px, 27vh, 260px); }
+
+/* Reporting */
+.report-panel { min-height: 0; padding: clamp(14px, 2vh, 20px); }
+.rp-in { min-height: clamp(320px, 46vh, 430px); }
+.rp-bars button { padding: clamp(7px, 1.1vh, 10px) 12px; }
+.rp-value { margin-bottom: clamp(8px, 1.4vh, 16px); }
+
+/* Consolidación */
+.conso-panel { padding: clamp(16px, 2.4vh, 32px) clamp(16px, 2.4vw, 32px) clamp(26px, 3.4vh, 42px); }
+.conso-detail { min-height: clamp(220px, 32vh, 300px); }
+
+/* Capas: el bloque fijo se ajusta al alto */
+.layers-sticky { padding-top: clamp(16px, 4vh, 40px); }
+.ly-steps { margin-top: clamp(14px, 2.6vh, 32px); }
+.ly-steps li button { padding: clamp(6px, 1.1vh, 12px) 0; }
+.ly-stack { max-height: 34vh; }
