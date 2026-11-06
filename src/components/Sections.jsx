@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
 import { Button, Icon, Reveal, SectionHead } from './ui.jsx'
 import Logo from './Logo.jsx'
@@ -128,6 +128,7 @@ export function Cta() {
   const [state, setState] = useState('idle') // idle | invalid | sending | sent | error
   const [note, setNote] = useState('')
   const formRef = useRef(null)
+  const busy = state === 'sending'
 
   const clear = (k) => {
     if (bad[k]) setBad((b) => ({ ...b, [k]: false }))
@@ -158,6 +159,20 @@ export function Cta() {
     const el = formRef.current
     if (el && el.getBoundingClientRect().top < 70) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 90, behavior: 'smooth' })
   }
+
+  // Avance automático en los pasos 1 y 2: con lo obligatorio elegido, el botón se llena y pasa solo.
+  // Cada nueva elección reinicia la cuenta; escribiendo en "Otro" se pausa. El paso 3 nunca se envía solo.
+  const [typing, setTyping] = useState(false)
+  const [auto, setAuto] = useState({ key: 0, ms: 0 }) // ms > 0: cuenta atrás en marcha
+  const stepReady = step === 0 ? v.tools.length > 0 : step === 1 ? ENTITIES.includes(v.entities) && SIZES.includes(v.company_size) : false
+  const autoMs = step === 0 ? (v.tools.length === TOOLS.length ? 700 : 1600) : 1800
+  const pendingOther = v.erps.includes('other') && !v.erp_other.trim()
+  useEffect(() => {
+    if (!stepReady || typing || pendingOther || busy) { setAuto((a) => ({ key: a.key + 1, ms: 0 })); return }
+    setAuto((a) => ({ key: a.key + 1, ms: autoMs }))
+    const id = setTimeout(() => go(step + 1), autoMs)
+    return () => clearTimeout(id)
+  }, [step, stepReady, typing, pendingOther, v.tools, v.entities, v.company_size, v.erps]) // eslint-disable-line
 
   const next = () => {
     const errs = check(v)
@@ -218,7 +233,6 @@ export function Cta() {
   }
 
   const msg = note || (state === 'invalid' ? c.invalid : state === 'error' ? c.error : '')
-  const busy = state === 'sending'
   const field = (k, props = {}) => (
     <label className={`df ${props.wide ? 'df-wide' : ''}`} htmlFor={`cta-${k}`}>
       <span>{f[k]}</span>
@@ -335,7 +349,9 @@ export function Cta() {
                                 ))}
                               </div>
                               {v.erps.includes('other') && (
-                                <input className="df-other" value={v.erp_other} onChange={set('erp_other')} placeholder={f.erp_other_ph} aria-label={f.erp_other} autoFocus />
+                                <input className="df-other" value={v.erp_other} onChange={set('erp_other')} placeholder={f.erp_other_ph} aria-label={f.erp_other} autoFocus
+                                  onFocus={() => setTyping(true)} onBlur={() => setTyping(false)}
+                                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); e.currentTarget.blur() } }} />
                               )}
                             </div>
                           </div>
@@ -360,7 +376,12 @@ export function Cta() {
                     <div className="ds-actions">
                       {step > 0 && <button type="button" className="ds-back" onClick={() => go(step - 1)} disabled={busy}>← {c.back}</button>}
                       {step < 2
-                        ? <Button type="submit" variant="primary" arrow>{c.next}</Button>
+                        ? (
+                          <Button type="submit" variant="primary" arrow className={`ds-next ${auto.ms ? 'is-auto' : ''}`}>
+                            {auto.ms > 0 && <motion.span key={auto.key} className="ds-fill" aria-hidden="true" initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: auto.ms / 1000, ease: 'linear' }} />}
+                            <span className="ds-next-t">{c.next}</span>
+                          </Button>
+                        )
                         : <Button type="submit" variant="primary" arrow={!busy} disabled={busy} aria-busy={busy}>{busy ? c.sending : c.button}</Button>}
                     </div>
                   </div>

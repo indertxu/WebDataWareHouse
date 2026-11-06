@@ -280,7 +280,7 @@ export default {
     sub: 'Three steps, under a minute. We prepare it around your systems and your group.',
     steps: ['What to see', 'Your group', 'Your details'],
     stepTitles: ['What do you want to see in the demo?', 'What does your group look like?', 'Who should we prepare it for?'],
-    stepHints: ['Pick one or more tools.', 'So the demo looks like your own close.', "We'll write to set a date and time."],
+    stepHints: ['Pick one or more: we move on by ourselves.', 'So the demo looks like your own close. We move on once you pick.', "We'll write to set a date and time."],
     toolText: {
       dw: 'Your ERPs and operational data in one common model.',
       conso: 'Spanish GAAP or IFRS with intercompany elimination.',

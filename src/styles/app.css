@@ -1336,3 +1336,10 @@ body.consent-open .fcta { visibility: hidden; }
 }
 .ds-back { white-space: nowrap; }
 .ds-privacy svg { flex: none; }
+/* Botón Continuar con cuenta atrás de avance automático */
+.ds-next { position: relative; overflow: hidden; }
+.ds-fill { position: absolute; inset: 0; background: rgba(190,242,100,.35); transform-origin: left; pointer-events: none; }
+.ds-next-t { position: relative; }
+.ds-next .btn-arrow { position: relative; }
+.ds-next.is-auto .btn-arrow { animation: nudge 0.9s ease-in-out infinite; }
+@keyframes nudge { 50% { transform: translateX(3px); } }

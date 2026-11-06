@@ -281,7 +281,7 @@ export default {
     sub: 'Tres pasos, menos de un minuto. Te la preparamos con tus sistemas y tu grupo.',
     steps: ['Qué quieres ver', 'Tu grupo', 'Tus datos'],
     stepTitles: ['¿Qué quieres ver en la demo?', '¿Cómo es tu grupo?', '¿A quién se la preparamos?'],
-    stepHints: ['Elige una o varias herramientas.', 'Así la demo se parece a tu cierre.', 'Te escribimos para cerrar día y hora.'],
+    stepHints: ['Elige una o varias: pasamos solos al siguiente paso.', 'Así la demo se parece a tu cierre. Al elegir, seguimos solos.', 'Te escribimos para cerrar día y hora.'],
     toolText: {
       dw: 'Tus ERPs y datos operativos en un modelo común.',
       conso: 'NOFCAC o NIIF con eliminación intercompañía.',
