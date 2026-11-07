@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { AnimatePresence, animate, motion, useInView, useReducedMotion, } from 'framer-motion'
+import { AnimatePresence, animate, motion, useInView, useReducedMotion, useSpring, useTransform } from 'framer-motion'
 import { Button, Icon, Reveal, SectionHead } from './ui.jsx'
 import { useLang } from '../i18n.jsx'
 import { REPORTING_URL } from '../config.js'
@@ -244,6 +244,22 @@ const SCEN = [
   { g: -6, m: 0.22 },
 ]
 
+// Gráfico de planificación con escala fija: la curva sube y baja con el driver sin que el eje salte.
+const PW = 640, PH = 230, PADX = 6
+const P_MAX = Math.max(...ACT) * 1.24 * 1.02 * 1.06
+const P_MIN = Math.min(...ACT) * 0.94 * 0.976 * 0.86
+const px = (i) => PADX + (i / 11) * (PW - PADX * 2)
+const py = (v) => PH - ((v - P_MIN) / (P_MAX - P_MIN)) * PH
+const planOf = (g, cv) => ACT.map((v, i) => v * (1 + g / 100) * (1 + cv * (i - 6) * 0.004))
+const pLine = (arr) => arr.map((v, i) => `${i ? 'L' : 'M'}${px(i).toFixed(1)},${py(v).toFixed(1)}`).join(' ')
+const pArea = (arr) => `${pLine(arr)} L${px(11)},${PH} L${px(0)},${PH} Z`
+const P_SPRING = { stiffness: 170, damping: 26, mass: 0.6 }
+
+function PlanDot({ i, g, cv }) {
+  const cy = useTransform([g, cv], ([a, b]) => py(planOf(a, b)[i]))
+  return <motion.circle r="3.5" className="plan-dot" cx={px(i)} cy={cy} />
+}
+
 export function Planning() {
   const { t, lang } = useLang()
   const c = t.plan
@@ -262,20 +278,22 @@ export function Planning() {
     return () => ctl.stop()
   }, [seen]) // eslint-disable-line
   useAuto(inView && seen && !touched, 3400, () => setSc((k) => (k + 1) % 4))
-  const W = 640, H = 230, PADX = 6
-  const growth = (drv + SCEN[sc].g) / 100
-  const plan = useMemo(() => ACT.map((v, i) => v * (1 + growth) * (SCEN[sc].curve ? 1 + (i - 6) * 0.004 : 1)), [growth, sc])
-  const max = Math.max(...ACT, ...plan) * 1.12
-  const min = Math.min(...ACT, ...plan) * 0.8
-  const x = (i) => PADX + (i / 11) * (W - PADX * 2)
-  const y = (v) => H - ((v - min) / (max - min)) * H
-  const line = (arr) => arr.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ')
-  const area = (arr) => `${line(arr)} L${x(11)},${H} L${x(0)},${H} Z`
-  const sum = plan.reduce((a, b) => a + b, 0)
-  const base = ACT.reduce((a, b) => a + b, 0)
+  // Valores con muelle: al mover el slider todo (cifras y curva) sigue al dedo sin saltos ni fundidos
+  const g = useSpring(drv + SCEN[sc].g, P_SPRING)
+  const cv = useSpring(SCEN[sc].curve ? 1 : 0, P_SPRING)
+  const m = useSpring(SCEN[sc].m, P_SPRING)
+  useEffect(() => { g.set(drv + SCEN[sc].g); cv.set(SCEN[sc].curve ? 1 : 0); m.set(SCEN[sc].m) }, [drv, sc]) // eslint-disable-line
   const nf = (n, d = 1) => new Intl.NumberFormat(lang === 'es' ? 'es-ES' : 'en-GB', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n)
   const money = (n) => (lang === 'es' ? `${nf(n)} M €` : `€${nf(n)}M`)
-  const kpis = [money(sum), money(sum * SCEN[sc].m), `${sum >= base ? '+' : ''}${nf(((sum - base) / base) * 100)} %`]
+  const base = ACT.reduce((a, b) => a + b, 0)
+  const sum = useTransform([g, cv], ([a, b]) => planOf(a, b).reduce((x, y) => x + y, 0))
+  const kpis = [
+    useTransform(sum, (v) => money(v)),
+    useTransform([sum, m], ([v, k]) => money(v * k)),
+    useTransform(sum, (v) => `${v >= base ? '+' : ''}${nf(((v - base) / base) * 100)} %`),
+  ]
+  const lineD = useTransform([g, cv], ([a, b]) => pLine(planOf(a, b)))
+  const areaD = useTransform([g, cv], ([a, b]) => pArea(planOf(a, b)))
 
   return (
     <section className="section plan" id="planificacion">
@@ -300,20 +318,18 @@ export function Planning() {
             {c.kpis.map((k, i) => (
               <div key={k} className="plan-kpi">
                 <span>{k}</span>
-                <AnimatePresence mode="popLayout" initial={false}>
-                  <motion.b key={kpis[i]} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>{kpis[i]}</motion.b>
-                </AnimatePresence>
+                <motion.b>{kpis[i]}</motion.b>
               </div>
             ))}
           </div>
-          <svg viewBox={`0 0 ${W} ${H + 24}`} className="plan-chart" aria-hidden="true">
+          <svg viewBox={`0 0 ${PW} ${PH + 24}`} className="plan-chart" aria-hidden="true">
             <defs><linearGradient id="plan-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#6EE7B7" stopOpacity=".32" /><stop offset="1" stopColor="#6EE7B7" stopOpacity="0" /></linearGradient></defs>
-            {[0.25, 0.5, 0.75].map((g) => <line key={g} x1="0" x2={W} y1={H * g} y2={H * g} className="pf-gl" />)}
-            <motion.path className="plan-area" fill="url(#plan-g)" animate={{ d: area(plan) }} transition={{ duration: 0.6, ease }} />
-            <path d={line(ACT)} className="plan-act" />
-            <motion.path className="plan-line" animate={{ d: line(plan) }} transition={{ duration: 0.6, ease }} />
-            {plan.map((v, i) => <motion.circle key={i} r="3.5" className="plan-dot" animate={{ cx: x(i), cy: y(v) }} transition={{ duration: 0.6, ease }} />)}
-            {c.months.map((m, i) => <text key={m} x={x(i)} y={H + 18} textAnchor="middle" className="plan-m">{m}</text>)}
+            {[0.25, 0.5, 0.75].map((k) => <line key={k} x1="0" x2={PW} y1={PH * k} y2={PH * k} className="pf-gl" />)}
+            <motion.path className="plan-area" fill="url(#plan-g)" d={areaD} />
+            <path d={pLine(ACT)} className="plan-act" />
+            <motion.path className="plan-line" d={lineD} />
+            {ACT.map((_, i) => <PlanDot key={i} i={i} g={g} cv={cv} />)}
+            {c.months.map((mo, i) => <text key={mo} x={px(i)} y={PH + 18} textAnchor="middle" className="plan-m">{mo}</text>)}
           </svg>
           <div className="plan-legend"><span><i className="l-a" />{c.actual}</span><span><i className="l-f" />{c.scenarios[sc]} 2027</span></div>
           <label className="plan-drv">
