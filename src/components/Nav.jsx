@@ -69,6 +69,10 @@ export default function Nav() {
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
+    if (!open) return
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
   }, [open])
 
   const pill = hover ?? active
@@ -129,6 +133,15 @@ export default function Nav() {
                 </motion.a>
               ))}
             </nav>
+            {/* En móvil el tema y el idioma viven aquí (en la barra no caben) */}
+            <div className="sheet-prefs">
+              <button className="icon-btn" onClick={toggleTheme} aria-label={t.nav.theme}>
+                <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={16} /> <span>{t.nav.theme}</span>
+              </button>
+              <button className="icon-btn lang-btn" onClick={() => setLang(lang === 'es' ? 'en' : 'es')} aria-label={t.nav.langLabel}>
+                <Icon name="globe" size={14} /> <span>{t.nav.langLabel}</span>
+              </button>
+            </div>
             <div className="sheet-actions">
               <Button href={APP_LOGIN_URL} variant="ghost">{t.nav.login}</Button>
               <Button href="#demo" arrow onClick={(e) => { setOpen(false); onAnchor(e) }}>{t.nav.demo}</Button>

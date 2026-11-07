@@ -20,11 +20,12 @@ const LAYOUTS = {
     tray: { x: 644, y: 456, w: 180, h: 44 },
     card: 'tall',
   },
+  // Móvil: las capas en tarjetas bajas (nombre, cifra y barra); los controles van en los chips del pie
   v: {
-    w: 400, h: 1140,
+    w: 400, h: 792,
     sources: [[16, 16], [208, 16], [16, 88], [208, 88]].map(([x, y]) => ({ x, y, w: 176, h: 60 })),
-    layers: [196, 452, 708].map((y) => ({ x: 24, y, w: 352, h: 196 })),
-    outputs: [[16, 960], [208, 960], [16, 1052], [208, 1052]].map(([x, y]) => ({ x, y, w: 176, h: 76 })),
+    layers: [192, 336, 480].map((y) => ({ x: 24, y, w: 352, h: 104 })),
+    outputs: [[16, 632], [208, 632], [16, 716], [208, 716]].map(([x, y]) => ({ x, y, w: 176, h: 72 })),
     tray: null,
     card: 'wide',
   },
@@ -126,19 +127,19 @@ function LayerCard({ box, layer, mode, start, delay, lang }) {
           <>
             <text x={w - 20} y="40" textAnchor="end" className="fd-count fd-count-sm">{fmt(count, lang)}</text>
             <text x={w - 20} y="58" textAnchor="end" className="fd-unit">{layer.unit}</text>
-            <line x1="20" x2={w - 20} y1="76" y2="76" className="fd-div" />
-            {layer.checks.map((c, i) => (
-              <g key={c}>
-                <Check x={30} y={100 + i * 28} on={start} delay={delay + 0.5 + i * 0.22} />
-                <text x="48" y={104 + i * 28} className="fd-check">{c}</text>
-              </g>
-            ))}
+            {/* una sola comprobación por capa (la última, la que la cierra) */}
+            <Check x={29} y={78} on={start} delay={delay + 0.6} />
+            <text x="46" y="82" className="fd-check">{layer.checks[layer.checks.length - 1]}</text>
             {layer.aside && (
-              <motion.text x={w - 20} y="184" textAnchor="end" className="fd-aside"
+              <motion.text x={w - 20} y="82" textAnchor="end" className="fd-aside"
                 initial={{ opacity: 0 }} animate={start ? { opacity: 1 } : {}} transition={{ delay: delay + 1.2 }}>
                 {layer.aside}
               </motion.text>
             )}
+            <rect x="20" y={h - 8} width={w - 40} height="3" rx="1.5" className="fd-bar-bg" />
+            <motion.rect x="20" y={h - 8} width={w - 40} height="3" rx="1.5" fill={color}
+              style={{ originX: 0 }} initial={{ scaleX: 0 }} animate={start ? { scaleX: 1 } : {}}
+              transition={{ delay: delay + 0.15, duration: 1.5, ease: [0.25, 1, 0.5, 1] }} />
           </>
         )}
       </g>

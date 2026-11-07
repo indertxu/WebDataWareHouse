@@ -4,6 +4,7 @@ import { Icon, SectionHead, useCountUp } from './ui.jsx'
 import { Cube } from './Logo.jsx'
 import { useLang } from '../i18n.jsx'
 import { onAnchor } from '../scroll.js'
+import { useMedia } from './Hero.jsx'
 
 /*
   La plataforma: cuatro herramientas sobre los mismos datos.
@@ -201,6 +202,8 @@ export default function Platform() {
   const c = t.platform
   const s = t.showcase
   const reduce = useReducedMotion()
+  // en móvil la ventana entra sin inclinarse: en 3D se ensancha más que la pantalla
+  const flat = useMedia('(max-width: 820px)')
   const [active, setActive] = useState('dw')
   const [touched, setTouched] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -228,7 +231,7 @@ export default function Platform() {
   const pick = (k) => { setTouched(true); setProgress(0); setActive(k) }
 
   const { scrollYProgress } = useScroll({ target: section, offset: ['start end', 'end start'] })
-  const enter = useTransform(scrollYProgress, [0.05, 0.35], reduce ? [0, 0] : [18, 0])
+  const enter = useTransform(scrollYProgress, [0.05, 0.35], reduce || flat ? [0, 0] : [18, 0])
   const mx = useMotionValue(0), my = useMotionValue(0)
   const rx = useSpring(useTransform(my, [-0.5, 0.5], [3, -3]), { stiffness: 120, damping: 18 })
   const ry = useSpring(useTransform(mx, [-0.5, 0.5], [-4, 4]), { stiffness: 120, damping: 18 })

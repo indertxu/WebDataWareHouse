@@ -1343,3 +1343,104 @@ body.consent-open .fcta { visibility: hidden; }
 .ds-next .btn-arrow { position: relative; }
 .ds-next.is-auto .btn-arrow { animation: nudge 0.9s ease-in-out infinite; }
 @keyframes nudge { 50% { transform: translateX(3px); } }
+
+/* =========================================================
+   Móvil (≤ 820 px). Todo lo de aquí solo aplica en pantallas
+   estrechas: el escritorio no cambia.
+   ========================================================= */
+.sheet-prefs { display: none; }
+@media (max-width: 899px) {
+  /* Nada puede ensanchar la página: si algo sobresale (brillos, órbitas, paneles en 3D)
+     se recorta, y el móvil no aleja el zoom para enseñarlo */
+  main, .footer { overflow-x: clip; }
+}
+@media (max-width: 820px) {
+  /* Fondo más ligero: sin rejilla bajo el dedo, halos quietos, sin haces */
+  .bd-spot, .bd-halo.h3, .bd-beam { display: none; }
+  .bd-halo { animation: none; filter: blur(80px); opacity: .22; }
+  .trust-orb { animation: none; width: 120vw; height: 120vw; }
+
+  /* Navegación: logo + demo + menú caben en 360 px */
+  .nav-demo .btn-arrow { display: none; }
+  .nav-demo { padding: 0 14px; }
+
+  /* Titulares: un poco menos de interletraje para que las palabras respiren */
+  .h1 { letter-spacing: -0.045em; line-height: 1; }
+  .h2 { letter-spacing: -0.04em; line-height: 1.06; }
+  .mf-text { letter-spacing: -0.035em; line-height: 1.16; }
+
+  /* Hero */
+  .hero-row { margin-top: 18px; gap: 22px; }
+  .hero-sub { font-size: 16px; }
+  .hero-buttons { gap: 8px; }
+  .hp-body { padding: 10px 6px 2px; }
+  .hp-foot { gap: 6px; }
+
+  /* Número de capítulo: arriba a la derecha, junto a la etiqueta, sin cruzar el título */
+  .ch-num { font-size: 84px; top: -26px; right: -2px; left: auto; -webkit-text-stroke-width: 1.5px; }
+  .shead-center .ch-num { left: auto; transform: none; }
+
+  /* Capas: el registro sin hueco reservado */
+  .record { padding: 14px 14px 12px; }
+  .record-rows { min-height: 0; }
+  .rr { grid-template-columns: 104px minmax(0, 1fr); gap: 8px; padding: 5px 8px; font-size: 11.5px; }
+  .rr dt { overflow-wrap: anywhere; }
+  .layers-flat .lf-list { gap: 40px; margin-top: 32px; }
+
+  /* Repositorio: la cabecera de la tabla sigue a las filas (sin la columna oculta) */
+  .repo-th span:nth-child(2) { display: none; }
+  .repo-panel { padding: 14px; }
+
+  /* Paneles: menos relleno, más contenido */
+  .conso-panel { padding: 14px 12px 26px; margin-top: 24px; }
+  .conso-detail { min-height: 0; padding: 16px; }
+  .plan-panel, .report-panel { padding: 14px; }
+  .plan-seg .seg-btn { padding: 9px 6px; font-size: 12.5px; }
+  .tl-checks li { font-size: 15px; }
+
+  /* Seguridad */
+  .trust-list li { padding: 18px; }
+
+  /* FAQ: preguntas primero, el contacto después */
+  .faq-grid { gap: 20px; }
+  .faq-side { display: contents; }
+  .faq-side .shead { order: 0; }
+  .faq-list { order: 1; }
+  .faq-contact { order: 2; margin-top: 8px; }
+  .faq-item button { padding: 18px 0; font-size: 16px; }
+
+  /* Demo: la tarjeta del formulario aprovecha el ancho */
+  .cta-band { padding: 22px 14px 14px; border-radius: 22px; }
+  .demo-grid { gap: 18px; }
+  .dform { padding: 16px 14px; border-radius: 18px; }
+  .assure { gap: 6px 14px; margin-top: 12px; }
+  .tcard { grid-template-columns: 38px minmax(0, 1fr) 22px; gap: 10px; padding: 12px; }
+  .tc-ico { width: 38px; height: 38px; }
+  .ds-foot { position: sticky; bottom: 0; background: inherit; margin-left: -14px; margin-right: -14px; padding-left: 14px; padding-right: 14px; padding-bottom: 2px; border-radius: 0 0 18px 18px; z-index: 2; }
+  /* iOS acerca el zoom en campos de menos de 16 px */
+  .df input, .df-other { font-size: 16px; }
+  .cta-sec { padding-bottom: 24px; }
+
+  /* Pie */
+  .footer { padding: 44px 0 calc(28px + env(safe-area-inset-bottom)); margin-top: 8px; }
+  .footer-base { margin-top: 32px; }
+
+  /* Menú: tema e idioma */
+  .sheet-prefs { display: flex; gap: 8px; }
+  .sheet-prefs .icon-btn { height: 44px; padding: 0 14px; font-size: 14px; font-weight: 700; color: var(--fg); }
+
+  /* Aviso de privacidad del formulario en una línea corrida */
+  .ds-privacy { display: block; line-height: 1.5; }
+  .ds-privacy svg { display: inline; vertical-align: -2px; margin-right: 4px; }
+
+  /* Botón flotante: respeta la barra inferior del iPhone */
+  .fcta { bottom: calc(12px + env(safe-area-inset-bottom)); }
+}
+@media (max-width: 380px) {
+  .nav-inner { padding: 0 6px 0 8px; gap: 6px; }
+  .nav-demo { padding: 0 11px; font-size: 13px; }
+  .h1 { font-size: 34px; }
+  .ch-num { font-size: 72px; top: -20px; }
+  .tally-num { font-size: 72px; }
+  .hp-chips .chip:first-child { display: none; }
+}
