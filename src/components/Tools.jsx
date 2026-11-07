@@ -281,17 +281,13 @@ export function Planning() {
   // Valores con muelle: al mover el slider todo (cifras y curva) sigue al dedo sin saltos ni fundidos
   const g = useSpring(drv + SCEN[sc].g, P_SPRING)
   const cv = useSpring(SCEN[sc].curve ? 1 : 0, P_SPRING)
-  const m = useSpring(SCEN[sc].m, P_SPRING)
-  useEffect(() => { g.set(drv + SCEN[sc].g); cv.set(SCEN[sc].curve ? 1 : 0); m.set(SCEN[sc].m) }, [drv, sc]) // eslint-disable-line
+  useEffect(() => { g.set(drv + SCEN[sc].g); cv.set(SCEN[sc].curve ? 1 : 0) }, [drv, sc]) // eslint-disable-line
   const nf = (n, d = 1) => new Intl.NumberFormat(lang === 'es' ? 'es-ES' : 'en-GB', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n)
   const money = (n) => (lang === 'es' ? `${nf(n)} M €` : `€${nf(n)}M`)
   const base = ACT.reduce((a, b) => a + b, 0)
-  const sum = useTransform([g, cv], ([a, b]) => planOf(a, b).reduce((x, y) => x + y, 0))
-  const kpis = [
-    useTransform(sum, (v) => money(v)),
-    useTransform([sum, m], ([v, k]) => money(v * k)),
-    useTransform(sum, (v) => `${v >= base ? '+' : ''}${nf(((v - base) / base) * 100)} %`),
-  ]
+  // Las cifras cambian al instante, sin animación (la curva sí se desliza)
+  const sum = planOf(drv + SCEN[sc].g, SCEN[sc].curve ? 1 : 0).reduce((x, y) => x + y, 0)
+  const kpis = [money(sum), money(sum * SCEN[sc].m), `${sum >= base ? '+' : ''}${nf(((sum - base) / base) * 100)} %`]
   const lineD = useTransform([g, cv], ([a, b]) => pLine(planOf(a, b)))
   const areaD = useTransform([g, cv], ([a, b]) => pArea(planOf(a, b)))
 
@@ -318,7 +314,7 @@ export function Planning() {
             {c.kpis.map((k, i) => (
               <div key={k} className="plan-kpi">
                 <span>{k}</span>
-                <motion.b>{kpis[i]}</motion.b>
+                <b>{kpis[i]}</b>
               </div>
             ))}
           </div>
