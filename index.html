@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Next Data · Plataforma de datos financieros y operativos para grupos: data warehouse, consolidación, planificación y reporting</title>
     <meta name="description" content="Next Data conecta tus ERPs, bases de datos y ficheros, une contabilidad y datos operativos (ventas, unidades, plantilla, stock) en un modelo común y, sobre esos mismos datos, consolida (NOFCAC y NIIF), planifica y reporta. Para grupos de sociedades." />
-    <meta name="theme-color" content="#064E3B" />
+    <meta name="theme-color" content="#F4F8F6" />
     <meta property="og:title" content="Next Data · Plataforma de datos financieros y operativos para grupos: data warehouse, consolidación, planificación y reporting" />
     <meta property="og:description" content="Next Data conecta tus ERPs, bases de datos y ficheros, une contabilidad y datos operativos (ventas, unidades, plantilla, stock) en un modelo común y, sobre esos mismos datos, consolida (NOFCAC y NIIF), planifica y reporta. Para grupos de sociedades." />
     <meta property="og:type" content="website" />
@@ -25,7 +25,11 @@
     <script>
       try {
         var t = localStorage.getItem('nd-theme');
-        if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+        if (t === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          // la barra del navegador del móvil, del mismo color que la página
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#060A09');
+        }
       } catch (e) {}
     </script>
   </head>

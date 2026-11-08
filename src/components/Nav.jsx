@@ -13,6 +13,8 @@ function useTheme() {
     if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark')
     else document.documentElement.removeAttribute('data-theme')
     try { localStorage.setItem('nd-theme', theme) } catch (e) {}
+    // la barra del navegador del móvil toma el color de la página: sin franja de otro color arriba
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#060A09' : '#F4F8F6')
   }, [theme])
   return [theme, () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))]
 }
